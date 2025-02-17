@@ -1,4 +1,4 @@
-package by.it.a_khmelev.lesson01;
+package by.it.group451001.klevko.lesson01;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
@@ -23,9 +23,30 @@ public class FiboB {
         return System.currentTimeMillis() - startTime;
     }
 
+    ArrayList<BigInteger> fibNum = new ArrayList<>(1000000);
+
+    /*BigInteger FindFib(Integer k){
+        if (fibNum.size()-1 >= k) {
+            return fibNum.get(k);
+        }
+        else {
+            BigInteger my1 = FindFib(k-1);
+            BigInteger my2 = FindFib(k-2);
+            BigInteger my = my1.add(my2);
+            fibNum.add(k, my);
+            return fibNum.get(k);
+        }
+    }*/
+
     BigInteger fastB(Integer n) {
-        //здесь нужно реализовать вариант с временем O(n) и памятью O(n)
-        return BigInteger.valueOf(-1L);
+        fibNum.add(0, BigInteger.ZERO);
+        fibNum.add(1, BigInteger.ONE);
+        for(int i = 2; i <= n; i++){
+            fibNum.add(fibNum.get(i-1).add(fibNum.get(i-2)));
+        }
+        //System.out.println(FindFib(55555));
+        //System.out.println("hello world " + fibNum.get(0) + " " + fibNum.get(1) + " " + fibNum.size());
+        return fibNum.get(n);
     }
 
 }
