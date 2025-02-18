@@ -32,14 +32,17 @@ public class FiboA {
         //здесь простейший вариант, в котором код совпадает
         //с математическим определением чисел Фибоначчи
         //время O(2^n)
-        int[] arr = new int[n];
-        arr[0] = 0;
-        arr[1] = 1;
-        for (int i = 2; i < n; ++i) {
-            arr[i] = arr[i - 1] + arr[i - 2];
-        }
+        int num0 = 0;
+        int num1 = 1;
+        int num2 = 0;
 
-        return arr[n-1];
+        for (int i = 3; i <= n; i++) {
+            num2 = num0 + num1;
+
+            num0 = num1;
+            num1 = num2;
+        }
+        return num2;
     }
 
 
