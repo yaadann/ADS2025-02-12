@@ -32,7 +32,14 @@ public class FiboA {
         //здесь простейший вариант, в котором код совпадает
         //с математическим определением чисел Фибоначчи
         //время O(2^n)
-        return 0;
+        int[] arr = new int[n];
+        arr[0] = 0;
+        arr[1] = 1;
+        for (int i = 2; i < n; ++i) {
+            arr[i] = arr[i - 1] + arr[i - 2];
+        }
+
+        return arr[n-1];
     }
 
 
@@ -41,9 +48,12 @@ public class FiboA {
         //здесь нужно реализовать вариант без ограничения на размер числа,
         //в котором код совпадает с математическим определением чисел Фибоначчи
         //время O(2^n)
+        if (n == 0)
+            return BigInteger.ZERO;
+        if (n == 1)
+            return BigInteger.ONE;
 
-
-        return BigInteger.ZERO;
+        return slowA(n - 1).add(slowA(n - 2));
     }
 
 
