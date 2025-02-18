@@ -6,6 +6,7 @@ package by.it.group410902.vidilin.lesson01;
  * время расчета должно быть не более 2 секунд
  */
 
+import java.math.BigInteger;
 import java.util.ArrayList;
 
 public class FiboC {
@@ -26,16 +27,9 @@ public class FiboC {
     long fasterC(long n, int m) {
         //Интуитивно найти решение не всегда просто и
         //возможно потребуется дополнительный поиск информации
-        ArrayList<Long> list = new ArrayList<>();
-        list.add(0l);
-        list.add(1l);
-        int u = 0;
-        for (int i = 2; i < n; ++i) {
-            list.set(i, list.get(i-1) + list.get(i-2));
-            u = list.lastIndexOf(list.get(i));
-        }
 
-        return list.get(u) % m;
+
+        return 0;
     }
 
 
