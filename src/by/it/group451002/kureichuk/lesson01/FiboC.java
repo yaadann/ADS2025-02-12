@@ -12,8 +12,8 @@ public class FiboC {
 
     public static void main(String[] args) {
         FiboC fibo = new FiboC();
-        int n = 55555;
-        int m = 1000;
+        int n = 10;
+        int m = 2;
         System.out.printf("fasterC(%d)=%d \n\t time=%d \n\n", n, fibo.fasterC(n, m), fibo.time());
     }
 
@@ -22,11 +22,35 @@ public class FiboC {
     }
 
     long fasterC(long n, int m) {
-        //Интуитивно найти решение не всегда просто и
-        //возможно потребуется дополнительный поиск информации
-        return -1L;
+        if(n == 0)
+            return 0;
+        if(n == 1)
+            return 1;
+
+        int prev = 0, curr = 1, period = 0;
+
+        for(int i = 0; i < m*m; i++)
+        {
+            int temp = (curr + prev) % m;
+            prev = curr;
+            curr = temp;
+
+            if(prev == 0 && curr == 1){
+                period = i + 1;
+                break;
+            }
+        }
+
+        n %= period;
+
+        for (int i = 2; i <= n; i++){
+            int temp = (curr + prev) % m;
+            prev = curr;
+            curr = temp;
+        }
+
+        return curr;
     }
-
-
 }
+
 
