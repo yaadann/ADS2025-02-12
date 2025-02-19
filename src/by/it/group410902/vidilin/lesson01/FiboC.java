@@ -27,9 +27,22 @@ public class FiboC {
     long fasterC(long n, int m) {
         //Интуитивно найти решение не всегда просто и
         //возможно потребуется дополнительный поиск информации
+        long var1 = 0, var2 = 1, temp, count = 0;
+        do {
+            temp = (var1 + var2) % m;
+            var1 = var2;
+            var2 = temp;
+            count++;
+        }
+        while (var1 != 0 || var2 != 1);
+        n %= count;
 
-
-        return 0;
+        for(int i = 1; i < n; i++){
+            temp = (var1 + var2) % m;
+            var1 = var2;
+            var2 = temp;
+        }
+        return var2;
     }
 
 
