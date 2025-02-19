@@ -23,9 +23,14 @@ public class FiboB {
     }
 
     BigInteger fastB(Integer n) {
-        //здесь нужно реализовать вариант с временем O(n) и памятью O(n)
-        return BigInteger.valueOf(-1L);
+//        //здесь нужно реализовать вариант с временем O(n) и памятью O(n)
+        BigInteger massive_chisel[] = new BigInteger[n+1];
+        massive_chisel[0] = BigInteger.ZERO;
+        massive_chisel[1] = BigInteger.ONE;
+        for (int i = 2; i < n+1; i++)
+        {
+            massive_chisel[i] = massive_chisel[i-1].add(massive_chisel[i-2]);
+        }
+        return massive_chisel[n];
     }
-
 }
-
