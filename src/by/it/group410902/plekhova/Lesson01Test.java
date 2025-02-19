@@ -1,4 +1,4 @@
-package by.it.a_khmelev.lesson01.group410902.plekhova;
+package by.it.group410902.plekhova;
 
 import org.junit.Test;
 
