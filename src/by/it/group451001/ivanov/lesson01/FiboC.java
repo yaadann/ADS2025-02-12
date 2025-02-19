@@ -6,6 +6,8 @@ package by.it.group451001.ivanov.lesson01;
  * время расчета должно быть не более 2 секунд
  */
 
+import java.math.BigInteger;
+
 public class FiboC {
 
     private long startTime = System.currentTimeMillis();
@@ -24,7 +26,20 @@ public class FiboC {
     long fasterC(long n, int m) {
         //Интуитивно найти решение не всегда просто и
         //возможно потребуется дополнительный поиск информации
-        return -1L;
+        int[] arr =new int[6*m+2];
+        arr[0] = 0;
+        arr[1] = 1;
+        if(n == 1) return 1;
+        int p=0;
+        boolean flag;
+        flag = true;
+        for (int i = 2; (i < ((6 * m) + 2)) && flag; i++){ arr[i] = (arr[i - 1] + arr[i - 2]) % m;
+            if (arr[i] == 1 && arr[i-1] == 0) {
+                p = arr[(int) (n % (i - 1))];
+                flag = false;
+            }
+        }
+        return p;
     }
 
 
