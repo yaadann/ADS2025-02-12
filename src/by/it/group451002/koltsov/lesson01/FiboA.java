@@ -1,4 +1,4 @@
-package by.it.group451004.raichuk.lesson01;
+package by.it.group451002.koltsov.lesson01;
 
 import java.math.BigInteger;
 
@@ -13,12 +13,12 @@ public class FiboA {
 
     public static void main(String[] args) {
         FiboA fibo = new FiboA();
-        int n = 50;
+        int n = 33;
         System.out.printf("calc(%d)=%d \n\t time=%d \n\n", n, fibo.calc(n), fibo.time());
 
         //вычисление чисел фибоначчи медленным методом (рекурсией)
         fibo = new FiboA();
-        n = 55;
+        n = 34;
         System.out.printf("slowA(%d)=%d \n\t time=%d \n\n", n, fibo.slowA(n), fibo.time());
     }
 
@@ -29,30 +29,21 @@ public class FiboA {
     }
 
     private int calc(int n) {
-        int pred = 0;
-        int temp = 0;
-        int res = 1;
-        for(int i = 2; i <= n; i++)
-        {
-            temp = res;
-            res += pred;
-            pred = temp;
-        }
-        return res;
+        if (n < 2)
+            return n;
+
+        return calc(n - 1) + calc (n - 2);
     }
 
 
     BigInteger slowA(Integer n) {
-        BigInteger res = BigInteger.ZERO;
-        if(n > 2) {
-            res = slowA(n - 1).add(slowA(n - 2));
-        }
-        else {
-            res = BigInteger.ONE;
-        }
+        //рекурсия
+        if (n == 0)
+            return BigInteger.ZERO;
+        if (n == 1)
+            return BigInteger.ONE;
 
-
-        return res;
+        return slowA(n - 1).add(slowA(n - 2));
     }
 
 

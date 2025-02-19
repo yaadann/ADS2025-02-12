@@ -1,4 +1,4 @@
-package by.it.a_khmelev.lesson01.group410902.plekhova;
+package by.it.group451002.koltsov.lesson01;
 
 import org.junit.Test;
 
@@ -35,7 +35,8 @@ public class Lesson01Test {
 
 
     @Test(timeout = 2000)
-    public void checkC_faster() throws Exception {
+    public void checkC_faster() throws Exception
+    {
         FiboC fibo = new FiboC();
         assertTrue("fasterC failed 1", fibo.fasterC(10, 2) == 1L);
         assertTrue("fasterC failed 2", fibo.fasterC(1, 2) == 1L);
