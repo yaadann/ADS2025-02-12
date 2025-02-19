@@ -27,7 +27,7 @@ public class FiboB {
         if (n == 0) return BigInteger.ZERO;
         if (n == 1) return BigInteger.ONE;
         BigInteger[] ArrFib = new BigInteger[n + 1];
-        ArrFib[2] = BigInteger.TWO;
+        ArrFib[2] = BigInteger.ONE;
         ArrFib[1] = BigInteger.ONE;
         ArrFib[0] = BigInteger.valueOf(n);
         return calc(n, ArrFib)[n];
