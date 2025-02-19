@@ -28,7 +28,7 @@ public class FiboC {
         //возможно потребуется дополнительный поиск информации
         if (n == 0) return 0;
         if (n == 1) return 1;
-        if (n < 6 * m + 2) {
+        if (n < 6L * m + 2) {
             long i = 2, a = 1, b = 1;
             while (i < n - 1) {
                 a = (a + b) % m;
