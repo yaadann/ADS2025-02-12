@@ -23,14 +23,38 @@ public class FiboC {
         return System.currentTimeMillis() - startTime;
     }
 
+    private long pisano_Period(int m) {
+        long a = 0, b = 1, c = a + b;
+        for (int i = 0; i < m * m; i++) {
+            c = (a + b) % m;
+            a = b;
+            b = c;
+            if (a == 0 && b == 1) return i + 1;
+        }
+        return 0; // Никогда не должно произойти
+    }
+
     long fasterC(long n, int m) {
         //Интуитивно найти решение не всегда просто и
         //возможно потребуется дополнительный поиск информации
 
 
-        return -1L;
+        long period = pisano_Period(m);
+        n = n % period;
+        if (n <= 1) return n;
+        long a = 0, b = 1, c = 0;
+        for (int i = 2; i <= n; i++) {
+            c = (a + b) % m;
+            a = b;
+            b = c;
+        }
+        return c;
     }
 
-
 }
+
+
+
+
+
 
