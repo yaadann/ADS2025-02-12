@@ -6,8 +6,6 @@ package by.it.group451003.kuzhik.lesson01;
  * время расчета должно быть не более 2 секунд
  */
 
-import java.math.BigInteger;
-
 public class FiboC {
 
     private long startTime = System.currentTimeMillis();
