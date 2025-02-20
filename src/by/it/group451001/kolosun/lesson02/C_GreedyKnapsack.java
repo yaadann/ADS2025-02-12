@@ -92,7 +92,7 @@ public class C_GreedyKnapsack {
 
         int i = 0, j = 0;
         while (i < left && j < right) {
-            if (l[i].compareTo(r[j]) >= 0) {
+            if (l[i].compareTo(r[j]) > 0) {
                 a[i + j] = l[i++];
             }
             else {
