@@ -5,7 +5,9 @@ package by.it.a_khmelev.lesson01;
  * необходимо найти остаток от деления n-го числа Фибоначчи на m
  * время расчета должно быть не более 2 секунд
  */
+
 public class FiboC {
+
     private long startTime = System.currentTimeMillis();
 
     public static void main(String[] args) {
@@ -14,6 +16,7 @@ public class FiboC {
         int m = 1000;
         System.out.printf("fasterC(%d)=%d \n\t time=%d \n\n", n, fibo.fasterC(n, m), fibo.time());
     }
+
     private long time() {
         return System.currentTimeMillis() - startTime;
     }
@@ -23,4 +26,7 @@ public class FiboC {
         //возможно потребуется дополнительный поиск информации
         return -1L;
     }
+
+
 }
+
