@@ -1,4 +1,4 @@
-package by.it.a_khmelev.lesson01;
+package by.it.group451001.khrenkov.lesson01;
 
 /*
  * Даны целые числа 1<=n<=1E18 и 2<=m<=1E5,
@@ -24,7 +24,26 @@ public class FiboC {
     long fasterC(long n, int m) {
         //Интуитивно найти решение не всегда просто и
         //возможно потребуется дополнительный поиск информации
-        return -1L;
+
+        int[] fibArray = new int[m * m + 1];
+        fibArray[0] = 0;
+        fibArray[1] = 1;
+        int k = 0;
+        for (int i = 2; i <= m * m; i++) {
+            fibArray[i] = (fibArray[i - 2] + fibArray[i - 1]) % m;
+            if ((fibArray[i] == 1) && (fibArray[i - 1] == 0)) {
+                k = i - 1;
+                break;
+            }
+        }
+        long ans = 0;
+        for (int i = 0; i < k; i++) {
+            if ((n - i) % k == 0) {
+                ans = fibArray[i];
+                break;
+            }
+        }
+        return ans;
     }
 
 
