@@ -51,6 +51,7 @@ public class FiboC {
                 cur = (prev + cur) % m;
                 prev = oldcur;
             }
+
         return cur;
     }
 
