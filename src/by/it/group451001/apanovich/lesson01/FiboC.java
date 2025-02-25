@@ -24,7 +24,25 @@ public class FiboC {
     long fasterC(long n, int m) {
         //Интуитивно найти решение не всегда просто и
         //возможно потребуется дополнительный поиск информации
-        return -1L;
+        int[] fib = new int[m*m+1];
+        fib[0] = 0;
+        fib[1] = 1;
+        int l = 0;
+        for (int i = 2; i <= m * m; i++){
+            fib[i] = (fib[i-1] + fib[i-2]) % m;
+            if ((fib[i-1] == 0) && (fib[i] == 1)){
+                l = i - 1;
+                break;
+            }
+        }
+        int a = 0;
+        for (int i = 0; i < l; i++){
+            if ((n - i) % l == 0){
+                a = fib[i];
+                break;
+            }
+        }
+        return a;
     }
 
 
