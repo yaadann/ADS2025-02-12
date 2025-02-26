@@ -15,6 +15,8 @@ package by.it.group410902.yarmashuk.lesson02;
 
 import java.io.FileNotFoundException;
 import java.io.InputStream;
+import java.util.Arrays;
+import java.util.Comparator;
 import java.util.Scanner;
 
 public class C_GreedyKnapsack {
@@ -32,7 +34,7 @@ public class C_GreedyKnapsack {
         int W = input.nextInt();      //какой вес у рюкзака
         Item[] items = new Item[n];   //получим список предметов
         for (int i = 0; i < n; i++) { //создавая каждый конструктором
-            items[i] = new Item(input.nextInt(), input.nextInt());
+            items[i] = new Item(input.nextInt(), input.nextInt(), 0);
         }
         //покажем предметы
         for (Item item : items) {
@@ -44,6 +46,30 @@ public class C_GreedyKnapsack {
         //итогом является максимально воможная стоимость вещей в рюкзаке
         //вещи можно резать на кусочки (непрерывный рюкзак)
         double result = 0;
+
+
+        for(int i =0; i< 4; i++){
+            items[i].cw= items[i].cost / items[i].weight ;
+           // System.out.println(" cost for kg "+ items[i].cw);
+
+        }
+
+        Arrays.sort(items, Comparator.comparingInt(s->s.cw));
+        for(int i =0; i< 4; i++){
+            System.out.println(" cost for kg "+ items[i].cw);
+        }
+        if (W!= 0){
+            for(int i =3; i>= 0; i--){
+                if(W >= items[i].weight ){
+                    W= W-items[i].weight;
+                    result = result+ items[i].cost;
+                }
+                else{
+                    result = result + (items[i].cw*W);
+                    W=0;
+                }
+            }
+        }
         //тут реализуйте алгоритм сбора рюкзака
         //будет особенно хорошо, если с собственной сортировкой
         //кроме того, можете описать свой компаратор в классе Item
@@ -58,10 +84,12 @@ public class C_GreedyKnapsack {
     private static class Item implements Comparable<Item> {
         int cost;
         int weight;
+        int cw;
 
-        Item(int cost, int weight) {
+        Item(int cost, int weight, int cw) {
             this.cost = cost;
             this.weight = weight;
+            this.cw = cw;
         }
 
         @Override
