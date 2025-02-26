@@ -55,9 +55,7 @@ public class C_GreedyKnapsack {
         }
 
         Arrays.sort(items, Comparator.comparingInt(s->s.cw));
-        for(int i =0; i< 4; i++){
-            System.out.println(" cost for kg "+ items[i].cw);
-        }
+
         if (W!= 0){
             for(int i =3; i>= 0; i--){
                 if(W >= items[i].weight ){
