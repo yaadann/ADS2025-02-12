@@ -1,6 +1,8 @@
 package by.it.group410902.yarmashuk.lesson02;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
 /*
 Даны интервальные события events
@@ -32,6 +34,26 @@ public class B_Sheduler {
         List<Event> result;
         result = new ArrayList<>();
         //ваше решение.
+
+        Arrays.sort(events, Comparator.comparingInt(s-> s.stop));
+        int end, start;
+        start = events[0].stop;
+        result.add(events[0]);
+        for(int i =1; i< events.length; i++){
+
+
+            if(events[i].start >= start){
+                result.add(events[i]);
+                start=events[i].stop;
+
+
+            }
+        }
+
+
+
+
+
 
 
         return result;          //вернем итог
