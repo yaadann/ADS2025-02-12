@@ -42,7 +42,7 @@ public class FiboA {
 
 
     BigInteger slowA(Integer n) {
-        // Базовые случаи: F(0) = 0, F(1) = 1
+
         if (n <= 0) {
             return BigInteger.ZERO;
         }

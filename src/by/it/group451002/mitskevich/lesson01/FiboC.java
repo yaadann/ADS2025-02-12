@@ -10,7 +10,7 @@ public class FiboC {
         int m = 1000;     // делитель
         System.out.printf("fasterC(%d, %d)=%d \n\t time=%d ms\n\n", n, m, fibo.fasterC(n, m), fibo.time());
     }
-
+    //lf
     private long time() {
         return System.currentTimeMillis() - startTime;
     }
