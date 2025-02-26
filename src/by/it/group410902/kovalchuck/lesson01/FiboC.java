@@ -24,7 +24,28 @@ public class FiboC {
     long fasterC(long n, int m) {
         //Интуитивно найти решение не всегда просто и
         //возможно потребуется дополнительный поиск информации
-        return -1L;
+        if (n == 0) return 0;
+        if (n == 1) return 1;
+
+        int nom1 = 0, nom2 = 1;
+        int per = 0;
+        while (true) {
+            int for_time = nom2;
+            nom2 = (nom2 + nom1) % m;
+            nom1 = for_time;
+            per++;
+            if ((nom1 == 0) && (nom2 == 1)) break;
+        }
+        n = n % per;
+
+        nom1 = 0;
+        nom2 = 1;
+        for (int i = 2; i <= n; i++) {
+            int temp = nom2;
+            nom2 = (nom2 + nom1) % m;
+            nom1 = temp;
+        }
+        return nom2;
     }
 
 
