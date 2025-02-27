@@ -14,8 +14,8 @@ public class FiboC {
 
     public static void main(String[] args) {
         FiboC fibo = new FiboC();
-        int n = 55555;
-        int m = 1000;
+        int n = 50000;
+        int m = 321;
         System.out.printf("fasterC(%d)=%d \n\t time=%d \n\n", n, fibo.fasterC(n, m), fibo.time());
     }
 
@@ -24,27 +24,25 @@ public class FiboC {
     }
 
     long fasterC(long n, int m) {
-        int p;
-        p = GetPizanoPeriod(m);
-        System.out.print(p);
-        return -1L;
-    }
-
-    int GetPizanoPeriod(int m){
-        int num1 = 0;
-        int num2 = 1;
-        int num = 1;
-        for (int i = 1; i<=m;i++) {
-            num = num1 + num2;
-            num1 = num2;
-            num2 = num;
-            if (num % m == 0){
-                return i;
+        int p = 0;
+        long[] rems = new long[6*m+2];
+        rems[0] = 0;
+        rems[1] = 1;
+        rems[2] = 1;
+        long prev2 = 0;
+        long prev1 = 1;
+        long num;
+       for (int i = 2; true/*i < 6*m+2*/; i++){
+           num = prev1 + prev2;
+           prev2 = prev1;
+           prev1 = num;
+           rems[i] = num % m;
+            if ((rems[i-1] == 0)&&(rems[i] == 1)){
+                p = i-1;
+                break;
             }
         }
-        return 0;
+       return rems[(int)n%p];
     }
-
-
 }
 
