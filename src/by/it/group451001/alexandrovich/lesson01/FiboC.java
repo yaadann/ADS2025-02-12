@@ -14,8 +14,8 @@ public class FiboC {
 
     public static void main(String[] args) {
         FiboC fibo = new FiboC();
-        int n = 50000;
-        int m = 321;
+        int n = 55555;
+        int m = 1000;
         System.out.printf("fasterC(%d)=%d \n\t time=%d \n\n", n, fibo.fasterC(n, m), fibo.time());
     }
 
@@ -24,15 +24,15 @@ public class FiboC {
     }
 
     long fasterC(long n, int m) {
-        int p;
-        long[] rems = new long[6*m+2];
+        int p = 0;
+        long[] rems = new long[6*m*m+2];
         rems[0] = 0;
         rems[1] = 1;
         rems[2] = 1;
         long prev2 = 0;
         long prev1 = 1;
         long num;
-       for (int i = 2; true/*i < 6*m+2*/; i++){
+       for (int i = 2; i < 6*m*m+2; i++){
            num = prev1 + prev2;
            prev2 = prev1;
            prev1 = num;
