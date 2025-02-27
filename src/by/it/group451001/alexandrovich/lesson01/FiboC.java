@@ -24,7 +24,7 @@ public class FiboC {
     }
 
     long fasterC(long n, int m) {
-        int p = 0;
+        int p;
         long[] rems = new long[6*m+2];
         rems[0] = 0;
         rems[1] = 1;
