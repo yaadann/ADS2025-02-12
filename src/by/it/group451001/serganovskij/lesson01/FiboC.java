@@ -44,7 +44,7 @@ FiboC fibo= new FiboC();
             // Найден период (начало повторения 0,1)
             if (prev == 0 && curr == 1) return i + 1;
         }
-        return m; // Фолбэк (обычно не происходит)
+        return m;
     }
 
     private long fibonacciMod(int n, int m) {
