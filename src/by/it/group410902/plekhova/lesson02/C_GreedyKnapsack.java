@@ -15,6 +15,8 @@ package by.it.group410902.plekhova.lesson02;
 
 import java.io.FileNotFoundException;
 import java.io.InputStream;
+import java.util.Arrays;
+import java.util.Comparator;
 import java.util.Scanner;
 
 public class C_GreedyKnapsack {
@@ -40,10 +42,32 @@ public class C_GreedyKnapsack {
         }
         System.out.printf("Всего предметов: %d. Рюкзак вмещает %d кг.\n", n, W);
 
+
+        Arrays.sort(items, Comparator.comparingDouble(Item::getValuePerWeight).reversed());
+
+        int currweight =0, freew = W-currweight;
+
+        double result = 0;
+        int i =0;
+        while(currweight!=W){
+            freew = W-currweight;
+            if(freew >= items[i].weight){
+                result += items[i].cost;
+                currweight += items[i].weight;
+
+            }
+            if (freew < items[i].weight){
+                result += ((freew*items[i].cost)/items[i].weight);
+                currweight += freew;
+            }
+            i++;
+
+        }
+
         //тут необходимо реализовать решение задачи
         //итогом является максимально воможная стоимость вещей в рюкзаке
         //вещи можно резать на кусочки (непрерывный рюкзак)
-        double result = 0;
+
         //тут реализуйте алгоритм сбора рюкзака
         //будет особенно хорошо, если с собственной сортировкой
         //кроме того, можете описать свой компаратор в классе Item
@@ -59,9 +83,14 @@ public class C_GreedyKnapsack {
         int cost;
         int weight;
 
+
         Item(int cost, int weight) {
             this.cost = cost;
             this.weight = weight;
+
+        }
+        double getValuePerWeight() {
+            return (double) cost / weight;
         }
 
         @Override
