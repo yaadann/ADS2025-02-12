@@ -1,4 +1,4 @@
-package by.group451002.Osadchy.lesson01;
+package by.it.group451002.Osadchy.lesson01;
 
 /*
  * Даны целые числа 1<=n<=1E18 и 2<=m<=1E5,
@@ -24,9 +24,34 @@ public class FiboC {
     long fasterC(long n, int m) {
         //Интуитивно найти решение не всегда просто и
         //возможно потребуется дополнительный поиск информации
-        return -1L;
+        int previous = 0;
+        int current = 1;
+        int period = 0;
+
+        for (int i = 0; i < m * m; i++) {
+            int temp = (previous + current) % m;
+            previous = current;
+            current = temp;
+            period++;
+
+            if (previous == 0 && current == 1) {
+                period = i + 1;
+                break;
+            }
+        }
+
+        n = n % period;
+
+        previous = 0;
+        current = 1;
+
+        for (long i = 2; i <= n; i++) {
+            long temp = (previous + current) % m;
+            previous = current;
+            current = (int) temp;
+        }
+
+        return (n == 0) ? previous : current;
     }
-
-
 }
 
