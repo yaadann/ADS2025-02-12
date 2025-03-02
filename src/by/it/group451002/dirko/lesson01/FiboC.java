@@ -22,28 +22,25 @@ public class FiboC {
     }
 
     long fasterC(long n, int m) {
-        int First = 0;
-        int Second = 1;
-        int Third;
-        int period = 0;
+        long first = 0, second = 1, third, period = 0;
 
         // Поиск периода Пизано
         do {
-            Third = (First + Second) % m;
-            First = Second % m;
-            Second = Third % m;
-            period += 1;
-        }while(First != 0 || Second != 1);
+            third = (first + second) % m;
+            first = second;
+            second = third;
+            period++;
+        }while(first != 0 || second != 1);
 
         // Находим остаток от деления n-ого числа Фибоначчи на m
-        First = 0;
-        Second = 1;
-        for(int i = 0; i < n % period; i++){
-            Third = (First + Second) % m;
-            First = Second % m;
-            Second = Third % m;
+        first = 0;
+        second = 1;
+        for(long i = 0; i < n % period; i++){
+            third = (first + second) % m;
+            first = second;
+            second = third;
         }
-        return First;
+        return first;
     }
 
 
