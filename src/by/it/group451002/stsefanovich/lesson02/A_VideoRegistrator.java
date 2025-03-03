@@ -1,4 +1,4 @@
-package by.it.group451002.stsefanovich.lesson2;
+package by.it.group451002.stsefanovich.lesson02;
 
 /*
 Даны события events
