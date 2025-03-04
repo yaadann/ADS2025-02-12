@@ -51,11 +51,11 @@ public class FiboA {
         //здесь нужно реализовать вариант без ограничения на размер числа,
         //в котором код совпадает с математическим определением чисел Фибоначчи
         //время O(2^n)
-        return switch (n) {
+       /* return switch (n) {
             case 0 -> (BigInteger.ZERO);
             case 1 -> (BigInteger.ONE);
             default -> (slowA(n - 1).add(slowA(n - 2)));
-        };
+        };*/
     }
 
 
