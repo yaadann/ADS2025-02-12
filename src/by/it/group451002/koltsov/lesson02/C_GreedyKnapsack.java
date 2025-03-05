@@ -44,6 +44,8 @@ public class C_GreedyKnapsack {
         double result = 0;
         int maxCoeffIndItem;
         Item tempItem;
+
+        // Сортировка масссива item-ов по убыванию цены одного килограмма item-а
         for (int i = 0; i < items.length; i++)
         {
             maxCoeffIndItem = i;
@@ -59,6 +61,10 @@ public class C_GreedyKnapsack {
 
         int i = 0;
         int currWeight = 0;
+
+        // проходимся по каждому элементу массива "items" и добавляем предмет в рюкзак целиком,
+        // если он помещается.
+        // Если нет, то режем предмет и до конца забиваем им рюкзак.
         while (currWeight < W && i < n)
             if (items[i].weight < W - currWeight)
             {
@@ -68,7 +74,7 @@ public class C_GreedyKnapsack {
             }
             else
             {
-                result += (items[i].cost / items[i].weight) * (W - currWeight);
+                result += (double)items[i].cost / items[i].weight * (W - currWeight);
                 currWeight = W;
             }
 

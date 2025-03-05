@@ -26,8 +26,7 @@ public class A_VideoRegistrator {
     {
         Arrays.sort(events);
 
-        List<Double> result;
-        result = new ArrayList<>();
+        List<Double> result = new ArrayList<>();
         int i = 0;
 
         while (i < events.length)

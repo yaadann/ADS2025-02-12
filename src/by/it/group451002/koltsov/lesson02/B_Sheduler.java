@@ -31,24 +31,31 @@ public class B_Sheduler {
         result = new ArrayList<>();
 
         int i;
-        int minInd;
+        int bothFieldsMinInd;
         Event tempEvent;
+
+        // Сортируем массив event-ов по возрастанию времени конца event-a
+        // причём при наличии нескольких event-ов с одним и тем же временем конца,
+        // раньше ставим тот, у которого раньше время начала (в целях максимизации расхода времени
+        // на заданном промежутке)
         for (i = 0; i < events.length; i++)
         {
-            minInd = i;
+            bothFieldsMinInd = i;
 
             for (int k = i + 1; k < events.length; k++)
-                if (events[k].stop <= events[minInd].stop)
-                    if (events[k].stop == events[minInd].stop && events[k].start < events[minInd].start)
-                        minInd = k;
-                    else if (events[k].stop < events[minInd].stop )
-                        minInd = k;
+                if (events[k].stop <= events[bothFieldsMinInd].stop)
+                    if (events[k].stop == events[bothFieldsMinInd].stop && events[k].start < events[bothFieldsMinInd].start)
+                        bothFieldsMinInd = k;
+                    else if (events[k].stop < events[bothFieldsMinInd].stop)
+                        bothFieldsMinInd = k;
 
             tempEvent = events[i];
-            events[i] = events[minInd];
-            events[minInd] = tempEvent;
+            events[i] = events[bothFieldsMinInd];
+            events[bothFieldsMinInd] = tempEvent;
         }
 
+        // проходимся по каждому event-у и фиксируем его, если его начало и конец лежат в диапазоне
+        // [currTime, to], присваиваем currTime время фиксируемого event-а
         int currTime = from;
         for (i = 0; i < events.length; i++)
             if (events[i].start >= currTime && events[i].stop <= to)

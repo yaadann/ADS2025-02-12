@@ -24,25 +24,26 @@ public class FiboC {
 
     long fasterC(long n, int m)
     {
-        int[] periodNums = new int[m * m + 1];
+        int[] fiboReminder = new int[m * m + 1];
         boolean periodIsFound = false;
         int period = 1;
         int old = 0;
         int curr = 1;
-        int new1;
-        int new2;
+        int new1, new2;
 
-        periodNums[0] = 0;
-        periodNums[1] = 1;
+        fiboReminder[0] = 0;
+        fiboReminder[1] = 1;
         int count = 2;
 
+        // рассчитываем период Пизано, параллельно записывая значения остатков чисел Фибоначчи в массив
+        // fiboReminder
         while (!periodIsFound)
         {
             new1 = curr;
             new2 = (old + curr) % m;
             old = new1;
             curr = new2;
-            periodNums[count] = new2;
+            fiboReminder[count] = new2;
 
             if (new1 == 0 && new2 == 1)
                 periodIsFound = true;
@@ -50,8 +51,9 @@ public class FiboC {
                 period++;
             count++;
         }
+
         int i = (int)n % period;
-        return periodNums[i];
+        return fiboReminder[i];
     }
 }
 
