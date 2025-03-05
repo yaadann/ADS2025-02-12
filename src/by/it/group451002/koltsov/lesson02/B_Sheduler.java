@@ -55,7 +55,7 @@ public class B_Sheduler {
         }
 
         // проходимся по каждому event-у и фиксируем его, если его начало и конец лежат в диапазоне
-        // [currTime, to], присваиваем currTime время фиксируемого event-а
+        // [currTime, to], присваиваем currTime время конца фиксируемого event-а
         int currTime = from;
         for (i = 0; i < events.length; i++)
             if (events[i].start >= currTime && events[i].stop <= to)

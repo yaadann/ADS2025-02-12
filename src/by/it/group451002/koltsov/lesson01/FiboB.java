@@ -23,19 +23,18 @@ public class FiboB {
     }
 
     BigInteger fastB(Integer n) {
-        if (n == 0) return BigInteger.ZERO;
-        if (n == 1) return BigInteger.ONE;
+        if (n < 3)
+            return BigInteger.ONE;
 
-        BigInteger[] fiboArray = new BigInteger[n + 1];
-        fiboArray[0] = BigInteger.ZERO;
-        fiboArray[1] = BigInteger.ONE;
+        BigInteger[] Array = new BigInteger[n];
+        Array[0] = BigInteger.ONE;
+        Array[1] = BigInteger.ONE;
 
-        for (int i = 2; i <= n; i++){
-            fiboArray[i] = fiboArray[i - 1].add(fiboArray[i - 2]);
+        for (int i = 2; i < n; i++){
+            Array[i] = Array[i - 1].add(Array[i - 2]);
         }
 
-        return fiboArray[n];
+        return Array[n - 1];
     }
 
 }
-
