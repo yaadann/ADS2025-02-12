@@ -22,7 +22,8 @@ public class A_VideoRegistrator {
     }
 
     //модификаторы доступа опущены для возможности тестирования
-    List<Double> calcStartTimes(double[] events, double workDuration) {
+    List<Double> calcStartTimes(double[] events, double workDuration)
+    {
         Arrays.sort(events);
 
         List<Double> result = new ArrayList<>();
