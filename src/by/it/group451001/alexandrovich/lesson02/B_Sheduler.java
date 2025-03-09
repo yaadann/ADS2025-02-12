@@ -25,16 +25,48 @@ public class B_Sheduler {
     }
 
     List<Event> calcStartTimes(Event[] events, int from, int to) {
-        //Events - события которые нужно распределить в аудитории
+        events = SortToEnd(events);
         //в период [from, int] (включительно).
         //оптимизация проводится по наибольшему числу непересекающихся событий.
         //Начало и конец событий могут совпадать.
         List<Event> result;
         result = new ArrayList<>();
+        int time = from;
+        int i = 0;
+        while (time <= to){
+            while (time > events[i].start){
+                i++;
+                if (i > events.length-1){
+                    return  result;
+                }
+            }
+            result.add(events[i]);
+            time = events[i].stop;
+        }
         //ваше решение.
 
 
         return result;          //вернем итог
+    }
+
+    static Event[] SortToEnd(Event[] events){
+        int min;
+        int minI;
+        Event temp;
+        for (var i = 0; i< events.length-1; i++){
+            minI = i;
+            min = events[i].stop;
+            for (var j = i+1; j < events.length; j++){
+                if (events[j].stop < min){
+                    min = events[j].stop;
+                    minI = j;
+                }
+            }
+            temp = events[i];
+            events[i] = events[minI];
+            events[minI] = temp;
+        }
+        return events;
     }
 
     //событие у аудитории(два поля: начало и конец)
