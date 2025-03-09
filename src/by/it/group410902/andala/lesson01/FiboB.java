@@ -1,4 +1,4 @@
-package group410901.konon;
+package by.it.group410902.andala.lesson01;
 
 import java.math.BigInteger;
 
@@ -23,19 +23,18 @@ public class FiboB {
     }
 
     BigInteger fastB(Integer n) {
-        //здесь нужно реализовать вариант с временем O(n) и памятью O(n)
-        if(n==0) return BigInteger.ZERO;
-        if(n==1) return BigInteger.ONE;
+        // Реализация с помощью массива и BigInteger, O(n) по времени и памяти
+        if (n == 0) return BigInteger.ZERO;
+        if (n == 1) return BigInteger.ONE;
 
-        BigInteger[] fibArr = new BigInteger[n + 1];
-        fibArr[0] = BigInteger.ZERO;
-        fibArr[1] = BigInteger.ONE;
+        BigInteger[] fib = new BigInteger[n + 1];
+        fib[0] = BigInteger.ZERO;
+        fib[1] = BigInteger.ONE;
 
-        for(int i=2; i<=n; i++){
-            fibArr[i]= fibArr[i-1].add(fibArr[i-2]);
+        for (int i = 2; i <= n; i++) {
+            fib[i] = fib[i - 1].add(fib[i - 2]);
         }
-        return fibArr[n];
+
+        return fib[n];
     }
-
 }
-
