@@ -39,11 +39,20 @@ public class C_GreedyKnapsack {
             System.out.println(item);
         }
         System.out.printf("Всего предметов: %d. Рюкзак вмещает %d кг.\n", n, W);
-
         //тут необходимо реализовать решение задачи
         //итогом является максимально воможная стоимость вещей в рюкзаке
         //вещи можно резать на кусочки (непрерывный рюкзак)
-        double result = 0;
+        items = Sort(items);
+        int weight = 0;
+        int cost = 0;
+        int i = 0;
+        while (weight + items[i].weight <= W){
+            weight+=items[i].weight;
+            cost+=items[i].cost;
+            i++;
+        }
+        cost += (items[i].cost / items[i].weight)*(W-weight);
+        double result = cost;
         //тут реализуйте алгоритм сбора рюкзака
         //будет особенно хорошо, если с собственной сортировкой
         //кроме того, можете описать свой компаратор в классе Item
@@ -53,6 +62,26 @@ public class C_GreedyKnapsack {
 
         System.out.printf("Удалось собрать рюкзак на сумму %f\n", result);
         return result;
+    }
+
+    static Item[] Sort(Item[] items){
+        double max;
+        int maxI;
+        Item temp;
+        for (var i = 0; i < items.length-1; i++){
+            maxI = i;
+            max = (double) items[i].cost /items[i].weight;
+            for (var j = i+1; j < items.length; j++){
+                if ((double) items[j].cost /items[j].weight > max){
+                    max = (double) items[j].cost /items[j].weight;
+                    maxI = j;
+                }
+            }
+            temp = items[i];
+            items[i] = items[maxI];
+            items[maxI] = temp;
+        }
+        return items;
     }
 
     private static class Item implements Comparable<Item> {
