@@ -48,7 +48,7 @@ public class FiboC {
         long prev = 0;
         long curr = 1;
 
-        for (int i = 0; i < m * m; i++) { // Период Пизано всегда <= m^2
+        for (int i = 0; i < 6*m; i++) { // Период Пизано всегда <= 6m
             long temp = (prev + curr) % m;
             prev = curr;
             curr = temp;
