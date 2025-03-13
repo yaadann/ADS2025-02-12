@@ -48,7 +48,7 @@ public class Lesson02Test {
         InputStream inputStream = C_GreedyKnapsack.class.getResourceAsStream("greedyKnapsack.txt");
         double costFinal = new C_GreedyKnapsack().calc(inputStream);
         boolean ok = costFinal == 200;
-        assertTrue("greedyKnapsack failed", ok);
+        assertTrue("B_Sheduler failed", ok);
     }
 
 }
