@@ -1,4 +1,4 @@
-package group410901.konon;
+package by.it.group410901.konon;
 
 import org.junit.Test;
 
