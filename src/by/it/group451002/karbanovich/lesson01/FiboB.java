@@ -23,13 +23,13 @@ public class FiboB {
     }
 
     BigInteger fastB(Integer n) {
-        BigInteger[] nums = new BigInteger[n];
-        nums[0] = new BigInteger("1");
-        nums[1] = new BigInteger("1");
-        for (int i = 2; i < n; i++) {
+        BigInteger[] nums = new BigInteger[n+1];
+        nums[0] = BigInteger.ZERO;
+        nums[1] = BigInteger.ONE;
+        for (int i = 2; i <= n; i++) {
             nums[i] = nums[i - 1].add(nums[i - 2]);
         }
-        return nums[n-1];
+        return nums[n];
     }
 
 }
