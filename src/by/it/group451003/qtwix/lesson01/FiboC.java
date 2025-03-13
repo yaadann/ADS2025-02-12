@@ -24,7 +24,26 @@ public class FiboC {
     long fasterC(long n, int m) {
         //Интуитивно найти решение не всегда просто и
         //возможно потребуется дополнительный поиск информации
-        return -1L;
+        if (n == 0) return 0;
+        if (n == 1) return 1;
+        long[] pisanoPeriod = getPisanoPeriod(m);
+        long periodLength = pisanoPeriod.length;
+        long index = n % periodLength;
+        return pisanoPeriod[(int) index];
+    }
+    long[] getPisanoPeriod(int m) {
+        long[] pisano = new long[6*m + 2];
+        pisano[0] = 0;
+        pisano[1] = 1;
+        for (int i = 2; i < pisano.length; i++) {
+            pisano[i] = (pisano[i - 1] + pisano[i - 2]) % m;
+            if (pisano[i - 1] == 0 && pisano[i] == 1) {
+                long[] period = new long[i-1];
+                System.arraycopy(pisano, 0, period, 0, i - 1);
+                return period;
+            }
+        }
+        return pisano;
     }
 
 
