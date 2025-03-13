@@ -26,21 +26,21 @@ public class FiboC {
     long fasterC(long n, int m) {
         //Интуитивно найти решение не всегда просто и
         //возможно потребуется дополнительный поиск информации
-        long el1 = 0, el2 = 1;
+        long e1 = 0, e2 = 1;
         ArrayList<Long> l = new ArrayList<>();// остатки от деления
         l.add(0L);
         l.add(1L);
         boolean s = true;
 
         while (s) {
-            long buf = el2;
-            el2 += el1;
-            el1 = buf;
+            long buf = e2;
+            e2 += e1;
+            e1 = buf;
 
-            if (el1 % m == 0 && el2 % m == 1)
+            if (e1 % m == 0 && e2 % m == 1)
                 s = false;
             else
-                l.add(el2 % m);
+                l.add(e2 % m);
         }
 
         n %= l.size() - 1;
