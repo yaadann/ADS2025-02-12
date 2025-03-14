@@ -24,7 +24,19 @@ public class FiboB {
 
     BigInteger fastB(Integer n) {
         //здесь нужно реализовать вариант с временем O(n) и памятью O(n)
-        return BigInteger.valueOf(-1L);
+        BigInteger answer = BigInteger.valueOf(1);
+        BigInteger lastValue = BigInteger.valueOf(0);
+
+        while (n > 1) {
+            n--;
+
+            lastValue = answer.add(lastValue);
+            lastValue = lastValue.xor(answer);
+            answer = lastValue.xor(answer);
+            lastValue = lastValue.xor(answer);
+        }
+
+        return answer;
     }
 
 }

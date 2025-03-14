@@ -24,7 +24,22 @@ public class FiboC {
     long fasterC(long n, int m) {
         //Интуитивно найти решение не всегда просто и
         //возможно потребуется дополнительный поиск информации
-        return -1L;
+        long answer = 1;
+        long lastValue = 0;
+
+        while (n > 1) {
+            n--;
+
+            lastValue += answer;
+            while (lastValue >= m)
+                lastValue -= m;
+
+            lastValue = lastValue ^ answer;
+            answer = lastValue ^ answer;
+            lastValue = lastValue ^ answer;
+        }
+
+        return answer % m;
     }
 
 
