@@ -2,6 +2,7 @@ package by.it.group410902.sivtsov.lesson02;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Arrays;
 /*
 Даны интервальные события events
 реализуйте метод calcStartTimes, так, чтобы число принятых к выполнению
@@ -33,11 +34,32 @@ public class B_Sheduler {
         List<Event> result;
         result = new ArrayList<>();
         //ваше решение.
-        int dur;
-        for (int i = 0; i < events.length; i++){
 
+            Event temp;
+            for (int i = 0; i < events.length; i++) {
+                for (int j = 0; j < events.length - 1 - i; j++) {
+                    if (events[j].stop > events[j + 1].stop) {
+                        temp = events[j];
+                        events[j] = events[j + 1];
+                        events[j + 1] = temp;
+                    }
+                }
+            }
+
+        int i = 1;
+        int stop = events[0].stop;
+        int start = events[0].start;
+        result.add(events[0]);
+        for(i = 1; i < events.length; i++) {
+            if(events[i].start >= stop) {
+                result.add(events[i]);
+                start = events[i].start;
+                stop = events[i].stop;
+            }
         }
 
+
+        System.out.println(Arrays.toString(events));
         return result;          //вернем итог
     }
 
