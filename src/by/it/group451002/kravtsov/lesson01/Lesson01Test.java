@@ -17,7 +17,6 @@ public class Lesson01Test {
     Search for test:    In whole project
     */
 
-
     @Test(timeout = 2000)
     public void checkA_slow() throws Exception {
         FiboA fibo = new FiboA();
