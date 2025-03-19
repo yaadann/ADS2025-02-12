@@ -50,10 +50,9 @@ public class C_GreedyKnapsack {
         Item[] priority = {firstItem, secondItem, thirdItem, fourthItem};
         Item tempSwap;
 
-        // Сортировка пузырьком по стоимости за 1 кг
+        // Сортировка по стоимости за 1 кг
         for (int i = 0; i < priority.length-1; i++) {
             for (int j = i+1; j < priority.length; j++) {
-                int res = priority[i].compareTo(priority[j]);
                 if (priority[i].compareTo(priority[j]) > priority[j].compareTo(priority[i])) {
                     tempSwap = priority[i];
                     priority[i] = priority[j];
