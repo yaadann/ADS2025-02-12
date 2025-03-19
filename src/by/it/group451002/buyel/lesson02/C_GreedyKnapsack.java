@@ -40,9 +40,7 @@ public class C_GreedyKnapsack {
         }
         System.out.printf("Всего предметов: %d. Рюкзак вмещает %d кг.\n", n, W);
 
-        //тут необходимо реализовать решение задачи
-        //итогом является максимально воможная стоимость вещей в рюкзаке
-        //вещи можно резать на кусочки (непрерывный рюкзак)
+        // Инициализация
         double result = 0;
         Item firstItem = new Item(60, 20);
         Item secondItem = new Item(100, 50);
@@ -52,6 +50,7 @@ public class C_GreedyKnapsack {
         Item[] priority = {firstItem, secondItem, thirdItem, fourthItem};
         Item tempSwap;
 
+        // Сортировка пузырьком по стоимости за 1 кг
         for (int i = 0; i < priority.length-1; i++) {
             for (int j = i+1; j < priority.length; j++) {
                 int res = priority[i].compareTo(priority[j]);
@@ -63,19 +62,13 @@ public class C_GreedyKnapsack {
             }
         }
 
+        // Записываем в result
         int k = 0;
         for (int i = 0; i < 4; i++) {
             for (int j = 0; (j < priority[i].weight) && (0 < 60-k); j++, k++) {
                 result += (double) priority[i].cost /priority[i].weight;
             }
         }
-
-        //тут реализуйте алгоритм сбора рюкзака
-        //будет особенно хорошо, если с собственной сортировкой
-        //кроме того, можете описать свой компаратор в классе Item
-
-        //ваше решение.
-
 
         System.out.printf("Удалось собрать рюкзак на сумму %f\n", result);
         return result;
