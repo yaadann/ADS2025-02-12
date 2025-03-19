@@ -44,6 +44,32 @@ public class C_GreedyKnapsack {
         //итогом является максимально воможная стоимость вещей в рюкзаке
         //вещи можно резать на кусочки (непрерывный рюкзак)
         double result = 0;
+        Item firstItem = new Item(60, 20);
+        Item secondItem = new Item(100, 50);
+        Item thirdItem = new Item(120, 30);
+        Item fourthItem = new Item(100, 50);
+
+        Item[] priority = {firstItem, secondItem, thirdItem, fourthItem};
+        Item tempSwap;
+
+        for (int i = 0; i < priority.length-1; i++) {
+            for (int j = i+1; j < priority.length; j++) {
+                int res = priority[i].compareTo(priority[j]);
+                if (priority[i].compareTo(priority[j]) > priority[j].compareTo(priority[i])) {
+                    tempSwap = priority[i];
+                    priority[i] = priority[j];
+                    priority[j] = tempSwap;
+                }
+            }
+        }
+
+        int k = 0;
+        for (int i = 0; i < 4; i++) {
+            for (int j = 0; (j < priority[i].weight) && (0 < 60-k); j++, k++) {
+                result += (double) priority[i].cost /priority[i].weight;
+            }
+        }
+
         //тут реализуйте алгоритм сбора рюкзака
         //будет особенно хорошо, если с собственной сортировкой
         //кроме того, можете описать свой компаратор в классе Item
@@ -75,9 +101,7 @@ public class C_GreedyKnapsack {
         @Override
         public int compareTo(Item o) {
             //тут может быть ваш компаратор
-
-
-            return 0;
+            return o.cost / o.weight;
         }
     }
 }
