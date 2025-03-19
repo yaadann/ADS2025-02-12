@@ -48,8 +48,43 @@ public class C_GreedyKnapsack {
         //будет особенно хорошо, если с собственной сортировкой
         //кроме того, можете описать свой компаратор в классе Item
 
-        //ваше решение.
+        Item temp;
+        /*for (int i = 0; i < items.length; i++) {
+            for (int j = 0; j < items.length - 1 - i; j++) {
+                if (items[j].cost < items[j + 1].cost) {
+                    temp = items[j];
+                    items[j] = items[j + 1];
+                    items[j + 1] = temp;
+                }
+            }
+        }*/
 
+        for (int i = 0; i < items.length; i++) {
+            for (int j = 0; j < items.length - 1 - i; j++) {
+                double ratioJ = (double) items[j].cost / items[j].weight;
+                double ratioJ1 = (double) items[j + 1].cost / items[j + 1].weight;
+                if (ratioJ < ratioJ1) {
+                    temp = items[j];
+                    items[j] = items[j + 1];
+                    items[j + 1] = temp;
+                }
+            }
+        }
+
+        for (Item item : items) {
+            System.out.println(item);
+        }
+
+        double w = W;
+        for (int i = 0; i < items.length; i++)
+            if (w >= items[i].weight) {
+                result += items[i].cost;
+                w = w - items[i].weight;
+            }
+        else{
+                result += items[i].cost * (w / items[i].weight);
+        break;
+        }
 
         System.out.printf("Удалось собрать рюкзак на сумму %f\n", result);
         return result;
