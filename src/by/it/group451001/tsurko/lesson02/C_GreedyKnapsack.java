@@ -20,8 +20,8 @@ import java.util.Scanner;
 public class C_GreedyKnapsack {
     public static void main(String[] args) throws FileNotFoundException {
         long startTime = System.currentTimeMillis();
-        InputStream inputStream = C_GreedyKnapsack.class.getResourceAsStream("greedyKnapsack.txt");
-        double costFinal = new C_GreedyKnapsack().calc(inputStream);
+        InputStream inputStream = by.it.group451001.tsurko.lesson02.C_GreedyKnapsack.class.getResourceAsStream("greedyKnapsack.txt");
+        double costFinal = new by.it.group451001.tsurko.lesson02.C_GreedyKnapsack().calc(inputStream);
         long finishTime = System.currentTimeMillis();
         System.out.printf("Общая стоимость %f (время %d)", costFinal, finishTime - startTime);
     }
@@ -30,12 +30,12 @@ public class C_GreedyKnapsack {
         Scanner input = new Scanner(inputStream);
         int n = input.nextInt();      //сколько предметов в файле
         int W = input.nextInt();      //какой вес у рюкзака
-        Item[] items = new Item[n];   //получим список предметов
+        by.it.group451001.tsurko.lesson02.C_GreedyKnapsack.Item[] items = new by.it.group451001.tsurko.lesson02.C_GreedyKnapsack.Item[n];   //получим список предметов
         for (int i = 0; i < n; i++) { //создавая каждый конструктором
-            items[i] = new Item(input.nextInt(), input.nextInt());
+            items[i] = new by.it.group451001.tsurko.lesson02.C_GreedyKnapsack.Item(input.nextInt(), input.nextInt());
         }
         //покажем предметы
-        for (Item item : items) {
+        for (by.it.group451001.tsurko.lesson02.C_GreedyKnapsack.Item item : items) {
             System.out.println(item);
         }
         System.out.printf("Всего предметов: %d. Рюкзак вмещает %d кг.\n", n, W);
@@ -48,14 +48,32 @@ public class C_GreedyKnapsack {
         //будет особенно хорошо, если с собственной сортировкой
         //кроме того, можете описать свой компаратор в классе Item
 
-        //ваше решение.
+        int i,j;
+        for (i=0;i<n;i++){
+            for (j=0;j<n-1;j++){
+                int f=items[j].compareTo(items[j+1]);
+                by.it.group451001.tsurko.lesson02.C_GreedyKnapsack.Item c;
+                if (f==0){
+                    c = items[j];
+                    items[j] = items[j+1];
+                    items[j+1] = c;
+                }
+            }
+        }
 
+        for (i=0;i<n && W>0;i++){
+            int wes = Math.min(W,items[i].weight);
+            W -= wes;
+            result += items[i].cost*wes/items[i].weight;
+        }
+
+        //ваше решение.
 
         System.out.printf("Удалось собрать рюкзак на сумму %f\n", result);
         return result;
     }
 
-    private static class Item implements Comparable<Item> {
+    private static class Item implements Comparable<by.it.group451001.tsurko.lesson02.C_GreedyKnapsack.Item> {
         int cost;
         int weight;
 
@@ -67,16 +85,18 @@ public class C_GreedyKnapsack {
         @Override
         public String toString() {
             return "Item{" +
-                   "cost=" + cost +
-                   ", weight=" + weight +
-                   '}';
+                    "cost=" + cost +
+                    ", weight=" + weight +
+                    '}';
         }
 
         @Override
-        public int compareTo(Item o) {
+        public int compareTo(by.it.group451001.tsurko.lesson02.C_GreedyKnapsack.Item o) {
             //тут может быть ваш компаратор
-
-
+            float cost1=this.cost, weight1=this.weight;
+            float cost2=o.cost, weight2=o.weight;
+            if ((cost1/weight1)>(cost2/weight2))
+                return 1;
             return 0;
         }
     }
