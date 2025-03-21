@@ -1,8 +1,8 @@
 package by.it.group451003.kharkevich.lesson01.lesson02.lesson02;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Arrays;
+import java.util.List;
 /*
 Даны события events
 реализуйте метод calcStartTimes, так, чтобы число включений регистратора на
@@ -38,16 +38,12 @@ public class A_VideoRegistrator {
         //вычислим момент окончания работы видеокамеры
         //и теперь пропустим все покрываемые события
         //за время до конца работы, увеличивая индекс
-        double endTime;
         Arrays.sort(events);
-        result.add(events[i]);
-        endTime = events[i] + workDuration;
-        for (i = 1; i < events.length; i++) {
-            if (events[i] > endTime) {
+        result.add(events[0]);
+        for (i = 1; i < events.length; i++)
+            if (events[i] > result.get(result.size() - 1) + 1)
                 result.add(events[i]);
-                endTime = events[i] + workDuration;
-            }
-        }
+
 
         return result;                        //вернем итог
     }

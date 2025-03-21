@@ -2,9 +2,8 @@ package by.it.group451003.kharkevich.lesson01.lesson02.lesson02;
 
 import org.junit.Test;
 
-import java.io.InputStream;
-import java.util.List;
 import java.io.File;
+import java.util.List;
 
 import static org.junit.Assert.assertTrue;
 
@@ -45,7 +44,7 @@ public class Lesson02Test {
     }
 
     @Test(timeout = 2000)
-    public void C_GreedyKnapsack() throws Exception {
+    public void checkC_greedyKnapsack() throws Exception {
         String root=System.getProperty("user.dir")+"/src/";
         File file=new File(root+"by/it/a_khmelev/lesson02/greedyKnapsack.txt");
         double costFinal=new C_GreedyKnapsack().calc(file);

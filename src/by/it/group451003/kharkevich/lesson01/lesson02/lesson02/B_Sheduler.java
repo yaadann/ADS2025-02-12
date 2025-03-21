@@ -1,6 +1,7 @@
 package by.it.group451003.kharkevich.lesson01.lesson02.lesson02;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 /*
 Даны интервальные события events
@@ -23,7 +24,33 @@ public class B_Sheduler {
         List<Event> starts = instance.calcStartTimes(events, 0, 10);  //рассчитаем оптимальное заполнение аудитории
         System.out.println(starts);                                 //покажем рассчитанный график занятий
     }
-
+    private static int partition(Event[] arr, int low, int high) {
+        int middle = low + (high - low) / 2;
+        Event pivot = arr[middle];
+        Event temp = arr[middle];
+        arr[middle] = arr[high];
+        arr[high] = temp;
+        int i = (low - 1);
+        for (int j = low; j < high; j++) {
+            if (arr[j].start < pivot.start || arr[j].start == pivot.start && arr[j].stop < pivot.stop) {
+                i++;
+                temp = arr[i];
+                arr[i] = arr[j];
+                arr[j] = temp;
+            }
+        }
+        temp = arr[i + 1];
+        arr[i + 1] = arr[high];
+        arr[high] = temp;
+        return i + 1;
+    }
+    static void quickSort(Event[] arr, int low, int high) {
+        if (low < high) {
+            int pi = partition(arr, low, high);
+            quickSort(arr, low, pi - 1);
+            quickSort(arr, pi + 1, high);
+        }
+    }
     List<Event> calcStartTimes(Event[] events, int from, int to) {
         //Events - события которые нужно распределить в аудитории
         //в период [from, int] (включительно).
@@ -32,29 +59,13 @@ public class B_Sheduler {
         List<Event> result;
         result = new ArrayList<>();
         //ваше решение.
-        int i;
-        int ind;
-        Event tempEvent;
-        for (i = 1; i < events.length; i++) {
-            ind = i;
-            while (ind > 0) {
-                if ((events[ind - 1].start > events[ind].start) || ((events[ind - 1].start == events[ind].start)
-                        && (events[ind - 1].stop > events[ind].stop))) {
-                    tempEvent = events[ind - 1];
-                    events[ind - 1] = events[ind];
-                    events[ind] = tempEvent;
-                }
-                ind--;
-            }
-        }
+        quickSort(events, 0, events.length - 1);
         result.add(events[0]);
-        tempEvent = events[0];
-        for (i = 1; i < events.length; i++) {
-            if (events[i].start >= tempEvent.stop) {
+        for (int i = 1; i < events.length; i++)
+            if (result.get(result.size() - 1).stop <= events[i].start )
                 result.add(events[i]);
-                tempEvent = events[i];
-            }
-        }
+
+
         return result;          //вернем итог
     }
 
