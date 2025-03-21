@@ -100,8 +100,10 @@ public class C_GreedyKnapsack {
         @Override
         public int compareTo(Item o) {
             //тут может быть ваш компаратор
-            if ((o.cost / o.weight) >= (this.cost / this.weight))
+            if ((o.cost / o.weight) > (this.cost / this.weight))
                 return 1;
+            else if ((o.cost / o.weight) == (this.cost / this.weight))
+                return 0;
             else
                 return -1;
         }
