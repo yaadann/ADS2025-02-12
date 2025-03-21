@@ -26,6 +26,21 @@ public class C_GreedyKnapsack {
         System.out.printf("Общая стоимость %f (время %d)", costFinal, finishTime - startTime);
     }
 
+    Item[] sortItems(Item[] items) {
+        int n = items.length;
+        for (int i = 1; i < n; ++i) {
+            Item k = items[i];
+            int j = i - 1;
+
+            while (j >= 0 && (items[j].compareTo(k) > 0)) {
+                items[j + 1] = items[j];
+                j = j - 1;
+            }
+            items[j + 1] = k;
+        }
+        return items;
+    }
+
     double calc(InputStream inputStream) throws FileNotFoundException {
         Scanner input = new Scanner(inputStream);
         int n = input.nextInt();      //сколько предметов в файле
@@ -41,7 +56,7 @@ public class C_GreedyKnapsack {
         System.out.printf("Всего предметов: %d. Рюкзак вмещает %d кг.\n", n, W);
 
         //тут необходимо реализовать решение задачи
-        //итогом является максимально воможная стоимость вещей в рюкзаке
+        //итогом является максимально возможная стоимость вещей в рюкзаке
         //вещи можно резать на кусочки (непрерывный рюкзак)
         double result = 0;
         //тут реализуйте алгоритм сбора рюкзака
@@ -49,7 +64,18 @@ public class C_GreedyKnapsack {
         //кроме того, можете описать свой компаратор в классе Item
 
         //ваше решение.
-
+        sortItems(items);
+        int i = 0;
+        while (true) {
+            if (items[i].weight > W) {
+                result += items[i].cost * ((double) W / items[i].weight);
+                break;
+            } else {
+                result += items[i].cost;
+                W -= items[i].weight;
+            }
+            i++;
+        }
 
         System.out.printf("Удалось собрать рюкзак на сумму %f\n", result);
         return result;
@@ -75,9 +101,10 @@ public class C_GreedyKnapsack {
         @Override
         public int compareTo(Item o) {
             //тут может быть ваш компаратор
-
-
-            return 0;
+            if ((o.cost / o.weight) >= (this.cost / this.weight))
+                return 1;
+            else
+                return 0;
         }
     }
 }
