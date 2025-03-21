@@ -26,7 +26,7 @@ public class C_GreedyKnapsack {
         System.out.printf("Общая стоимость %f (время %d)", costFinal, finishTime - startTime);
     }
 
-    Item[] sortItems(Item[] items) {
+    void sortItems(Item[] items) {
         int n = items.length;
         for (int i = 1; i < n; ++i) {
             Item k = items[i];
@@ -38,7 +38,6 @@ public class C_GreedyKnapsack {
             }
             items[j + 1] = k;
         }
-        return items;
     }
 
     double calc(InputStream inputStream) throws FileNotFoundException {
@@ -104,7 +103,7 @@ public class C_GreedyKnapsack {
             if ((o.cost / o.weight) >= (this.cost / this.weight))
                 return 1;
             else
-                return 0;
+                return -1;
         }
     }
 }

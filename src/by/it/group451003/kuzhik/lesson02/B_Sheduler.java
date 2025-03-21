@@ -24,7 +24,7 @@ public class B_Sheduler {
         System.out.println(starts);                                 //покажем рассчитанный график занятий
     }
 
-    Event[] sortList(Event[] list) {
+    void sortList(Event[] list) {
         int n = list.length;
         for (int i = 1; i < n; ++i) {
             Event k = list[i];
@@ -36,7 +36,6 @@ public class B_Sheduler {
             }
             list[j + 1] = k;
         }
-        return list;
     }
 
     List<Event> calcStartTimes(Event[] events, int from, int to) {
