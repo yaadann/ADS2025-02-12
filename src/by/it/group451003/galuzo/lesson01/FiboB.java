@@ -30,10 +30,10 @@ public class FiboB {
         ArrFib[0] = BigInteger.ONE;
         int i = 2;
         while (i < n) {
-            ArrFib[i] = ArrFib[i - 1].add(ArrFib[i - 2]);
+            ArrFib[i] = ArrFib[i - 2].add(ArrFib[i - 1]);
             i++;
         }
-        return BigInteger.ONE;
+        return ArrFib[n - 1];
     }
 
 }
