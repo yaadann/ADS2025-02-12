@@ -1,6 +1,9 @@
 package by.it.group410902.dziatko.lesson02;
 
+import javax.swing.*;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
 /*
 Даны интервальные события events
@@ -31,10 +34,21 @@ public class B_Sheduler {
         //Начало и конец событий могут совпадать.
         List<Event> result;
         result = new ArrayList<>();
+        int i = 0;
         //ваше решение.
+        Arrays.sort(events, Comparator.comparingInt(event -> event.stop));
 
+        int lastEndTime = 0;
 
-        return result;          //вернем итог
+        for (Event event : events) {
+            if (event.start >= lastEndTime) {
+                result.addLast(event);
+                lastEndTime = event.stop;
+            }
+        }
+
+        return result;
+        //вернем итог
     }
 
     //событие у аудитории(два поля: начало и конец)
