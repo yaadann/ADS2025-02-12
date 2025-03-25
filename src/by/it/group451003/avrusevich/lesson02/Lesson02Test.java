@@ -27,6 +27,7 @@ public class Lesson02Test {
         assertTrue("slowA failed", ok);
     }
 
+
     @Test(timeout = 2000)
     public void checkB_sheduler() {
         B_Sheduler instance = new B_Sheduler();
