@@ -44,6 +44,7 @@ public class Lesson02Test {
         assertTrue("B_Sheduler failed", ok);
     }
 
+
     @Test(timeout = 2000)
     public void checkC_greedyKnapsack() throws Exception {
         InputStream inputStream = C_GreedyKnapsack.class.getResourceAsStream("greedyKnapsack.txt");
