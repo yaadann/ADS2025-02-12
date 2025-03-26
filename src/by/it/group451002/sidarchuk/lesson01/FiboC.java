@@ -22,8 +22,7 @@ public class FiboC {
     }
 
     long fasterC(long n, int m) {
-        //Интуитивно найти решение не всегда просто и
-        //возможно потребуется дополнительный поиск информации
+        //Интуитивно найти решение не всегда просто и возможно потребуется дополнительный поиск информации
         long pisanoPeriod = pisanoPeriod(m);
         n = n % pisanoPeriod;
         return fibonacciMod(n, m);

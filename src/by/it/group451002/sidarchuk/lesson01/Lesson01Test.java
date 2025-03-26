@@ -33,7 +33,6 @@ public class Lesson01Test {
         assertTrue("fastB failed", ok);
     }
 
-
     @Test(timeout = 2000)
     public void checkC_faster() throws Exception {
         FiboC fibo = new FiboC();
