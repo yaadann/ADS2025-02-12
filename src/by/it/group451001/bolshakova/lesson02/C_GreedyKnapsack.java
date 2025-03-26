@@ -42,6 +42,7 @@ public class C_GreedyKnapsack {
         System.out.printf("Всего предметов: %d. Рюкзак вмещает %d кг.\n", n, W);
         Arrays.sort(items);
 
+
         double result = 0.0;
         int currentWeight = 0;
 
