@@ -1,4 +1,4 @@
-package by.it.group451002.gorbach.lesson01;
+package by.it.group451002.hodysh.lesson01;
 
 import org.junit.Test;
 
@@ -11,11 +11,10 @@ public class Lesson01Test {
     /*
     для прохождения тестов создайте JUnit-конфигурацию на свой пакет:
     Поля:
-    Name:               Test a_khmelev (тут ваша фамилия)
+    Name:               Test hodysh
     Test kind:          All in package
-    Package:            by.it.группа.a_khmelev (тут ваша фамилия)
+    Package:            by.it.group451002.hodysh
     Search for test:    In whole project
-
     */
 
     @Test(timeout = 2000)
@@ -43,3 +42,4 @@ public class Lesson01Test {
         assertTrue("fasterC failed 3", fibo.fasterC(999999999, 321) == 34L);
     }
 }
+
