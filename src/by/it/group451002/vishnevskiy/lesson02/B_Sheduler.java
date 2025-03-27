@@ -28,18 +28,24 @@ public class B_Sheduler {
         //Начало и конец событий могут совпадать.
         List<Event> result;
         result = new ArrayList<>();
-        //ваше решение.
+        //ваше решение.----------------------------------------------------------------------------------------
         Arrays.sort(events);
         Event buffer = events[0];
-        for (Event event : events) {
+        for (Event event : events) { //*Проверка, начало с from, конец в to,
+                                     //*Если список результата пуст, всегда добавляем первое событие.
+               //*Проверяет, чтобы текущее событие начиналось после завершения предыдущего (buffer.stop).
             if (event.start != from && event.stop < to && (result.isEmpty() || (buffer.stop - event.start) <= 0)) {
+
+                //*Если все условия выполнены, событие добавляется в расписание:
                 result.add(buffer);
                 buffer = event;
                 from = event.start;
             }
+              //*Если текущее событие заканчивается раньше, чем событие в buffer, заменяем buffer на текущее событие.
             if (event.stop < buffer.stop)
                 buffer = event;
         }
+        //*После завершения цикла последнее обработанное событие (buffer) добавляется в результат.
         result.add(buffer);
         return result;          //вернем итог
     }
