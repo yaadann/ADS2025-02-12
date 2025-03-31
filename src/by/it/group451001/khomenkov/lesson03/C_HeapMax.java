@@ -70,6 +70,7 @@ public class C_HeapMax {
 
     private class MaxHeap {
         //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! НАЧАЛО ЗАДАЧИ !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!1
+
         private List<Long> heap = new ArrayList<>();
 
         private int siftDown(int i) {

@@ -62,6 +62,7 @@ public class B_Huffman {
         Node root = new Node();
 
         // Построение дерева Хаффмана на основе кодов символов
+
         for (int i = 0; i < count; i++) {
             String[] parts = scanner.nextLine().split(": ");
             char ch = parts[0].charAt(0);
