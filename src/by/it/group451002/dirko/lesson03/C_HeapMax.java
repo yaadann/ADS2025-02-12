@@ -106,20 +106,12 @@ public class C_HeapMax {
 
         // Процедура для вставки числа по его приоритету (значению)
         void insert(Long value) {
-            // Если список пустой, то добавляем новое значение и ничего более
-            if (heap.isEmpty()) {
-                heap.add(value);
-            }
-            else {
-                // Если добавляемый элемент больше верхушки дерева, то меняем их местами
-                if (value > heap.getFirst()){
-                    heap.add(value);
-                    Collections.swap(heap, 0, heap.indexOf(heap.getLast()));
-                }
-                // Добавляем элемент и просеиваем вверх
-                heap.add(value);
-                siftUp(heap.indexOf(heap.getLast()));
-            }
+            // Добавляем новое значение
+            heap.add(value);
+
+            // Если длина списка больше одного элемента, то просеиваем вверх
+            if (heap.size() > 1)
+                siftUp(heap.size() - 1);
         }
 
         // Функция для удаления и извлечения максимума
@@ -133,7 +125,7 @@ public class C_HeapMax {
             result = heap.getFirst();
 
             // Меняем минимальный и максимальный элементы местами и удаляем максимальный элемент
-            Collections.swap(heap, 0, heap.indexOf(heap.getLast()));
+            Collections.swap(heap, 0, heap.size() - 1);
             heap.removeLast();
 
             // Просеиваем вниз
