@@ -2,6 +2,8 @@ package by.it.group410901.volkov.lesson02;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Arrays;
+import java.util.Comparator;
 /*
 Даны интервальные события events
 реализуйте метод calcStartTimes, так, чтобы число принятых к выполнению
@@ -29,10 +31,19 @@ public class B_Sheduler {
         //в период [from, int] (включительно).
         //оптимизация проводится по наибольшему числу непересекающихся событий.
         //Начало и конец событий могут совпадать.
-        List<Event> result;
-        result = new ArrayList<>();
-        //ваше решение.
+        List<Event> result = new ArrayList<>();
 
+        // 1. Сортируем события по времени окончания
+        Arrays.sort(events, Comparator.comparingInt(e -> e.stop));
+
+        // 2. Проходим по всем событиям и выбираем непересекающиеся
+        int lastEventEnd = from; // Время окончания последнего выбранного события
+        for (Event event : events) {
+            if (event.start >= lastEventEnd && event.stop <= to) {
+                result.add(event);
+                lastEventEnd = event.stop;
+            }
+        }
 
         return result;          //вернем итог
     }
