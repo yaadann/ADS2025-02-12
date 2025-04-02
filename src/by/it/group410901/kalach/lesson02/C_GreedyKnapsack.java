@@ -16,6 +16,7 @@ package by.it.group410901.kalach.lesson02;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.util.Scanner;
+import java.util.Arrays;
 
 public class C_GreedyKnapsack {
     public static void main(String[] args) throws FileNotFoundException {
@@ -39,6 +40,7 @@ public class C_GreedyKnapsack {
             System.out.println(item);
         }
         System.out.printf("Всего предметов: %d. Рюкзак вмещает %d кг.\n", n, W);
+        Arrays.sort(items, (a, b) -> Double.compare(b.cost / (double) b.weight, a.cost / (double) a.weight));
 
         //тут необходимо реализовать решение задачи
         //итогом является максимально воможная стоимость вещей в рюкзаке
@@ -47,7 +49,12 @@ public class C_GreedyKnapsack {
         //тут реализуйте алгоритм сбора рюкзака
         //будет особенно хорошо, если с собственной сортировкой
         //кроме того, можете описать свой компаратор в классе Item
-
+        for (Item item : items) {
+            if (W == 0) break;
+            int takeWeight = Math.min(W, item.weight);
+            result += (double) takeWeight * (item.cost / (double) item.weight);
+            W -= takeWeight;
+        }
         //ваше решение.
 
 
