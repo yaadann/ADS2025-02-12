@@ -4,6 +4,7 @@ package by.it.group410901.volkov.lesson02;
 1) объем рюкзака 4
 2) число возможных предметов 60
 3) сам набор предметов
+    60  20
     100 50
     120 30
     100 50
@@ -39,21 +40,53 @@ public class C_GreedyKnapsack {
             System.out.println(item);
         }
         System.out.printf("Всего предметов: %d. Рюкзак вмещает %d кг.\n", n, W);
+        // Сортируем предметы (по убыванию удельной стоимости)
+        sortItems(items);
 
-        //тут необходимо реализовать решение задачи
-        //итогом является максимально воможная стоимость вещей в рюкзаке
-        //вещи можно резать на кусочки (непрерывный рюкзак)
+        // Выводим отсортированные предметы
+        System.out.println("\nОтсортированные предметы:");
+        for (Item item : items) {
+            System.out.println(item);
+        }
+
         double result = 0;
-        //тут реализуйте алгоритм сбора рюкзака
-        //будет особенно хорошо, если с собственной сортировкой
-        //кроме того, можете описать свой компаратор в классе Item
+        int remainingWeight = W;
 
-        //ваше решение.
+        for (Item item : items) {
+            if (remainingWeight <= 0) break;
 
+            if (item.weight <= remainingWeight) {
+                // Берем предмет целиком
+                result += item.cost;
+                remainingWeight -= item.weight;
+                System.out.printf("Взяли целиком: %s. Осталось места: %d\n",
+                        item, remainingWeight);
+            } else {
+                // Берем часть предмета
+                double fraction = (double) remainingWeight / item.weight;
+                result += item.cost * fraction;
+                System.out.printf("Взяли часть (%.2f) от %s. Сумма: %.2f\n",
+                        fraction, item, item.cost * fraction);
+                remainingWeight = 0;
+            }
+        }
 
-        System.out.printf("Удалось собрать рюкзак на сумму %f\n", result);
+        System.out.printf("\nИтоговая стоимость: %.2f\n", result);
         return result;
     }
+
+// Сортировка пузырьком
+private void sortItems(Item[] items) {
+    for (int i = 0; i < items.length - 1; i++) {
+        for (int j = 0; j < items.length - i - 1; j++) {
+            if (items[j].compareTo(items[j + 1]) > 0) {
+                Item temp = items[j];
+                items[j] = items[j + 1];
+                items[j + 1] = temp;
+            }
+        }
+    }
+}
 
     private static class Item implements Comparable<Item> {
         int cost;
@@ -64,20 +97,24 @@ public class C_GreedyKnapsack {
             this.weight = weight;
         }
 
+        double getValuePerUnit() {
+            return (double) cost / weight;
+        }
+
+
+
         @Override
         public String toString() {
             return "Item{" +
                    "cost=" + cost +
                    ", weight=" + weight +
+                    ", value/kg=" + getValuePerUnit() +
                    '}';
         }
 
         @Override
-        public int compareTo(Item o) {
-            //тут может быть ваш компаратор
-
-
-            return 0;
+        public int compareTo(Item other) {
+            return Double.compare(other.getValuePerUnit(), this.getValuePerUnit());
         }
     }
 }
