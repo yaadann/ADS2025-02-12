@@ -57,7 +57,8 @@ public class A_Huffman {
     }
 
     //!!!!!!!!!!!!!!!!!!!!!!!!!     НАЧАЛО ЗАДАЧИ     !!!!!!!!!!!!!!!!!!!!!!!!!
-    String encode(InputStream inputStream) throws FileNotFoundException {
+    String encode(InputStream inputStream) throws FileNotFoundException
+    {
 
         //прочитаем строку для кодирования из тестового файла
         Scanner scanner = new Scanner(inputStream);
