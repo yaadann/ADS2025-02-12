@@ -66,7 +66,6 @@ public class B_Huffman {
         }
         String string = scanner.next();
         StringBuilder code = new StringBuilder();
-        char letter;
         int i = 0;
         while (i<string.length()) {
             code.setLength(0);
