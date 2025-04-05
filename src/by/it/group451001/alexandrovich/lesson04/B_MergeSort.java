@@ -42,8 +42,9 @@ public class B_MergeSort {
         int[] a = new int[n];
         for (int i = 0; i < n; i++) {
             a[i] = scanner.nextInt();
-            System.out.println(a[i]);
+            System.out.print(a[i] + " ");
         }
+        System.out.println();
         mergeSort(a,0,n-1);
 
 
@@ -72,6 +73,16 @@ public class B_MergeSort {
                     j++;
                     k++;
                 }
+            }
+            while (i<=m){
+                a[k]=L[i];
+                i++;
+                k++;
+            }
+            while (j<=r){
+                a[k]=R[j];
+                j++;
+                k++;
             }
             return a;
         }
