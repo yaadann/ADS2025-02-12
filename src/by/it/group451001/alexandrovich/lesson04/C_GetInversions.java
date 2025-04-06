@@ -33,7 +33,7 @@ Sample Output:
 
 
 public class C_GetInversions {
-
+    int count = 0;
     public static void main(String[] args) throws FileNotFoundException {
         InputStream stream = C_GetInversions.class.getResourceAsStream("dataC.txt");
         C_GetInversions instance = new C_GetInversions();
@@ -54,12 +54,47 @@ public class C_GetInversions {
         for (int i = 0; i < n; i++) {
             a[i] = scanner.nextInt();
         }
-        int result = 0;
         //!!!!!!!!!!!!!!!!!!!!!!!!     тут ваше решение   !!!!!!!!!!!!!!!!!!!!!!!!
 
-
+        mergeSort(a, 0, n-1);
 
         //!!!!!!!!!!!!!!!!!!!!!!!!!     КОНЕЦ ЗАДАЧИ     !!!!!!!!!!!!!!!!!!!!!!!!!
-        return result;
+        return count;
+    }
+    int[] mergeSort(int[] a, int l, int r){
+        if (l < r){
+            int m = (l+r)/2;
+            int[] L = mergeSort(a,l,m).clone();
+            int[] R = mergeSort(a,m+1,r).clone();
+            int i = l;
+            int j = m+1;
+            int k = l;
+            while ((i<=m) && (j<=r)){
+                if (L[i]>R[j]){
+                    a[k]=R[j];
+                    j++;
+                    k++;
+                    count+=(m-i+1);
+                } else {
+                    a[k]=L[i];
+                    i++;
+                    k++;
+                }
+            }
+            while (i<=m){
+                a[k]=L[i];
+                i++;
+                k++;
+            }
+            while (j<=r){
+                a[k]=R[j];
+                j++;
+                k++;
+            }
+            return a;
+        }
+        else {
+            return a;
+        }
     }
 }
