@@ -31,18 +31,6 @@ public class B_MergeSort {
         }
     }
 
-    int[] Merge1(int[] a) {
-        int L = 0;
-        int R = a.length-1;
-
-        //void Merge2() {
-
-        //}
-
-
-        return a;
-    }
-
     int[] getMergeSort(InputStream stream) throws FileNotFoundException {
         //подготовка к чтению данных
         Scanner scanner = new Scanner(stream);
