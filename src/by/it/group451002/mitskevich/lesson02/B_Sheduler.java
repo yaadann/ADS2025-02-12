@@ -26,7 +26,7 @@ public class B_Sheduler { // Главный класс задачи
     List<Event> calcStartTimes(Event[] events, int from, int to) { // Метод для выбора максимального количества непересекающихся событий
         List<Event> result = new ArrayList<>(); // Список выбранных событий
 
-        Arrays.sort(events, Comparator.comparingInt(e -> e.stop)); // Сортируем события по времени окончания (жадная стратегия)
+        Arrays.sort(events, Comparator.comparingInt(e -> e.stop));
 
         int currentTime = from; // Устанавливаем текущее время в начало интервала
 
