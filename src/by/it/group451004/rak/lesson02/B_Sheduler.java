@@ -2,12 +2,6 @@ package by.it.group451004.rak.lesson02;
 
 import java.util.ArrayList;
 import java.util.List;
-/*
-Даны интервальные события events
-реализуйте метод calcStartTimes, так, чтобы число принятых к выполнению
-непересекающихся событий было максимально.
-Алгоритм жадный. Для реализации обдумайте надежный шаг.
-*/
 
 public class B_Sheduler {
     public static void main(String[] args) {
@@ -25,19 +19,33 @@ public class B_Sheduler {
     }
 
     List<Event> calcStartTimes(Event[] events, int from, int to) {
-        //Events - события которые нужно распределить в аудитории
-        //в период [from, int] (включительно).
-        //оптимизация проводится по наибольшему числу непересекающихся событий.
-        //Начало и конец событий могут совпадать.
         List<Event> result;
         result = new ArrayList<>();
-        //ваше решение.
-
-
-        return result;          //вернем итог
+        int start = from;
+        int optimalEnd;
+        int optimalStart;
+        int optimalIndex = 0;
+        boolean isFound;
+        do {
+            optimalEnd = to;
+            optimalStart = to;
+            isFound = false;
+            for (int i = 0; i < events.length; i++) {
+                if (events[i].stop <= optimalEnd && events[i].start >= start && events[i].start <= optimalStart) {
+                    optimalEnd = events[i].stop;
+                    optimalStart = events[i].start;
+                    optimalIndex = i;
+                    isFound = true;
+                }
+            }
+            if (isFound) {
+                result.add(events[optimalIndex]);
+                start = events[optimalIndex].stop;
+            }
+        } while (isFound);
+        return result;
     }
 
-    //событие у аудитории(два поля: начало и конец)
     static class Event {
         int start;
         int stop;

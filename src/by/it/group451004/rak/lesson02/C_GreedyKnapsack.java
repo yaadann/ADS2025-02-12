@@ -10,7 +10,7 @@ package by.it.group451004.rak.lesson02;
 Все это указано в файле (by/it/a_khmelev/lesson02/greedyKnapsack.txt)
 
 Необходимо собрать наиболее дорогой вариант рюкзака для этого объема
-Предметы можно резать на кусочки (т.е. алгоритм будет жадным)
+Предметы можно резать на кусочки (т.е. Алгоритм будет жадным)
  */
 
 import java.io.FileNotFoundException;
@@ -75,7 +75,6 @@ public class C_GreedyKnapsack {
         @Override
         public int compareTo(Item o) {
             //тут может быть ваш компаратор
-
 
             return 0;
         }
