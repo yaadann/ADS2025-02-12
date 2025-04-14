@@ -58,23 +58,23 @@ public class A_Huffman {
 
     //!!!!!!!!!!!!!!!!!!!!!!!!!     НАЧАЛО ЗАДАЧИ     !!!!!!!!!!!!!!!!!!!!!!!!!
     String encode(InputStream inputStream) throws FileNotFoundException {
-        // Read the input string
+        // читаем строку
         Scanner scanner = new Scanner(inputStream);
         String s = scanner.next();
 
-        // Step 1: Calculate the frequency of each character
+        // подсчитаем количество вхождений каждого символа
         Map<Character, Integer> count = new HashMap<>();
         for (char c : s.toCharArray()) {
             count.put(c, count.getOrDefault(c, 0) + 1);
         }
 
-        // Step 2: Create a priority queue and add all characters as leaf nodes
+        // Добавляем символы в приоритетную очередь, упорядочиваем элементы по частоте встречаемости
         PriorityQueue<Node> priorityQueue = new PriorityQueue<>();
         for (Map.Entry<Character, Integer> entry : count.entrySet()) {
             priorityQueue.add(new LeafNode(entry.getValue(), entry.getKey()));
         }
 
-        // Step 3: Build the Huffman tree
+        // Строим дерево Хаффмана
         while (priorityQueue.size() > 1) {
             Node left = priorityQueue.poll();
             Node right = priorityQueue.poll();
@@ -82,11 +82,11 @@ public class A_Huffman {
             priorityQueue.add(parent);
         }
 
-        // Step 4: Generate the codes by traversing the Huffman tree
+        // Обходим дерево и назначаем каждому символу код
         Node root = priorityQueue.poll();
         root.fillCodes("");
 
-        // Step 5: Encode the input string using the generated codes
+        // заменяем символы строки на их коды
         StringBuilder sb = new StringBuilder();
         for (char c : s.toCharArray()) {
             sb.append(codes.get(c));
