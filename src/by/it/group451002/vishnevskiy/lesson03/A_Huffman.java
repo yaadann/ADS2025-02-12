@@ -57,7 +57,7 @@ public class A_Huffman {
         System.out.println(result);
     }
 
-    //!!!!!!!!!!!!!!!!!!!!!!!!!     НАЧАЛО ЗАДАЧИ     !!!!!!!!!!!!!!!!!!!!!!!!!
+    //!!!!!!!!!!!!!!!!!!!!!!!!!!     НАЧАЛО ЗАДАЧИ     !!!!!!!!!!!!!!!!!!!!!!!!!
     String encode(InputStream inputStream) throws FileNotFoundException {
         Scanner scanner = new Scanner(inputStream);
         String s = scanner.next();
