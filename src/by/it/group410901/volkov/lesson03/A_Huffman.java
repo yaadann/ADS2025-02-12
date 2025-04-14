@@ -68,19 +68,44 @@ public class A_Huffman {
         Map<Character, Integer> count = new HashMap<>();
         //1. переберем все символы по очереди и рассчитаем их частоту в Map count
         //для каждого символа добавим 1 если его в карте еще нет или инкремент если есть.
-
+        for (int i = 0; i < s.length(); i++) {
+            char c = s.charAt(i);
+            // Увеличиваем счетчик для текущего символа
+            count.put(c, count.getOrDefault(c, 0) + 1);
+        }
         //2. перенесем все символы в приоритетную очередь в виде листьев
         PriorityQueue<Node> priorityQueue = new PriorityQueue<>();
-
+        // Создаем листовые узлы для каждого символа
+        for (Map.Entry<Character, Integer> entry : count.entrySet()) {
+            priorityQueue.add(new LeafNode(entry.getValue(), entry.getKey()));
+        }
         //3. вынимая по два узла из очереди (для сборки родителя)
         //и возвращая этого родителя обратно в очередь
         //построим дерево кодирования Хаффмана.
         //У родителя частоты детей складываются.
-
+        while (priorityQueue.size() > 1) {
+            // Извлекаем два узла с наименьшими частотами
+            Node left = priorityQueue.poll();
+            Node right = priorityQueue.poll();
+            // Создаем новый внутренний узел и добавляем его в очередь
+            priorityQueue.add(new InternalNode(left, right));
+        }
         //4. последний из родителей будет корнем этого дерева
         //это будет последний и единственный элемент оставшийся в очереди priorityQueue.
+        Node root = priorityQueue.poll();
+        if (count.size() == 1) {
+            // Особый случай: если символ всего один, его код будет "0"
+            root.fillCodes("0");
+        } else {
+            // Начинаем обход дерева с пустой строки
+            root.fillCodes("");
+        }
+
         StringBuilder sb = new StringBuilder();
-        //.....
+        for (int i = 0; i < s.length(); i++) {
+            // Заменяем каждый символ соответствующим кодом
+            sb.append(codes.get(s.charAt(i)));
+        }
 
         return sb.toString();
         //01001100100111

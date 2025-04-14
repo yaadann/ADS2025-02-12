@@ -3,6 +3,9 @@ package by.it.group410901.volkov.lesson03;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.util.Scanner;
+import java.util.HashMap;
+import java.util.Map;
+
 
 // Lesson 3. B_Huffman.
 // Восстановите строку по её коду и беспрефиксному коду символов.
@@ -57,7 +60,32 @@ public class B_Huffman {
         Integer length = scanner.nextInt();
         //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! НАЧАЛО ЗАДАЧИ !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!1
         //тут запишите ваше решение
+        scanner.nextLine(); // переход на следующую строку
 
+        // Создаем карту для хранения соответствия кодов символам
+        Map<String, Character> codeToChar = new HashMap<>();
+
+        // Читаем коды символов
+        for (int i = 0; i < count; i++) {
+            String line = scanner.nextLine().trim();
+            String[] parts = line.split(": ");
+            char letter = parts[0].charAt(0);
+            String code = parts[1];
+            codeToChar.put(code, letter);
+        }
+
+        // Читаем закодированную строку
+        String encodedString = scanner.nextLine();
+
+        // Декодируем строку
+        StringBuilder currentCode = new StringBuilder();
+        for (int i = 0; i < encodedString.length(); i++) {
+            currentCode.append(encodedString.charAt(i));
+            if (codeToChar.containsKey(currentCode.toString())) {
+                result.append(codeToChar.get(currentCode.toString()));
+                currentCode.setLength(0); // сбрасываем текущий код
+            }
+        }
 
         //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! КОНЕЦ ЗАДАЧИ !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!1
         return result.toString(); //01001100100111
