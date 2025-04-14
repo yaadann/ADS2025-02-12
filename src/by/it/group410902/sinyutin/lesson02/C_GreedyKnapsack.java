@@ -15,6 +15,7 @@ package by.it.group410902.sinyutin.lesson02;
 
 import java.io.FileNotFoundException;
 import java.io.InputStream;
+import java.util.Arrays; // для использования сортировки Arrays.sort
 import java.util.Scanner;
 
 public class C_GreedyKnapsack {
@@ -41,7 +42,7 @@ public class C_GreedyKnapsack {
         System.out.printf("Всего предметов: %d. Рюкзак вмещает %d кг.\n", n, W);
 
         //тут необходимо реализовать решение задачи
-        //итогом является максимально воможная стоимость вещей в рюкзаке
+        //итогом является максимально возможная стоимость вещей в рюкзаке
         //вещи можно резать на кусочки (непрерывный рюкзак)
         double result = 0;
         //тут реализуйте алгоритм сбора рюкзака
@@ -50,6 +51,25 @@ public class C_GreedyKnapsack {
 
         //ваше решение.
 
+        // Сортируем предметы по убыванию ценности (стоимость за единицу веса)
+        Arrays.sort(items);
+
+        int remainingWeight = W; // Оставшееся место в рюкзаке
+
+        // Жадно заполняем рюкзак
+        for (Item item : items) {
+            if (remainingWeight == 0) break; // Если рюкзак уже заполнен, выходим
+
+            if (item.weight <= remainingWeight) {
+                // Берем весь предмет
+                result += item.cost;
+                remainingWeight -= item.weight;
+            } else {
+                // Берем часть предмета
+                result += (double) item.cost * remainingWeight / item.weight;
+                remainingWeight = 0; // Рюкзак заполнен
+            }
+        }
 
         System.out.printf("Удалось собрать рюкзак на сумму %f\n", result);
         return result;
@@ -67,17 +87,15 @@ public class C_GreedyKnapsack {
         @Override
         public String toString() {
             return "Item{" +
-                   "cost=" + cost +
-                   ", weight=" + weight +
-                   '}';
+                    "cost=" + cost +
+                    ", weight=" + weight +
+                    '}';
         }
 
         @Override
         public int compareTo(Item o) {
-            //тут может быть ваш компаратор
-
-
-            return 0;
+            // Сортируем по убыванию удельной стоимости (стоимость за единицу веса)
+            return Double.compare((double) o.cost / o.weight, (double) this.cost / this.weight);
         }
     }
 }

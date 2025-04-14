@@ -21,12 +21,51 @@ public class FiboC {
         return System.currentTimeMillis() - startTime;
     }
 
-    long fasterC(long n, int m) {
-        //Интуитивно найти решение не всегда просто и
-        //возможно потребуется дополнительный поиск информации
-        return -1L;
+    public static long fasterC(long n, int m) {
+        // Находим период Пизано для m
+        int pisanoPeriod = getPisanoPeriod(m);
+
+        // Уменьшаем n по модулю периода Пизано
+        n = n % pisanoPeriod;
+
+        // Вычисляем остаток от числа Фибоначчи по модулю m
+        return calculateFibMod(n, m);
     }
 
+    // Метод для нахождения периода Пизано для числа m
+    private static int getPisanoPeriod(int m) {
+        int a = 0;
+        int b = 1;
+        for (int i = 0; i < m * m; i++) {
+            int temp = (a + b) % m;
+            a = b;
+            b = temp;
 
+            // Период начинается с 01
+            if (a == 0 && b == 1) {
+                return i + 1;
+            }
+        }
+        return 0;
+    }
+
+    // Метод для вычисления числа Фибоначчи по модулю m
+    private static long calculateFibMod(long n, int m) {
+        if (n <= 1) {
+            return n;
+        }
+
+        long a = 0;
+        long b = 1;
+
+        // Вычисляем число Фибоначчи по модулю m
+        for (long i = 2; i <= n; i++) {
+            long temp = (a + b) % m;
+            a = b;
+            b = temp;
+        }
+
+        return b;
+    }
 }
 

@@ -1,6 +1,7 @@
 package by.it.group410902.sinyutin.lesson02;
 
 import java.util.ArrayList;
+import java.util.Arrays; // используется для сортировки Arrays.sort
 import java.util.List;
 /*
 Даны интервальные события events
@@ -32,7 +33,23 @@ public class B_Sheduler {
         List<Event> result;
         result = new ArrayList<>();
         //ваше решение.
+        /*Надежный шаг в этом алгоритме - это выбор
+        события с наименьшим временем окончания,
+        которое не пересекается с уже выбранными.
+         */
+        // Сортируем события по времени окончания
+        Arrays.sort(events, (a, b) -> Integer.compare(a.stop, b.stop));
 
+        int currentTime = from;
+
+        // Проходим по отсортированным событиям
+        for (Event event : events) {
+            // Добавляем событие, если оно начинается после текущего времени
+            if (event.start >= currentTime && event.stop <= to) {
+                result.add(event);
+                currentTime = event.stop; // обновляем текущий момент времени
+            }
+        }
 
         return result;          //вернем итог
     }

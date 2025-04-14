@@ -74,23 +74,69 @@ public class C_HeapMax {
         //Будет мало? Ну тогда можете его собрать как Generic и/или использовать в варианте B
         private List<Long> heap = new ArrayList<>();
 
-        int siftDown(int i) { //просеивание вверх
+        //просеивание вверх
+        int siftDown(int i) {
+            int leftChild = 2 * i + 1;  //индекс левого ребенка
+            int rightChild = 2 * i + 2; //индекс правого ребенка
+            int largest = i;  //изначально максимальный элемент - это сам i
 
-            return i;
+            //сравниваем с левым ребенком
+            if (leftChild < heap.size() && heap.get(leftChild) > heap.get(largest)) {
+                largest = leftChild;
+            }
+
+            //сравниваем с правым ребенком
+            if (rightChild < heap.size() && heap.get(rightChild) > heap.get(largest)) {
+                largest = rightChild;
+            }
+
+            //если максимальный элемент - это сам i, то кучу не нужно восстанавливать
+            if (largest == i) return i;
+
+            //меняем местами текущий элемент с наибольшим
+            Long temp = heap.get(i);
+            heap.set(i, heap.get(largest));
+            heap.set(largest, temp);
+
+            //рекурсивно просеиваем вниз, начиная с нового индекса
+            return siftDown(largest);
         }
 
-        int siftUp(int i) { //просеивание вниз
-
-            return i;
+        //просеивание вниз
+        int siftUp(int i) {
+            while (i > 0) {
+                int parent = (i - 1) / 2;  //индекс родительского элемента
+                //если элемент на позиции i больше родителя, меняем их местами
+                if (heap.get(i) > heap.get(parent)) {
+                    Long temp = heap.get(i);
+                    heap.set(i, heap.get(parent));
+                    heap.set(parent, temp);
+                    i = parent;  //переходим к родительскому элементу
+                } else {
+                    break;  //если элемент на i не больше родителя, остановим
+                }
+            }
+            return i;  //возвращаем позицию элемента после "просеивания"
         }
 
-        void insert(Long value) { //вставка
+        //вставка нового элемента в кучу
+        void insert(Long value) {
+            heap.add(value);  //добавляем элемент в конец
+            siftUp(heap.size() - 1);  //просеиваем элемент вверх, начиная с конца
         }
 
-        Long extractMax() { //извлечение и удаление максимума
-            Long result = null;
+        //извлечение и удаление максимума
+        Long extractMax() {
+            if (heap.isEmpty()) return null;  //если куча пуста, возвращаем null
 
-            return result;
+            Long result = heap.get(0);  //максимум всегда на корне
+            Long lastElement = heap.remove(heap.size() - 1);  //удаляем последний элемент
+
+            if (!heap.isEmpty()) {
+                heap.set(0, lastElement);  //перемещаем последний элемент на корень
+                siftDown(0);  //просеиваем его вниз, чтобы восстановить структуру кучи
+            }
+            return result;  //возвращаем максимальное значение
         }
         //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! КОНЕЦ ЗАДАЧИ !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!1
     }
