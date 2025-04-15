@@ -54,11 +54,69 @@ public class C_GetInversions {
         for (int i = 0; i < n; i++) {
             a[i] = scanner.nextInt();
         }
-        int result = 0;
+        return countInversions(a);
+    }
+
+    private int countInversions(int[] array) {
+        if (array == null || array.length <= 1) {
+            return 0;
+        }
+        int[] temp = new int[array.length];
+        return mergeSortAndCount(array, temp, 0, array.length - 1);
+    }
+
+    private int mergeSortAndCount(int[] array, int[] temp, int left, int right) {
+        int inversionCount = 0;
+
+        if (left < right) {
+            int mid = left + (right - left) / 2;
+
+            // Count inversions in left subarray
+            inversionCount += mergeSortAndCount(array, temp, left, mid);
+
+            // Count inversions in right subarray
+            inversionCount += mergeSortAndCount(array, temp, mid + 1, right);
+
+            // Count inversions during merge
+            inversionCount += mergeAndCount(array, temp, left, mid, right);
+        }
+
+        return inversionCount;
+    }
+
+    private int mergeAndCount(int[] array, int[] temp, int left, int mid, int right) {
+        // Copy both halves to the temporary array
+        System.arraycopy(array, left, temp, left, right - left + 1);
+
+        int i = left;       // Index for left subarray
+        int j = mid + 1;    // Index for right subarray
+        int k = left;       // Index for merged array
+        int inversionCount = 0;
+
+        while (i <= mid && j <= right) {
+            if (temp[i] <= temp[j]) {
+                array[k++] = temp[i++];
+            } else {
+                array[k++] = temp[j++];
+                // All remaining elements in left subarray will be greater than current right element
+                inversionCount += (mid - i + 1);
+            }
+        }
+
+        // Copy remaining elements of left subarray
+        while (i <= mid) {
+            array[k++] = temp[i++];
+        }
+
+        // Copy remaining elements of right subarray
+        while (j <= right) {
+            array[k++] = temp[j++];
+        }
+
+        return inversionCount;
+    }
         //!!!!!!!!!!!!!!!!!!!!!!!!     тут ваше решение   !!!!!!!!!!!!!!!!!!!!!!!!
 
 
         //!!!!!!!!!!!!!!!!!!!!!!!!!     КОНЕЦ ЗАДАЧИ     !!!!!!!!!!!!!!!!!!!!!!!!!
-        return result;
-    }
 }

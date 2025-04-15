@@ -58,10 +58,29 @@ public class A_BinaryFind {
             //тут реализуйте бинарный поиск индекса
 
 
-            result[i] = 0;
+            result[i] = binarySearch(a, value) + 1; // +1 для перевода в 1-индексацию
         }
-        //!!!!!!!!!!!!!!!!!!!!!!!!!     КОНЕЦ ЗАДАЧИ     !!!!!!!!!!!!!!!!!!!!!!!!!
+
         return result;
     }
 
+    private int binarySearch(int[] a, int value) {
+        int left = 0;
+        int right = a.length - 1;
+
+        while (left <= right) {
+            int mid = left + (right - left) / 2;
+            if (a[mid] == value) {
+                return mid;
+            } else if (a[mid] < value) {
+                left = mid + 1;
+            } else {
+                right = mid - 1;
+            }
+        }
+
+        return -2; // Возвращаем -2, так как потом будет +1 (итого -1)
+    }
 }
+//!!!!!!!!!!!!!!!!!!!!!!!!!     КОНЕЦ ЗАДАЧИ     !!!!!!!!!!!!!!!!!!!!!!!!!
+
