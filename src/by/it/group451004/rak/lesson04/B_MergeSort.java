@@ -32,26 +32,50 @@ public class B_MergeSort {
     }
 
     int[] getMergeSort(InputStream stream) throws FileNotFoundException {
-        //подготовка к чтению данных
         Scanner scanner = new Scanner(stream);
-        //!!!!!!!!!!!!!!!!!!!!!!!!!     НАЧАЛО ЗАДАЧИ     !!!!!!!!!!!!!!!!!!!!!!!!!
-
-        //размер массива
         int n = scanner.nextInt();
-        //сам массив
         int[] a = new int[n];
         for (int i = 0; i < n; i++) {
             a[i] = scanner.nextInt();
             System.out.println(a[i]);
         }
-
-        // тут ваше решение (реализуйте сортировку слиянием)
-        // https://ru.wikipedia.org/wiki/Сортировка_слиянием
-
-
-        //!!!!!!!!!!!!!!!!!!!!!!!!!     КОНЕЦ ЗАДАЧИ     !!!!!!!!!!!!!!!!!!!!!!!!!
+        mergeSort(a, 0, n - 1);
         return a;
     }
 
+    void mergeSort(int[] a, int minA, int maxA) {
+        if (maxA - minA < 2) {
+            if (a[maxA] < a[minA]) {
+                int temp = a[minA];
+                a[minA] = a[maxA];
+                a[maxA] = temp;
+            }
+        } else {
+            int mid = (maxA + minA) / 2;
+            mergeSort(a, minA, mid);
+            mergeSort(a, mid + 1, maxA);
+            mergeSubarrays(a, minA, mid, maxA);
+        }
 
+    }
+
+    void mergeSubarrays(int[] source, int minA, int maxA, int maxB) {
+        int ai = minA;
+        int bi = maxA + 1;
+        int length = maxB - minA + 1;
+        int[] buf = new int[length];
+        for (int i = 0; i < length; i++) {
+            if ((bi > maxB) || (source[ai] < source[bi])) {
+                buf[i] = source[ai];
+                ai++;
+            } else {
+                buf[i] = source[bi];
+                bi++;
+            }
+        }
+        System.arraycopy(buf, 0, source, minA, length);
+//        for (int i = 0; i < length; i++) {
+//            source[minA + i] = buf[i];
+//        }
+    }
 }

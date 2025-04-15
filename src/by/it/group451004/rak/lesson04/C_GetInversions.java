@@ -1,6 +1,7 @@
 package by.it.group451004.rak.lesson04;
 
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.Scanner;
 
@@ -35,30 +36,117 @@ Sample Output:
 public class C_GetInversions {
 
     public static void main(String[] args) throws FileNotFoundException {
-        InputStream stream = C_GetInversions.class.getResourceAsStream("dataC.txt");
+//        InputStream stream = C_GetInversions.class.getResourceAsStream("dataC.txt");
+        InputStream stream = C_GetInversions.class.getResourceAsStream("test_array_100k.txt");
         C_GetInversions instance = new C_GetInversions();
-        //long startTime = System.currentTimeMillis();
         int result = instance.calc(stream);
-        //long finishTime = System.currentTimeMillis();
         System.out.print(result);
     }
 
+    static long result = 0;
+
     int calc(InputStream stream) throws FileNotFoundException {
-        //подготовка к чтению данных
         Scanner scanner = new Scanner(stream);
-        //!!!!!!!!!!!!!!!!!!!!!!!!!     НАЧАЛО ЗАДАЧИ     !!!!!!!!!!!!!!!!!!!!!!!!
-        //размер массива
         int n = scanner.nextInt();
-        //сам массив
         int[] a = new int[n];
         for (int i = 0; i < n; i++) {
             a[i] = scanner.nextInt();
         }
-        int result = 0;
-        //!!!!!!!!!!!!!!!!!!!!!!!!     тут ваше решение   !!!!!!!!!!!!!!!!!!!!!!!!
+        long startTime = System.currentTimeMillis();
+//        try {
+//            mergeSort(a, 0, n - 1);
+//        } catch (InterruptedException e) {
+//            throw new RuntimeException(e);
+//        }
+        mergeSort2(a, 0, n - 1);
+        long finishTime = System.currentTimeMillis();
+        System.out.printf("StartTime=%d\nFinishTime=%d\nDelta=%d\n", startTime, finishTime, finishTime - startTime);
+        System.out.print(result);
+        return (int) result;
+    }
 
+    void mergeSort2(int[] a, int minA, int maxA)  {
+        if (maxA - minA < 2) {
+            if (a[maxA] < a[minA]) {
+                int temp = a[minA];
+                a[minA] = a[maxA];
+                a[maxA] = temp;
+                result++;
+            }
+        } else {
+            int mid = (maxA + minA) / 2;
+            mergeSort2(a, minA, mid);
+            mergeSort2(a, mid + 1, maxA);
+            mergeSubarrays(a, minA, mid, maxA);
+        }
+    }
 
-        //!!!!!!!!!!!!!!!!!!!!!!!!!     КОНЕЦ ЗАДАЧИ     !!!!!!!!!!!!!!!!!!!!!!!!!
-        return result;
+    static int threadCount = 0;
+
+    void mergeSort(int[] a, int minA, int maxA) throws InterruptedException {
+        if (maxA - minA < 2) {
+            if (a[maxA] < a[minA]) {
+                int temp = a[minA];
+                a[minA] = a[maxA];
+                a[maxA] = temp;
+                result++;
+            }
+        } else {
+            int mid = (maxA + minA) / 2;
+
+            if (threadCount < 17) {
+                Thread left = new Thread(() -> {
+                    try {
+                        mergeSort(a, minA, mid);
+                    } catch (InterruptedException e) {
+                        throw new RuntimeException(e);
+                    }
+                });
+                Thread right = new Thread(() -> {
+                    try {
+                        mergeSort(a, mid + 1, maxA);
+                    } catch (InterruptedException e) {
+                        throw new RuntimeException(e);
+                    }
+                });
+                threadCount++;
+                left.start();
+                threadCount++;
+                right.start();
+
+                left.join();
+                threadCount--;
+                right.join();
+                threadCount--;
+            } else {
+                mergeSort(a, minA, mid);
+                mergeSort(a, mid + 1, maxA);
+            }
+            mergeSubarrays(a, minA, mid, maxA);
+        }
+    }
+
+    void mergeSubarrays(int[] source, int minA, int maxA, int maxB) {
+        int ai = minA;
+        int bi = maxA + 1;
+        int length = maxB - minA + 1;
+        int[] buf = new int[length];
+        int index = 0;
+
+        while (ai <= maxA && bi <= maxB) {
+            if (source[ai] <= source[bi]) {
+                buf[index++] = source[ai++];
+            } else {
+                buf[index++] = source[bi++];
+                result += (maxA - ai + 1); // все оставшиеся в левой части больше, значит они формируют инверсии
+            }
+        }
+        while (ai <= maxA) {
+            buf[index++] = source[ai++];
+        }
+        while (bi <= maxB) {
+            buf[index++] = source[bi++];
+        }
+        System.arraycopy(buf, 0, source, minA, length);
     }
 }
