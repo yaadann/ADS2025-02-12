@@ -1,4 +1,4 @@
-package by.it.group410902.barbashova.lesson01.lesson02;
+package by.it.group410902.barbashova.lesson02;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -12,7 +12,6 @@ import java.util.List;
 */
 
 public class B_Sheduler {
-
     public static void main(String[] args) {
         B_Sheduler instance = new B_Sheduler();
         Event[] events = {new Event(0, 3), new Event(0, 1), new Event(1, 2), new Event(3, 5),
@@ -23,29 +22,34 @@ public class B_Sheduler {
                 new Event(8, 9), new Event(4, 6), new Event(8, 10), new Event(7, 10)
         };
 
-        List<Event> starts = instance.calcStartTimes(events, 0, 10);
-        System.out.println(starts); // [(0:1), (1:2), (2:3), (3:5), (6:7), (7:9), (8:9)]
+        List<Event> starts = instance.calcStartTimes(events, 0, 10);  //рассчитаем оптимальное заполнение аудитории
+        System.out.println(starts);                                 //покажем рассчитанный график занятий
     }
 
     List<Event> calcStartTimes(Event[] events, int from, int to) {
-        List<Event> result = new ArrayList<>();
+        //Events - события которые нужно распределить в аудитории
+        //в период [from, int] (включительно).
+        //оптимизация проводится по наибольшему числу непересекающихся событий.
+        //Начало и конец событий могут совпадать.
+        List<Event> result;
+        result = new ArrayList<>();
 
         // Сортируем события по времени окончания
         Arrays.sort(events, Comparator.comparingInt(e -> e.stop));
 
-        int lastEnd = from;
+        int lastEndTime = from;
         for (Event event : events) {
-            // Если событие начинается после окончания последнего добавленного
-            // и не выходит за границы временного интервала
-            if (event.start >= lastEnd && event.stop <= to) {
+            // Проверяем, что событие входит в заданный период и не пересекается с предыдущими
+            if (event.start >= lastEndTime && event.stop <= to) {
                 result.add(event);
-                lastEnd = event.stop;
+                lastEndTime = event.stop;
             }
         }
 
-        return result;
+        return result;          //вернем итог
     }
 
+    //событие у аудитории(два поля: начало и конец)
     static class Event {
         int start;
         int stop;

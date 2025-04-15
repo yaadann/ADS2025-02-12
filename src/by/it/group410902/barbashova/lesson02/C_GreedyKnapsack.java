@@ -1,4 +1,4 @@
-package by.it.group410902.barbashova.lesson01.lesson02;
+package by.it.group410902.barbashova.lesson02;
 /*
 Даны
 1) объем рюкзака 4
@@ -18,7 +18,6 @@ import java.io.InputStream;
 import java.util.Arrays;
 import java.util.Scanner;
 
-
 public class C_GreedyKnapsack {
     public static void main(String[] args) throws FileNotFoundException {
         long startTime = System.currentTimeMillis();
@@ -30,39 +29,34 @@ public class C_GreedyKnapsack {
 
     double calc(InputStream inputStream) throws FileNotFoundException {
         Scanner input = new Scanner(inputStream);
-        int n = input.nextInt();      // сколько предметов в файле
-        int W = input.nextInt();      // какой вес у рюкзака
-        Item[] items = new Item[n];   // получим список предметов
-
-        for (int i = 0; i < n; i++) {
+        int n = input.nextInt();      //сколько предметов в файле
+        int W = input.nextInt();      //какой вес у рюкзака
+        Item[] items = new Item[n];   //получим список предметов
+        for (int i = 0; i < n; i++) { //создавая каждый конструктором
             items[i] = new Item(input.nextInt(), input.nextInt());
         }
-
-        // Покажем предметы
+        //покажем предметы
         for (Item item : items) {
             System.out.println(item);
         }
         System.out.printf("Всего предметов: %d. Рюкзак вмещает %d кг.\n", n, W);
 
-        // Сортируем предметы по убыванию удельной стоимости (cost/weight)
+        //тут необходимо реализовать решение задачи
+        //итогом является максимально воможная стоимость вещей в рюкзаке
+        //вещи можно резать на кусочки (непрерывный рюкзак)
+        double result = 0;
+
+        // Сортируем предметы по убыванию удельной стоимости (стоимость/вес)
         Arrays.sort(items);
 
-        double result = 0;
         int remainingWeight = W;
-
         for (Item item : items) {
             if (remainingWeight <= 0) break;
 
-            if (item.weight <= remainingWeight) {
-                // Берем предмет целиком
-                result += item.cost;
-                remainingWeight -= item.weight;
-            } else {
-                // Берем часть предмета
-                double fraction = (double) remainingWeight / item.weight;
-                result += item.cost * fraction;
-                remainingWeight = 0;
-            }
+            // Берем либо весь предмет, либо часть, если не хватает места
+            int takeWeight = Math.min(item.weight, remainingWeight);
+            result += takeWeight * (item.cost / (double)item.weight);
+            remainingWeight -= takeWeight;
         }
 
         System.out.printf("Удалось собрать рюкзак на сумму %f\n", result);
@@ -78,24 +72,20 @@ public class C_GreedyKnapsack {
             this.weight = weight;
         }
 
-        // Удельная стоимость (cost per unit weight)
-        double getValuePerUnit() {
-            return (double) cost / weight;
-        }
-
         @Override
         public String toString() {
             return "Item{" +
                     "cost=" + cost +
                     ", weight=" + weight +
-                    ", valuePerUnit=" + getValuePerUnit() +
                     '}';
         }
 
         @Override
         public int compareTo(Item o) {
-            // Сортируем по убыванию удельной стоимости
-            return Double.compare(o.getValuePerUnit(), this.getValuePerUnit());
+            // Сравниваем по убыванию удельной стоимости
+            double thisValue = (double)this.cost / this.weight;
+            double otherValue = (double)o.cost / o.weight;
+            return Double.compare(otherValue, thisValue);
         }
     }
 }
