@@ -30,29 +30,73 @@ public class C_GreedyKnapsack {
         Scanner input = new Scanner(inputStream);
         int n = input.nextInt();      //сколько предметов в файле
         int W = input.nextInt();      //какой вес у рюкзака
-        Item[] items = new Item[n];   //получим список предметов
-        for (int i = 0; i < n; i++) { //создавая каждый конструктором
+        Item[] items = new Item[n];
+        for (int i = 0; i < n; i++) {
             items[i] = new Item(input.nextInt(), input.nextInt());
         }
-        //покажем предметы
         for (Item item : items) {
             System.out.println(item);
         }
         System.out.printf("Всего предметов: %d. Рюкзак вмещает %d кг.\n", n, W);
-
-        //тут необходимо реализовать решение задачи
-        //итогом является максимально воможная стоимость вещей в рюкзаке
-        //вещи можно резать на кусочки (непрерывный рюкзак)
         double result = 0;
-        //тут реализуйте алгоритм сбора рюкзака
-        //будет особенно хорошо, если с собственной сортировкой
-        //кроме того, можете описать свой компаратор в классе Item
+        sortItems(items);
 
-        //ваше решение.
-
-
+        int i = 0;
+        while (i < items.length) {
+            if (items[i].weight <= W) {
+                result += items[i].cost;
+                W -= items[i].weight;
+            } else {
+                result += items[i].cost * ((double) W / items[i].weight);
+                i = items.length;
+            }
+            i++;
+        }
         System.out.printf("Удалось собрать рюкзак на сумму %f\n", result);
         return result;
+    }
+
+    static void sortItems(Item[] items) {
+        for (int i = 0; i < items.length / 2; i++) { //n/2 округляя вниз
+            int maxIndex = i;
+            int minIndex = items.length - i - 1;
+            for (int j = i; j < items.length - i; j++) { //-1 лишнее, но без него ломается
+                if (items[j].compareTo(items[maxIndex]) > 0) {
+                    maxIndex = j;
+                } else if (items[j].compareTo(items[minIndex]) < 0) {
+                    minIndex = j;
+                }
+            }
+//            if (minIndex != i) {
+//                Item temp = items[i];
+//                items[i] = items[minIndex];
+//                items[minIndex] = temp;
+//
+//                // Обновим maxIndex, если он совпал с i (то есть переместили минимум, затронув максимум)
+//                if (maxIndex == i) {
+//                    maxIndex = minIndex;
+//                }
+//            }
+//            // Затем максимум
+//            if (maxIndex != items.length - i - 1) {
+//                Item temp = items[items.length - i - 1];
+//                items[items.length - i - 1] = items[maxIndex];
+//                items[maxIndex] = temp;
+//            }
+            if (maxIndex != i) {
+                Item temp = items[i];
+                items[i] = items[maxIndex];
+                items[maxIndex] = temp;
+                if (minIndex == i) {
+                    minIndex = maxIndex;
+                }
+            }
+            if (minIndex != items.length - i - 1) {
+                Item temp = items[items.length - i - 1];
+                items[items.length - i - 1] = items[minIndex];
+                items[minIndex] = temp;
+            }
+        }
     }
 
     private static class Item implements Comparable<Item> {
@@ -74,9 +118,13 @@ public class C_GreedyKnapsack {
 
         @Override
         public int compareTo(Item o) {
-            //тут может быть ваш компаратор
-
-            return 0;
+            if (((cost / weight) - (o.cost / o.weight)) > 0) {
+                return 1;
+            } else if (((cost / weight) - (o.cost / o.weight)) < 0) {
+                return -1;
+            } else {
+                return Integer.compare(weight, o.weight);
+            }
         }
     }
 }
