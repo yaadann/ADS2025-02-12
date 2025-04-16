@@ -33,12 +33,15 @@ public class B_Sheduler {
         List<Event> result;
         result = new ArrayList<>();
 
+        // Сортируем по правому концу
         Arrays.sort(events, (Event e1, Event e2) -> Integer.compare(e1.stop, e2.stop));
 
         int currentTime = from;
 
         for (Event event : events){
+            // Если текущий отрезок не пересекает последний добавленный
             if (event.start >= currentTime && event.stop <= to){
+                // Добавляем
                 result.add(event);
                 currentTime = event.stop;
             }
