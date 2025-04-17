@@ -56,3 +56,5 @@ TaskB.txt
 TaskC.txt
 
 .gitignore
+
+.clinerules*
