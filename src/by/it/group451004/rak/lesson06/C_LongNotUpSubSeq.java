@@ -3,6 +3,7 @@ package by.it.group451004.rak.lesson06;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.util.Scanner;
+import java.util.Stack;
 
 /*
 Задача на программирование: наибольшая невозростающая подпоследовательность
@@ -45,22 +46,59 @@ public class C_LongNotUpSubSeq {
     }
 
     int getNotUpSeqSize(InputStream stream) throws FileNotFoundException {
-        //подготовка к чтению данных
         Scanner scanner = new Scanner(stream);
-        //!!!!!!!!!!!!!!!!!!!!!!!!!     НАЧАЛО ЗАДАЧИ     !!!!!!!!!!!!!!!!!!!!!!!!!
-        //общая длина последовательности
         int n = scanner.nextInt();
-        int[] m = new int[n];
-        //читаем всю последовательность
+        int[] arr = new int[n];
         for (int i = 0; i < n; i++) {
-            m[i] = scanner.nextInt();
+            arr[i] = scanner.nextInt();
         }
-        //тут реализуйте логику задачи методами динамического программирования (!!!)
-        int result = 0;
 
+        int l = 0;
+        int[] m = new int[n + 1];
 
-        //!!!!!!!!!!!!!!!!!!!!!!!!!     КОНЕЦ ЗАДАЧИ     !!!!!!!!!!!!!!!!!!!!!!!!!
-        return result;
+        int[] predInd = new int[n]; //predInd[k] - хранит индекс предшественника arr[k] в наибольшей
+                                    //возрастающей подпоследовательности оканчивающейся в arr[k]
+                                    //predInd[m[l]] - позволяет рекурсивно собрать последовательность
+                                    //arr[m[l]], arr[predInd[m[l]]], arr[predInd[predInd[m[l]]]], arr[predInd[predInd[predInd[m[l]]]]], ...
+        for (int i = 0; i < n; i++) {
+            int lo = 1;
+            int hi = l;
+
+            while (lo <= hi) {
+                int mid = lo + (hi - lo) / 2;
+                if (arr[m[mid]] >= arr[i]) {
+                    lo = mid + 1;
+                } else {
+                    hi = mid - 1;
+                }
+            }
+            int newL = lo;
+            predInd[i] = m[newL - 1];
+            m[newL] = i;
+            if (newL > l) {
+                l = newL;
+            }
+        }
+        printIndexes(m[l], predInd);
+        System.out.println();
+        return l;
+    }
+
+    void printIndexes(int lastInd, int[] predInd){
+        if (predInd[lastInd] > 0) {
+            printIndexes(predInd[lastInd], predInd);
+        }
+        System.out.print(lastInd + 1 + " ");
+    }
+
+    private class ValInd {
+        int value;
+        int index;
+
+        ValInd(int value, int index) {
+            this.value = value;
+            this.index = index;
+        }
     }
 
 }
