@@ -40,18 +40,34 @@ public class A_LIS {
     }
 
     int getSeqSize(InputStream stream) throws FileNotFoundException {
-        //подготовка к чтению данных
         Scanner scanner = new Scanner(stream);
-        //!!!!!!!!!!!!!!!!!!!!!!!!!     НАЧАЛО ЗАДАЧИ     !!!!!!!!!!!!!!!!!!!!!!!!!
-        //общая длина последовательности
         int n = scanner.nextInt();
-        int[] m = new int[n];
-        //читаем всю последовательность
+        int[] arr = new int[n];
         for (int i = 0; i < n; i++) {
-            m[i] = scanner.nextInt();
+            arr[i] = scanner.nextInt();
         }
-        int result = 0;
-        //!!!!!!!!!!!!!!!!!!!!!!!!!     КОНЕЦ ЗАДАЧИ     !!!!!!!!!!!!!!!!!!!!!!!!!
-        return result;
+
+        int[] p = new int[n];
+        int[] m = new int[n + 1];
+        int l = 0;
+        for (int i = 0; i < n; i++) {
+            int lo = 1;
+            int hi = l;
+            while (lo <= hi) {
+                int mid = lo + (hi - lo) / 2;
+                if (arr[m[mid]] < arr[i]) {
+                    lo = mid + 1;
+                } else {
+                    hi = mid - 1;
+                }
+            }
+            int newL = lo;
+            p[i] = m[newL - 1];
+            m[newL] = i;
+            if (newL > l) {
+                l = newL;
+            }
+        }
+        return l;
     }
 }
