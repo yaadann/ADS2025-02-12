@@ -1,4 +1,4 @@
-package by.it.group410902.menshikov.lesson02;
+package by.it.group451004.levkovich.lesson01.les2.lesson02;
 
 import org.junit.Test;
 
@@ -45,10 +45,10 @@ public class Lesson02Test {
 
     @Test(timeout = 2000)
     public void checkC_greedyKnapsack() throws Exception {
-//        InputStream inputStream = C_GreedyKnapsack.class.getResourceAsStream("greedyKnapsack.txt");
-//        double costFinal = new C_GreedyKnapsack().calc(inputStream);
-//        boolean ok = costFinal == 200;
-//        assertTrue("B_Sheduler failed", ok);
+        InputStream inputStream = C_GreedyKnapsack.class.getResourceAsStream("greedyKnapsack.txt");
+        double costFinal = new C_GreedyKnapsack().calc(inputStream);
+        boolean ok = costFinal == 200;
+        assertTrue("B_Sheduler failed", ok);
     }
 
 }
