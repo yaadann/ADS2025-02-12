@@ -32,7 +32,7 @@ Sample Output:
 */
 
 
-public class C_GetInversions {
+public class C_GetInversions{
 
     public static void main(String[] args) throws FileNotFoundException {
         InputStream stream = C_GetInversions.class.getResourceAsStream("dataC.txt");
