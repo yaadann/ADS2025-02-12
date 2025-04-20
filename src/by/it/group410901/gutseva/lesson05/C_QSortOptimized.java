@@ -88,7 +88,7 @@ public class C_QSortOptimized {
         }
     }
 
-    // Метод разделения массива на 3 части (алгоритм Дейкстры)
+    // Метод разделения массива на 3 части 
     int[] partition3(Segment[] arr, int left, int right) {
         Segment pivot = arr[left];
         int lt = left, gt = right;
