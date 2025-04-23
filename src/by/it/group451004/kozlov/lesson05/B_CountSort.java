@@ -9,13 +9,9 @@ import java.util.Scanner;
 Выведите упорядоченную по неубыванию последовательность этих чисел.
 
 При сортировке реализуйте метод со сложностью O(n)
-
-Пример: https://karussell.wordpress.com/2010/03/01/fast-integer-sorting-algorithm-on/
-Вольный перевод: http://programador.ru/sorting-positive-int-linear-time/
 */
 
 public class B_CountSort {
-
 
     public static void main(String[] args) throws FileNotFoundException {
         InputStream stream = B_CountSort.class.getResourceAsStream("dataB.txt");
@@ -40,9 +36,25 @@ public class B_CountSort {
         }
         //тут реализуйте логику задачи с применением сортировки подсчетом
 
+        // Поскольку числа не превышают 10, создаем массив счетчиков размером 11
+        // (индексы от 0 до 10, хотя 0 не будет использоваться)
+        int[] count = new int[11];
+
+        // Подсчитываем количество вхождений каждого числа
+        for (int num : points) {
+            count[num]++;
+        }
+
+        // Заполняем исходный массив отсортированными числами
+        int index = 0;
+        for (int num = 1; num <= 10; num++) {
+            while (count[num] > 0) {
+                points[index++] = num;
+                count[num]--;
+            }
+        }
 
         //!!!!!!!!!!!!!!!!!!!!!!!!!     КОНЕЦ ЗАДАЧИ     !!!!!!!!!!!!!!!!!!!!!!!!!
         return points;
     }
-
 }
