@@ -1,6 +1,7 @@
 package by.it.group410901.lobach.lesson02;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 /*
 Даны интервальные события events
@@ -28,7 +29,6 @@ public class B_Sheduler {
         List<B_Sheduler.Event> result;
         result = new ArrayList<>();
 
-        int i;
         int bothFieldsMinInd;
         B_Sheduler.Event tempEvent;
 
@@ -36,15 +36,15 @@ public class B_Sheduler {
         // причём при наличии нескольких event-ов с одним и тем же временем конца,
         // раньше ставим тот, у которого раньше время начала (в целях максимизации расхода времени
         // на заданном промежутке)
-        for (i = 0; i < events.length; i++) {
+        for (int i = 0; i < events.length; i++) {
             bothFieldsMinInd = i;
 
-            for (int k = i + 1; k < events.length; k++)
-                if (events[k].stop <= events[bothFieldsMinInd].stop)
-                    if (events[k].stop == events[bothFieldsMinInd].stop && events[k].start < events[bothFieldsMinInd].start)
-                        bothFieldsMinInd = k;
-                    else if (events[k].stop < events[bothFieldsMinInd].stop)
-                        bothFieldsMinInd = k;
+            for (int i1 = i + 1; i1 < events.length; i1++)
+                if (events[i1].stop <= events[bothFieldsMinInd].stop)
+                    if (events[i1].stop == events[bothFieldsMinInd].stop && events[i1].start < events[bothFieldsMinInd].start)
+                        bothFieldsMinInd = i1;
+                    else if (events[i1].stop < events[bothFieldsMinInd].stop)
+                        bothFieldsMinInd = i1;
 
             tempEvent = events[i];
             events[i] = events[bothFieldsMinInd];
@@ -54,7 +54,7 @@ public class B_Sheduler {
         // проходимся по каждому event-у и фиксируем его, если его начало и конец лежат в диапазоне
         // [currTime, to], присваиваем currTime время конца фиксируемого event-а
         int currTime = from;
-        for (i = 0; i < events.length; i++)
+        for (int i = 0; i < events.length; i++)
             if (events[i].start >= currTime && events[i].stop <= to) {
                 result.add(events[i]);
                 currTime = events[i].stop;

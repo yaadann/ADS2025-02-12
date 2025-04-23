@@ -40,7 +40,6 @@ import java.util.*;
 
 public class A_Huffman {
 
-    //индекс данных из листьев
     static private final Map<Character, String> codes = new TreeMap<>();
 
     public static void main(String[] args) throws FileNotFoundException {
@@ -62,37 +61,47 @@ public class A_Huffman {
         Scanner scanner = new Scanner(inputStream);
         String s = scanner.next();
 
-        //все комментарии от тестового решения были оставлены т.к. это задание A.
-        //если они вам мешают их можно удалить
-
+        // 1. Подсчет частоты символов
         Map<Character, Integer> count = new HashMap<>();
-        //1. переберем все символы по очереди и рассчитаем их частоту в Map count
-        //для каждого символа добавим 1 если его в карте еще нет или инкремент если есть.
+        for (int i = 0; i < s.length(); i++) {
+            char c = s.charAt(i);
+            count.put(c, count.getOrDefault(c, 0) + 1);
+        }
 
-        //2. перенесем все символы в приоритетную очередь в виде листьев
+        // 2. Создание приоритетной очереди из листьев
         PriorityQueue<Node> priorityQueue = new PriorityQueue<>();
+        for (Map.Entry<Character, Integer> entry : count.entrySet()) {
+            priorityQueue.add(new LeafNode(entry.getValue(), entry.getKey()));
+        }
 
-        //3. вынимая по два узла из очереди (для сборки родителя)
-        //и возвращая этого родителя обратно в очередь
-        //построим дерево кодирования Хаффмана.
-        //У родителя частоты детей складываются.
+        // 3. Построение дерева Хаффмана
+        while (priorityQueue.size() > 1) {
+            Node left = priorityQueue.poll();
+            Node right = priorityQueue.poll();
+            priorityQueue.add(new InternalNode(left, right));
+        }
 
-        //4. последний из родителей будет корнем этого дерева
-        //это будет последний и единственный элемент оставшийся в очереди priorityQueue.
+        // 4. Генерация кодов
+        Node root = priorityQueue.poll();
+        if (count.size() == 1) {
+            // Особый случай: если только один символ, присваиваем ему код "0"
+            root.fillCodes("0");
+        } else {
+            root.fillCodes("");
+        }
+
+        // 5. Кодирование строки
         StringBuilder sb = new StringBuilder();
-        //.....
+        for (int i = 0; i < s.length(); i++) {
+            sb.append(codes.get(s.charAt(i)));
+        }
 
         return sb.toString();
-        //01001100100111
-        //01001100100111
     }
 
     //Изучите классы Node InternalNode LeafNode
     abstract class Node implements Comparable<Node> {
-        //абстрактный класс элемент дерева
-        //(сделан abstract, чтобы нельзя было использовать его напрямую)
-        //а только через его версии InternalNode и LeafNode
-        private final int frequence; //частота символов
+        private final int frequence;
 
         //конструктор по умолчанию
         private Node(int frequence) {
@@ -111,12 +120,10 @@ public class A_Huffman {
         }
     }
 
-    ////////////////////////////////////////////////////////////////////////////////////
     //расширение базового класса до внутреннего узла дерева
     private class InternalNode extends Node {
-        //внутренный узел дерева
-        Node left;  //левый ребенок бинарного дерева
-        Node right; //правый ребенок бинарного дерева
+        Node left;
+        Node right;
 
         //для этого дерева не существует внутренних узлов без обоих детей
         //поэтому вот такого конструктора будет достаточно
@@ -135,11 +142,10 @@ public class A_Huffman {
     }
     //!!!!!!!!!!!!!!!!!!!!!!!!!     КОНЕЦ ЗАДАЧИ     !!!!!!!!!!!!!!!!!!!!!!!!!
 
-    ////////////////////////////////////////////////////////////////////////////////////
+    /// /////////////////////////////////////////////////////////////////////////////////
     //расширение базового класса до листа дерева
     private class LeafNode extends Node {
-        //лист
-        char symbol; //символы хранятся только в листах
+        char symbol;
 
         LeafNode(int frequence, char symbol) {
             super(frequence);

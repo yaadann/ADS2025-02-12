@@ -74,21 +74,69 @@ public class C_HeapMax {
         //Будет мало? Ну тогда можете его собрать как Generic и/или использовать в варианте B
         private List<Long> heap = new ArrayList<>();
 
-        int siftDown(int i) { //просеивание вверх
+        private int getParentIndex(int i) {
+            return (i - 1) / 2;
+        }
 
+        private int getLeftChildIndex(int i) {
+            return 2 * i + 1;
+        }
+
+        private int getRightChildIndex(int i) {
+            return 2 * i + 2;
+        }
+
+        private void swap(int i, int j) {
+            Long temp = heap.get(i);
+            heap.set(i, heap.get(j));
+            heap.set(j, temp);
+        }
+
+        int siftDown(int i) { //просеивание вниз
+            int left = getLeftChildIndex(i);
+            int right = getRightChildIndex(i);
+            int largest = i;
+
+            if (left < heap.size() && heap.get(left) > heap.get(largest)) {
+                largest = left;
+            }
+
+            if (right < heap.size() && heap.get(right) > heap.get(largest)) {
+                largest = right;
+            }
+
+            if (largest != i) {
+                swap(i, largest);
+                return siftDown(largest);
+            }
             return i;
         }
 
-        int siftUp(int i) { //просеивание вниз
-
+        int siftUp(int i) { //просеивание вверх
+            while (i > 0 && heap.get(getParentIndex(i)) < heap.get(i)) {
+                swap(i, getParentIndex(i));
+                i = getParentIndex(i);
+            }
             return i;
         }
 
         void insert(Long value) { //вставка
+            heap.add(value);
+            siftUp(heap.size() - 1);
         }
 
         Long extractMax() { //извлечение и удаление максимума
-            Long result = null;
+            if (heap.isEmpty()) {
+                return null;
+            }
+
+            Long result = heap.get(0);
+            heap.set(0, heap.get(heap.size() - 1));
+            heap.remove(heap.size() - 1);
+
+            if (!heap.isEmpty()) {
+                siftDown(0);
+            }
 
             return result;
         }
