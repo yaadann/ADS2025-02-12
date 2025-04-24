@@ -86,9 +86,7 @@ public class C_GreedyKnapsack {
         }
         @Override
         public int compareTo(Item o) {
-            //тут может быть ваш компаратор
-            Double.compare(this.getCostPerWeight(), o.getCostPerWeight());
-            return 0;
+            return Double.compare(this.getCostPerWeight(), o.getCostPerWeight());
         }
     }
 }
