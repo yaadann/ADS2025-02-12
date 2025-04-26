@@ -35,6 +35,10 @@ public class C_GreedyKnapsack {
             items[i] = new Item(input.nextInt(), input.nextInt());
         }
 
+        for (Item item : items) {
+            System.out.println(item);
+        }
+        System.out.printf("Всего предметов: %d. Рюкзак вмещает %d кг.\n", n, W);
         //тут необходимо реализовать решение задачи
         //итогом является максимально воможная стоимость вещей в рюкзаке
         //вещи можно резать на кусочки (непрерывный рюкзак)
