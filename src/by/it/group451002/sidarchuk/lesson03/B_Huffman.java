@@ -68,9 +68,9 @@ public class B_Huffman {
         for (int i=0; i<count; i++) {
             String line = scanner.nextLine();
             String[] parts = line.split(": ");
-            char letter = parts[0].charAt(0);
-            String code = parts[1];
-            codes.put(code, letter);
+            char letter = parts[0].charAt(0);// извлекаем символ
+            String code = parts[1]; //извлекаем код символа
+            codes.put(code, letter); // заносим в таблицу
         }
 
         //3. Читаем закодированную строку
