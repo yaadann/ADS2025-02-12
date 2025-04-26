@@ -40,6 +40,8 @@ import java.util.Scanner;
 //        Sample Output 2:
 //        abacabad
 
+//Класс B_Huffman содержит метод main, который является точкой входа в программу.
+//Он считывает входные данные из файла dataB.txt и вызывает метод decode.
 public class B_Huffman {
     public static void main(String[] args) throws FileNotFoundException {
         InputStream inputStream = B_Huffman.class.getResourceAsStream("dataB.txt");

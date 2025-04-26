@@ -8,12 +8,17 @@ import java.util.Scanner;
 
 public class C_HeapMax {
 
+    //метод main, который является точкой входа в программу.
+    //Он считывает входные данные из файла dataC.txt и вызывает метод findMaxValue.
     public static void main(String[] args) throws FileNotFoundException {
         InputStream stream = C_HeapMax.class.getResourceAsStream("dataC.txt");
         C_HeapMax instance = new C_HeapMax();
         System.out.println("MAX=" + instance.findMaxValue(stream));
     }
-
+    //Метод findMaxValue принимает входной поток и считывает количество операций, которые будут выполняться.
+    //Затем он обрабатывает команды, которые могут быть:
+    //insert <value>: вставка значения в кучу.
+    //extractMax: извлечение максимального значения из кучи.
     Long findMaxValue(InputStream stream) {
         long maxValue = 0L;
         MaxHeap heap = new MaxHeap();
@@ -37,9 +42,12 @@ public class C_HeapMax {
         return maxValue;
     }
 
+    //Класс MaxHeap реализует структуру данных "максимальная куча":
     static private class MaxHeap {
         final private List<Long> heap = new ArrayList<>();
 
+        //siftDown: Метод для восстановления свойств кучи после извлечения
+        // максимального элемента. Он перемещает элемент вниз по дереву, чтобы сохранить порядок.
         void siftDown(int i) {
             int left = i*2 + 1;
             int right = i*2 + 2;
@@ -57,6 +65,8 @@ public class C_HeapMax {
 
         }
 
+        //siftUp: Метод для восстановления свойств кучи после вставки нового элемента.
+        // Он перемещает элемент вверх по дереву.
         void siftUp(int i) {
             while (i > 0) {
                 int parent = (i - 1) / 2;
@@ -71,13 +81,18 @@ public class C_HeapMax {
 
         }
 
-
+        //insert: Добавляет новое значение в кучу и восстанавливает порядок с помощью siftUp.
         void insert(Long value) {
             heap.add(value);
 
             int index = heap.size() - 1;
             siftUp(index);
         }
+
+        //extractMax: Удаляет и возвращает максимальный элемент из кучи, заменяет его
+        // последним элементом и восстанавливает порядок с помощью siftDown.
+        //Извлечение максимального значения:
+        //При выполнении команды extractMax, максимальное значение извлекается, и если оно больше текущего максимума, обновляется переменная maxValue.
 
         Long extractMax() { //извлечение и удаление максимума
             if ( heap.isEmpty() )
