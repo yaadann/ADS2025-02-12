@@ -102,7 +102,7 @@ public class C_QSortOptimized {
     }
     public static void quickSort(Segment[] items, int low, int high) {
         while (low < high) {
-            // Находим индекс опорного элемента (pivot)
+            // Находим индекс pivot
             int pivotIndex = partition(items, low, high);
 
             // Рекурсивно сортируем левую и правую части
@@ -113,9 +113,9 @@ public class C_QSortOptimized {
     }
 
     private static int partition(Segment[] items, int low, int high) {
-        // Используем первый элемент как опорный (pivot)
+        // Используем первый элемент как pivot
         Segment pivot = items[low];
-        int j = low; // Индекс меньшего элемента
+        int j = low;
 
         for (int i = low + 1; i < high; i++) {
             // Если текущий элемент меньше или равен pivot

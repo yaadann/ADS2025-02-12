@@ -56,27 +56,28 @@ public class B_MergeSort {
     void mergeSort(int[] array, int left, int right) {
         if (left < right) {
             int mid = left + (right - left) / 2;
-            mergeSort(array, left, mid);
-            mergeSort(array, mid + 1, right);
-            merge(array, left, mid, right);
+            mergeSort(array, left, mid);//сортируем левый подмассив
+            mergeSort(array, mid + 1, right);//сортируем правый подмассив
+            merge(array, left, mid, right);//объединяем
         }
     }
 
 
     void merge(int[] array, int left, int mid, int right) {
-        int n1 = mid - left + 1;
+        int n1 = mid - left + 1;//размерность подмассивов
         int n2 = right - mid;
 
         int[] L = new int[n1];
         int[] R = new int[n2];
 
+        //копируем данные во временные массивы
         for (int i = 0; i < n1; i++)
             L[i] = array[left + i];
         for (int j = 0; j < n2; j++)
             R[j] = array[mid + 1 + j];
 
         int i = 0, j = 0, k = left;
-
+        //"сливаем" временные массивы обратно в основной массив
         while (i < n1 && j < n2) {
             if (L[i] <= R[j]) {
                 array[k++] = L[i++];

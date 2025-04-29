@@ -74,16 +74,16 @@ public class C_HeapMax {
         //Будет мало? Ну тогда можете его собрать как Generic и/или использовать в варианте B
         private List<Long> heap = new ArrayList<>();
 
-        int siftDown(int i) { //просеивание вверх
+        int siftDown(int i) { //восстановление свойства кучи после удаления корня
             while (2 * i + 1 < heap.size()) {
                 int left = 2 * i + 1;
                 int right = 2 * i + 2;
                 int largest = i;
 
-                if (heap.get(left) > heap.get(largest)) {
+                if (heap.get(left) > heap.get(largest)) {//сравниваем левый потомок с текущим элементом
                     largest = left;
                 }
-                if (right < heap.size() && heap.get(right) > heap.get(largest)) {
+                if (right < heap.size() && heap.get(right) > heap.get(largest)) {//правый потомок больше текущего максимального
                     largest = right;
                 }
                 if (i == largest) break;
@@ -94,7 +94,7 @@ public class C_HeapMax {
             return i;
         }
 
-        int siftUp(int i) { //просеивание вниз
+        int siftUp(int i) { //поднимает элемент вверх по куче, чтобы восстановить порядок
             while (i > 0) {
                 int parent = (i - 1) / 2;
                 if (heap.get(i) <= heap.get(parent)) break;
@@ -112,13 +112,13 @@ public class C_HeapMax {
         Long extractMax() { //извлечение и удаление максимума
             Long result = null;
             if (heap.isEmpty()) return null;
-            result = heap.get(0);
+            result = heap.get(0);//максимум это корень
             Long last = heap.remove(heap.size() - 1);
             if (!heap.isEmpty()) {
                 heap.set(0, last);
                 siftDown(0);
             }
-            System.out.print(result); // печатаем результат, как требует findMaxValue
+            System.out.print(result); // печатаем результат
             return result;
         }
 

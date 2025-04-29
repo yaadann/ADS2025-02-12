@@ -67,9 +67,9 @@ public class C_GetInversions {
         int count = 0;
         if (left < right) {
             int mid = (left + right) / 2;
-            count += mergeSortAndCount(arr, left, mid);
+            count += mergeSortAndCount(arr, left, mid);// Считаем инверсии в левой(правой) половине
             count += mergeSortAndCount(arr, mid + 1, right);
-            count += mergeAndCount(arr, left, mid, right);
+            count += mergeAndCount(arr, left, mid, right);// сколько правых < левых
         }
         return count;
     }
@@ -86,7 +86,7 @@ public class C_GetInversions {
 
         int i = 0, j = 0, k = left, swaps = 0;
 
-        while (i < leftArr.length && j < rightArr.length) {
+        while (i < leftArr.length && j < rightArr.length) {//Сравниваем и сливаем массивы, считая инверсии
             if (leftArr[i] <= rightArr[j]) {
                 arr[k++] = leftArr[i++];
             } else {

@@ -69,11 +69,13 @@ public class A_Huffman {
         //1. переберем все символы по очереди и рассчитаем их частоту в Map count
         //для каждого символа добавим 1 если его в карте еще нет или инкремент если есть.
         for (char ch : s.toCharArray()) {
-            count.put(ch, count.getOrDefault(ch, 0) + 1);
+            count.put(ch, count.getOrDefault(ch, 0) + 1);//каждому символу присваивается его количество в строке
         }
         //2. перенесем все символы в приоритетную очередь в виде листьев
         PriorityQueue<Node> priorityQueue = new PriorityQueue<>();
         for (Map.Entry<Character, Integer> entry : count.entrySet()) {
+            //помещаются в PriorityQueue —
+            // минимальная частота будет наверху
             priorityQueue.add(new LeafNode(entry.getValue(), entry.getKey()));
         }
         //3. вынимая по два узла из очереди (для сборки родителя)
@@ -81,9 +83,9 @@ public class A_Huffman {
         //построим дерево кодирования Хаффмана.
         //У родителя частоты детей складываются.
         while (priorityQueue.size() > 1) {
-            Node first = priorityQueue.poll();
+            Node first = priorityQueue.poll();//извлекаются 2 узла с наименьшей частотой
             Node second = priorityQueue.poll();
-            priorityQueue.add(new InternalNode(first, second));
+            priorityQueue.add(new InternalNode(first, second));//создаётся внутренний узел, объединяющий их
         }
         //4. последний из родителей будет корнем этого дерева
         //это будет последний и единственный элемент оставшийся в очереди priorityQueue.
@@ -92,7 +94,7 @@ public class A_Huffman {
 
         // Генерация кодов
         if (count.size() == 1) {
-            // Спецслучай: если символ всего один
+            //если символ всего один
             root.fillCodes("0");
         } else {
             root.fillCodes("");
@@ -105,7 +107,7 @@ public class A_Huffman {
         for (char ch : s.toCharArray()) {
             sb.append(codes.get(ch));
         }
-
+//каждый символ заменяется на соответствующий код из codes
         return sb.toString();
         //01001100100111
         //01001100100111

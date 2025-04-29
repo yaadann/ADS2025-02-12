@@ -62,7 +62,7 @@ public class B_Huffman {
         //тут запишите ваше решение
 
         Map<String, Character> codeToChar = new HashMap<>();
-
+        //читается count строк, где указано, какой символ соответствует какому коду
         for (int i = 0; i < count; i++) {
             String line = scanner.nextLine();
             String[] parts = line.split(": ");
@@ -75,9 +75,9 @@ public class B_Huffman {
         StringBuilder currentCode = new StringBuilder();
 
         for (char bit : encodedString.toCharArray()) {
-            currentCode.append(bit);
+            currentCode.append(bit);//добавляем(накапливаем) биты
             if (codeToChar.containsKey(currentCode.toString())) {
-                result.append(codeToChar.get(currentCode.toString()));
+                result.append(codeToChar.get(currentCode.toString()));//нашли совпадение — добавляем букву
                 currentCode.setLength(0); // очистка текущего кода
             }
         }
