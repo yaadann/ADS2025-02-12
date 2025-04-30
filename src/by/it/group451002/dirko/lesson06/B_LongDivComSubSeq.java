@@ -62,7 +62,7 @@ public class B_LongDivComSubSeq {
 
             // Проходимся по всем элементам до текущего и увеличиваем maxLength[i], если найдена большая длина
             for (int j = 0; j < i; j++) {
-                if (m[j] != 0 && m[i] % m[j] == 0 && maxLengths[j] + 1 > maxLengths[i]) {
+                if (m[i] % m[j] == 0 && maxLengths[j] + 1 > maxLengths[i]) {
                     maxLengths[i] = maxLengths[j] + 1;
                 }
             }
