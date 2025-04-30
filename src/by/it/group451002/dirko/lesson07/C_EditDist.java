@@ -84,53 +84,35 @@ public class C_EditDist {
         // Восстанавливаем решение проходя с последней ячейки в первую
         int i = one.length(), j = two.length();
         while (i > 0 || j > 0) {
+            int indComma = 2;
             // Если D[i, j] = D[i - 1, j - 1] + Diff(A[i], B[i]
             if ((i > 0 && j > 0) && levenTable[i][j] == levenTable[i - 1][j - 1] +
                         (one.charAt(i - 1) == two.charAt(j - 1) ? 0 : 1)) {
                 // Если равно, то выясняем, что это: замена или соответствие
                 if ((one.charAt(i - 1) == two.charAt(j - 1) ? 0 : 1) == 0) {
                     res.addFirst('#');
+                    indComma = 1;
                 }
-                else { res.addFirst('~'); }
+                // Замена
+                else {
+                    res.addFirst('~');
+                    res.add(1, two.charAt(j - 1));
+                }
                 i--; j--;
             }
             // Иначе, если D[i, j] = D[i - 1][j] + 1, то это удаление
             else if (i > 0 && levenTable[i][j] == levenTable[i - 1][j] + 1) {
                 res.addFirst('-');
+                res.add(1, one.charAt(i - 1));
                 i--;
             }
             // Иначе (D[i, j] = D[i, j - 1] + 1), это вставка
             else {
                 res.addFirst('+');
+                res.add(1, two.charAt(j - 1));
                 j--;
             }
-        }
-
-        // Инициализация текущих индексов в первой и второй строках, а также в результате
-        int lenOne = 0, lenTwo = 0; i = 0;
-        while (i < res.size()) {
-            // Если это вставка, то указываем вставляемый символ
-            if (res.get(i) == '+') {
-                res.add(i + 1, two.charAt(lenTwo));
-                lenTwo++;
-            }
-            // Если удаление, то указываем удаляемый символ
-            else if (res.get(i) == '-') {
-                res.add(i + 1, one.charAt(lenOne));
-                lenOne++;
-            }
-            // Если это замена, то указываем на какой символ заменяем
-            else if (res.get(i) == '~') {
-                res.add(i + 1, two.charAt(lenTwo));
-                lenOne++; lenTwo++;
-            }
-            // Иначе, это соответствие и ничего указывать не надо
-            else {
-                lenOne++; lenTwo++;
-                i--;
-            }
-            i += 3;
-            res.add(i - 1, ',');
+            res.add(indComma, ',');
         }
 
         // Конвертируем List в строку
