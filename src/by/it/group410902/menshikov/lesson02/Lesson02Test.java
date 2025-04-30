@@ -50,5 +50,6 @@ public class Lesson02Test {
         boolean ok = costFinal == 200;
         assertTrue("B_Sheduler failed", ok);
     }
+
 }
 }
