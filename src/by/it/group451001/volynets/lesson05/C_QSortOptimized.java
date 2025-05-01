@@ -118,7 +118,7 @@ public class C_QSortOptimized {
         arr[j] = temp;
     }
 
-    // Подсчет количества отрезков, содержащих точку, с  использованием бинарного поиска
+    // Подсчет количества отрезков, содержащих точку, с использованием бинарного поиска
     private int countSegmentsContainingPoint(Segment[] segments, int point) {
         int count = 0;
 
