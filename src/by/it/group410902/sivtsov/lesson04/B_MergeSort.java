@@ -52,7 +52,6 @@ public class B_MergeSort {
         int start = 0;
         if(end > start){
             int middle = (end + start) / 2;
-
         }
 
         //!!!!!!!!!!!!!!!!!!!!!!!!!     КОНЕЦ ЗАДАЧИ     !!!!!!!!!!!!!!!!!!!!!!!!!
