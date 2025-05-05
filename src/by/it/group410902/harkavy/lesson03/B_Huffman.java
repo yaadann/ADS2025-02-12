@@ -52,21 +52,21 @@ public class B_Huffman {
 
     String decode(InputStream inputStream) throws FileNotFoundException {
         Scanner scanner = new Scanner(inputStream);
-        // Считываем количество символов и длину закодированной строки
+
         int k = scanner.nextInt();
         int length = scanner.nextInt();
-        scanner.nextLine(); // переход на новую строку после чисел
+        scanner.nextLine();
 
-        // Построим дерево для декодирования на основе заданных кодов
+
         Node root = new Node();
         for (int i = 0; i < k; i++) {
             String line = scanner.nextLine();
-            // Формат строки: "a: 0"
+
             String[] parts = line.split(": ");
             char letter = parts[0].charAt(0);
             String code = parts[1];
 
-            // Вставляем код для символа в дерево
+
             Node current = root;
             for (int j = 0; j < code.length(); j++) {
                 char bit = code.charAt(j);
@@ -86,17 +86,14 @@ public class B_Huffman {
             current.letter = letter;
         }
 
-        // Считываем закодированную строку
         String encoded = scanner.next();
         scanner.close();
 
-        // Декодируем строку, проходя по дереву
         StringBuilder result = new StringBuilder();
         Node current = root;
         for (int i = 0; i < encoded.length(); i++) {
             char bit = encoded.charAt(i);
             current = (bit == '0') ? current.left : current.right;
-            // Если достигли листа (нет потомков), добавляем символ и возвращаемся к корню
             if (current.left == null && current.right == null) {
                 result.append(current.letter);
                 current = root;
@@ -105,7 +102,6 @@ public class B_Huffman {
         return result.toString();
     }
 
-    // Класс узла дерева для декодирования
     class Node {
         char letter;
         Node left;
