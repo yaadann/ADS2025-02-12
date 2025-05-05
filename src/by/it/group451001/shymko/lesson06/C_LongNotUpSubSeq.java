@@ -41,7 +41,7 @@ public class C_LongNotUpSubSeq {
         InputStream stream = B_LongDivComSubSeq.class.getResourceAsStream("dataC.txt");
         C_LongNotUpSubSeq instance = new C_LongNotUpSubSeq();
         int result = instance.getNotUpSeqSize(stream);
-        System.out.print(result);
+        //System.out.print(result);
     }
 
     int getNotUpSeqSize(InputStream stream) throws FileNotFoundException {
@@ -56,19 +56,34 @@ public class C_LongNotUpSubSeq {
             m[i] = scanner.nextInt();
         }
         //тут реализуйте логику задачи методами динамического программирования (!!!)
-        int result = 0;
+        int result = 0, ind = 0;
         int[] dp = new int[n];
         dp[0] = 1;
+        int[] pr = new int[n];
+        pr[0] = -1;
         for (int i = 1; i < n; i++) {
+            pr[i] = -1;
             for (int j = 0; j < i; j++) {
                 if (m[j] >= m[i]) {
-                    dp[i] = Math.max(dp[i], dp[j] + 1);
-
+                    if(dp[i] < dp[j] + 1) {
+                        pr[i] = j;
+                        dp[i] = dp[j] + 1;
+                    }
                 }
             }
-            result = Math.max(result, dp[i]);
+            if (result < dp[i]) {
+                result = dp[i];
+                ind = i;
+            }
         }
-
+        System.out.println(result);
+        String resStr = "";
+        while(ind != -1) {
+            resStr = ' ' + resStr;
+            resStr = (ind + 1) + resStr;
+            ind = pr[ind];
+        }
+        System.out.println(resStr);
         //!!!!!!!!!!!!!!!!!!!!!!!!!     КОНЕЦ ЗАДАЧИ     !!!!!!!!!!!!!!!!!!!!!!!!!
         return result;
     }
