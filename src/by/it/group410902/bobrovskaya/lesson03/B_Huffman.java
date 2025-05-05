@@ -51,29 +51,30 @@ public class B_Huffman {
     }
 
     String decode(InputStream inputStream) throws FileNotFoundException {
-        StringBuilder result = new StringBuilder();
+        StringBuilder result = new StringBuilder(); // для накопления декодированной строки.
         //прочитаем строку для кодирования из тестового файла
         Scanner scanner = new Scanner(inputStream);
         Integer count = scanner.nextInt();
         Integer length = scanner.nextInt();
         //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! НАЧАЛО ЗАДАЧИ !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!1
         //тут запишите ваше решение
-        scanner.nextLine();
-        HashMap<String, String> codesMap = new HashMap<>();
-        String[] temp = new String[1];
-        for (int i = 0; i < count; i++){
+
+        scanner.nextLine(); // переходим на следующую строку
+        HashMap<String, String> codesMap = new HashMap<>(); // карта для хранения кодов
+        String[] temp = new String[1]; // временный массив для разделения строк
+        for (int i = 0; i < count; i++){ // цикл для заполнения хеш-таблицы
             String symbol = scanner.nextLine();
             temp = symbol.split(": ");
             codesMap.put(temp[1], temp[0]);
         }
-        String encodeLine = scanner.nextLine();
-        int start = 0;
+        String encodeLine = scanner.nextLine(); // считываем закодированную строку
+        int start = 0; // указываем начало и конец подстроки
         int end = 1;
-        while (end <= length){
+        while (end <= length){ // пока не дошли до конца строки
             if (codesMap.containsKey(encodeLine.substring(start, end))){
-                result.append(codesMap.get(encodeLine.substring(start, end)));
-                start = end;
-                end++;
+                result.append(codesMap.get(encodeLine.substring(start, end))); // добавляем соответствующий символ в result
+                start = end; // обновляем start
+                end++; // пробуем более длинную подстроку
             }
             else end++;
         }

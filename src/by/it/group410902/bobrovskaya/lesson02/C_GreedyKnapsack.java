@@ -54,13 +54,13 @@ public class C_GreedyKnapsack {
         int remainingWeight = W; //вместимость рюкзака
 
         for (Item item : items) {
-            if (remainingWeight == 0) {
+            if (remainingWeight == 0) { //весь рюкзак заполнен
                 break;
             }
-            if (item.weight <= remainingWeight) {
+            if (item.weight <= remainingWeight) { //вес item меньше оставшейся вместимости
                 result += item.cost;
                 remainingWeight -= item.weight;
-            } else {
+            } else { //вес item больше оставшейся вместимости
                 result += item.cost * ((double)remainingWeight / item.weight);
                 remainingWeight = 0;
             }

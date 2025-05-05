@@ -42,7 +42,7 @@ public class A_Huffman {
 
     //индекс данных из листьев
     static private final Map<Character, String> codes = new TreeMap<>();
-
+    //карта, которая сопоставляет символы (Character) со строками (String).
     public static void main(String[] args) throws FileNotFoundException {
         InputStream inputStream = A_Huffman.class.getResourceAsStream("dataA.txt");
         A_Huffman instance = new A_Huffman();

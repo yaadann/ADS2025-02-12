@@ -72,13 +72,21 @@ public class C_HeapMax {
         //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! НАЧАЛО ЗАДАЧИ !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!1
         //тут запишите ваше решение.
         //Будет мало? Ну тогда можете его собрать как Generic и/или использовать в варианте B
+        // список, который используется для хранения элементов кучи
         private List<Long> heap = new ArrayList<>();
 
-        int siftDown(int i) { //просеивание вверх
+        int siftDown(int i) { //просеивание вниз
             boolean is_sifted = false;
+
+            // цикл продолжается, пока текущий узел имеет хотя бы одного потомка.
             while (! is_sifted && 2 * i + 1 < heap.size()){
-                int child = 2 * i + 1;
+                // цикл продолжается, пока текущий узел имеет хотя бы одного потомка.
+                int child = 2 * i + 1; // индекс левого потомка
+
+                // если правый потомок существует и больше левого, выбираем его.
                 if (child + 1 < heap.size() && heap.get(child + 1) > heap.get(child)) child++;
+
+                // если потомок больше текущего узла, меняем местами и продолжаем, иначе завершаем.
                 if (heap.get(child) > heap.get(i)){
                     long temp = heap.get(child);
                     heap.set(child, heap.get(i));
@@ -90,7 +98,8 @@ public class C_HeapMax {
             return i;
         }
 
-        int siftUp(int i) { //просеивание вниз
+        int siftUp(int i) { //просеивание вверх (метод используется при добавлении нового элемента)
+            // пока элемент больше родителя, он поднимается вверх
             while (i > 0 && heap.get(i) > heap.get(i / 2)) {
                 long temp = heap.get(i);
                 heap.set(i, heap.get(i / 2));
