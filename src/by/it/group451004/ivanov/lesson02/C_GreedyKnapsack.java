@@ -15,7 +15,6 @@ package by.it.group451004.ivanov.lesson02;
 
 import java.io.FileNotFoundException;
 import java.io.InputStream;
-import java.util.Arrays;
 import java.util.Scanner;
 
 public class C_GreedyKnapsack {
@@ -27,35 +26,45 @@ public class C_GreedyKnapsack {
         System.out.printf("Общая стоимость %f (время %d)", costFinal, finishTime - startTime);
     }
 
+    void sortItemsByCoast(C_GreedyKnapsack.Item[] items) {
+        for (int i = 1; i < items.length; i++)
+            for (int j = i; (j > 0 &&
+                    (items[j-1].cost / items[j-1].weight) < (items[j].cost / items[j].weight)); j--) {
+                Item temp = items[j];
+                items[j] = items[j-1];
+                items[j-1] = temp;
+            }
+    }
+
     double calc(InputStream inputStream) throws FileNotFoundException {
         Scanner input = new Scanner(inputStream);
         int n = input.nextInt();      //сколько предметов в файле
         int W = input.nextInt();      //какой вес у рюкзака
-        Item[] items = new Item[n];   //получим список предметов
+        C_GreedyKnapsack.Item[] items = new C_GreedyKnapsack.Item[n];   //получим список предметов
         for (int i = 0; i < n; i++) { //создавая каждый конструктором
-            items[i] = new Item(input.nextInt(), input.nextInt());
+            items[i] = new C_GreedyKnapsack.Item(input.nextInt(), input.nextInt());
         }
         //покажем предметы
-        for (Item item : items) {
+        for (C_GreedyKnapsack.Item item : items) {
             System.out.println(item);
         }
         System.out.printf("Всего предметов: %d. Рюкзак вмещает %d кг.\n", n, W);
 
-        //реализация жадного алгоритма
-        Arrays.sort(items);
+        //тут необходимо реализовать решение задачи
+        //итогом является максимально воможная стоимость вещей в рюкзаке
+        //вещи можно резать на кусочки (непрерывный рюкзак)
+        double result = 0;
+        //тут реализуйте алгоритм сбора рюкзака
+        //будет особенно хорошо, если с собственной сортировкой
+        //кроме того, можете описать свой компаратор в классе Item
 
-        double result = 0; // итоговая стоимость
-        int currentWeight = 0;
-
-        for (Item item : items) {
-            if (currentWeight + item.weight <= W) {
-                result += item.cost;
-                currentWeight += item.weight;
-            } else {
-                int remainingWeight = W - currentWeight;
-                result += item.cost * ((double) remainingWeight / item.weight);
-                break;
-            }
+        sortItemsByCoast(items);
+        int pointer = 0;
+        while (W > 0) {
+            double currentWeight = Math.min(items[pointer].weight, W);
+            result += items[pointer].cost * (currentWeight / items[pointer].weight);
+            W -= currentWeight;
+            pointer++;
         }
 
         System.out.printf("Удалось собрать рюкзак на сумму %f\n", result);
