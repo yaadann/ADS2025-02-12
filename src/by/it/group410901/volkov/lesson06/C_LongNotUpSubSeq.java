@@ -2,6 +2,10 @@ package by.it.group410901.volkov.lesson06;
 
 import java.io.FileNotFoundException;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 import java.util.Scanner;
 
 /*
@@ -38,29 +42,74 @@ import java.util.Scanner;
 public class C_LongNotUpSubSeq {
 
     public static void main(String[] args) throws FileNotFoundException {
-        InputStream stream = B_LongDivComSubSeq.class.getResourceAsStream("dataC.txt");
+        // Создаем поток для чтения данных из файла
+        InputStream stream = C_LongNotUpSubSeq.class.getResourceAsStream("dataC.txt");
+        // Создаем экземпляр класса
         C_LongNotUpSubSeq instance = new C_LongNotUpSubSeq();
+        // Получаем результат - длину наибольшей невозрастающей подпоследовательности
         int result = instance.getNotUpSeqSize(stream);
         System.out.print(result);
     }
 
     int getNotUpSeqSize(InputStream stream) throws FileNotFoundException {
-        //подготовка к чтению данных
+        // Подготовка сканера для чтения данных
         Scanner scanner = new Scanner(stream);
-        //!!!!!!!!!!!!!!!!!!!!!!!!!     НАЧАЛО ЗАДАЧИ     !!!!!!!!!!!!!!!!!!!!!!!!!
-        //общая длина последовательности
+        //!!!!!!!!!!!!!!!!!!!!!!!!! НАЧАЛО ЗАДАЧИ !!!!!!!!!!!!!!!!!!!!!!!!!
+
+        // Чтение длины последовательности
         int n = scanner.nextInt();
+        // Создание массива для хранения последовательности
         int[] m = new int[n];
-        //читаем всю последовательность
+
+        // Чтение всех элементов последовательности
         for (int i = 0; i < n; i++) {
             m[i] = scanner.nextInt();
         }
-        //тут реализуйте логику задачи методами динамического программирования (!!!)
-        int result = 0;
 
+        // Инициализация массивов для динамического программирования
+        int[] dp = new int[n]; // dp[i] - длина наибольшей невозрастающей подпоследовательности, заканчивающейся в m[i]
+        int[] prev = new int[n]; // Массив для хранения предыдущих индексов
 
-        //!!!!!!!!!!!!!!!!!!!!!!!!!     КОНЕЦ ЗАДАЧИ     !!!!!!!!!!!!!!!!!!!!!!!!!
-        return result;
+        // Заполняем массивы начальными значениями
+        Arrays.fill(dp, 1); // Каждый элемент сам по себе является подпоследовательностью длины 1
+        Arrays.fill(prev, -1); // -1 означает отсутствие предыдущего элемента
+
+        // Переменные для хранения максимальной длины и индекса последнего элемента
+        int maxLength = 1;
+        int lastIndex = 0;
+
+        // Заполнение массивов dp и prev
+        for (int i = 1; i < n; i++) {
+            for (int j = 0; j < i; j++) {
+                // Если текущий элемент не больше предыдущего и можем увеличить длину подпоследовательности
+                if (m[i] <= m[j] && dp[i] < dp[j] + 1) {
+                    dp[i] = dp[j] + 1;
+                    prev[i] = j; // Запоминаем предыдущий индекс
+                }
+            }
+            // Обновляем максимальную длину и индекс последнего элемента
+            if (dp[i] > maxLength) {
+                maxLength = dp[i];
+                lastIndex = i;
+            }
+        }
+
+        // Восстановление подпоследовательности по массиву prev
+        List<Integer> indices = new ArrayList<>();
+        int current = lastIndex;
+        while (current != -1) {
+            indices.add(current + 1); // +1 потому что индексы должны начинаться с 1
+            current = prev[current];
+        }
+        Collections.reverse(indices); // Переворачиваем, так как добавляли с конца
+
+        // Вывод результата
+        System.out.println(maxLength); // Длина подпоследовательности
+        for (int i = 0; i < indices.size(); i++) {
+            System.out.print(indices.get(i) + " "); // Индексы элементов
+        }
+
+        //!!!!!!!!!!!!!!!!!!!!!!!!! КОНЕЦ ЗАДАЧИ !!!!!!!!!!!!!!!!!!!!!!!!!
+        return maxLength;
     }
-
 }
