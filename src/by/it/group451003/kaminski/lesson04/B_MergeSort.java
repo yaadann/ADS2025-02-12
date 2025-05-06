@@ -12,7 +12,7 @@ import java.util.Scanner;
 вторая - массив A[1…n], содержащий натуральные числа, не превосходящие 10E9.
 Необходимо отсортировать полученный массив.
 
-Sample Input:
+Sample Inpu3t:
 5
 2 3 9 2 9
 Sample Output:
