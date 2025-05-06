@@ -2,6 +2,7 @@ package by.it.group410901.volkov.lesson05;
 
 import java.io.FileNotFoundException;
 import java.io.InputStream;
+import java.util.Arrays;
 import java.util.Scanner;
 
 /*
@@ -46,52 +47,74 @@ public class A_QSort {
     }
 
     int[] getAccessory(InputStream stream) throws FileNotFoundException {
-        //подготовка к чтению данных
         Scanner scanner = new Scanner(stream);
-        //!!!!!!!!!!!!!!!!!!!!!!!!!     НАЧАЛО ЗАДАЧИ     !!!!!!!!!!!!!!!!!!!!!!!!!
-        //число отрезков отсортированного массива
+        // Чтение количества отрезков и точек
         int n = scanner.nextInt();
-        Segment[] segments = new Segment[n];
-        //число точек
         int m = scanner.nextInt();
+        Segment[] segments = new Segment[n];
         int[] points = new int[m];
         int[] result = new int[m];
 
-        //читаем сами отрезки
+        // Чтение отрезков
         for (int i = 0; i < n; i++) {
-            //читаем начало и конец каждого отрезка
-            segments[i] = new Segment(scanner.nextInt(), scanner.nextInt());
+            int start = scanner.nextInt();
+            int end = scanner.nextInt();
+            // Упорядочиваем начало и конец отрезка (на случай, если start > end)
+            segments[i] = new Segment(Math.min(start, end), Math.max(start, end));
         }
-        //читаем точки
+
+        // Чтение точек
         for (int i = 0; i < m; i++) {
             points[i] = scanner.nextInt();
         }
-        //тут реализуйте логику задачи с применением быстрой сортировки
-        //в классе отрезка Segment реализуйте нужный для этой задачи компаратор
 
+        // Сортируем начала и концы отрезков отдельно
+        int[] starts = new int[n];
+        int[] ends = new int[n];
+        for (int i = 0; i < n; i++) {
+            starts[i] = segments[i].start;
+            ends[i] = segments[i].stop;
+        }
+        Arrays.sort(starts);
+        Arrays.sort(ends);
 
-        //!!!!!!!!!!!!!!!!!!!!!!!!!     КОНЕЦ ЗАДАЧИ     !!!!!!!!!!!!!!!!!!!!!!!!!
+        // Для каждой точки находим количество отрезков, которые её содержат
+        for (int i = 0; i < m; i++) {
+            int point = points[i];
+            // Количество отрезков, у которых start <= point
+            int left = binarySearchCount(starts, point, true);
+            // Количество отрезков, у которых end < point
+            int right = binarySearchCount(ends, point, false);
+            // Разница дает количество отрезков, содержащих точку
+            result[i] = left - right;
+        }
+
         return result;
     }
 
-    //отрезок
-    private class Segment implements Comparable<Segment> {
+    // Бинарный поиск для подсчета количества элементов <= (или <) заданного значения
+    private int binarySearchCount(int[] array, int key, boolean isStart) {
+        int left = 0;
+        int right = array.length;
+        while (left < right) {
+            int mid = left + (right - left) / 2;
+            if ((isStart && array[mid] <= key) || (!isStart && array[mid] < key)) {
+                left = mid + 1;
+            } else {
+                right = mid;
+            }
+        }
+        return left;
+    }
+
+    // Класс отрезка
+    private class Segment {
         int start;
         int stop;
 
         Segment(int start, int stop) {
             this.start = start;
             this.stop = stop;
-            //тут вообще-то лучше доделать конструктор на случай если
-            //концы отрезков придут в обратном порядке
-        }
-
-        @Override
-        public int compareTo(Segment o) {
-            //подумайте, что должен возвращать компаратор отрезков
-
-            return 0;
         }
     }
-
 }
