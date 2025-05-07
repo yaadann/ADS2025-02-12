@@ -67,27 +67,11 @@ public class C_GreedyKnapsack {
                     minIndex = j;
                 }
             }
-//            if (minIndex != i) {
-//                Item temp = items[i];
-//                items[i] = items[minIndex];
-//                items[minIndex] = temp;
-//
-//                // Обновим maxIndex, если он совпал с i (то есть переместили минимум, затронув максимум)
-//                if (maxIndex == i) {
-//                    maxIndex = minIndex;
-//                }
-//            }
-//            // Затем максимум
-//            if (maxIndex != items.length - i - 1) {
-//                Item temp = items[items.length - i - 1];
-//                items[items.length - i - 1] = items[maxIndex];
-//                items[maxIndex] = temp;
-//            }
             if (maxIndex != i) {
                 Item temp = items[i];
                 items[i] = items[maxIndex];
                 items[maxIndex] = temp;
-                if (minIndex == i) {
+                if (minIndex == i) { // Обновим minIndex, если он совпал с i (то есть переместили максимум, затронув минимум)
                     minIndex = maxIndex;
                 }
             }

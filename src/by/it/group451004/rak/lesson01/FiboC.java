@@ -48,6 +48,8 @@ public class FiboC {
     long fasterC(long n, int m) {
         if (n < 2) return n;
 
+        //
+
         long resBeforeBefore = 0; // F(0)
         long resBefore = 1;       // F(1)
         long result = 1;          // F(2), начнем с i = 2

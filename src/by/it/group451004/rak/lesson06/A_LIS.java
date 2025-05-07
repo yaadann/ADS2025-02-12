@@ -85,7 +85,7 @@ public class A_LIS {
                 l = newL;
             }
         }
-        printIndexes(m[l], p);
+//        printIndexes(m[l], p);
         return l;
     }
 
@@ -98,10 +98,10 @@ public class A_LIS {
             this.index = index;
         }
     }
-    void printIndexes(int lastInd, int[] predInd){
-        if (predInd[lastInd] > 0) {
-            printIndexes(predInd[lastInd], predInd);
-        }
-        System.out.print(lastInd + " ");
-    }
+//    void printIndexes(int lastInd, int[] predInd){
+//        if (predInd[lastInd] > 0) {
+//            printIndexes(predInd[lastInd], predInd);
+//        }
+//        System.out.print(lastInd + " ");
+//    }
 }

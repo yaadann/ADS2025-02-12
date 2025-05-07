@@ -23,7 +23,7 @@ import java.util.Scanner;
     0
 
     Sample Input 2:
-    short
+    short //1: (del s) hort 2: (rep h) port 3: (ins s) ports
     ports
     Sample Output 2:
     3
