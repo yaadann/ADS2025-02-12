@@ -13,7 +13,7 @@ public class Lesson05Test {
         InputStream inputStream = A_QSort.class.getResourceAsStream("dataA.txt");
         A_QSort instance = new A_QSort();
         int[] result = instance.getAccessory(inputStream);
-        boolean ok = Arrays.equals(result, new int[]{1, 0, 0});
+        boolean ok = Arrays.equals(result, new int[]{1, 2, 4, 3, 4, 3, 3, 2, 3, 2, 2, 2, 2, 1, 1 /*1, 0, 0*/});
         assertTrue("A failed", ok);
     }
 
@@ -33,7 +33,7 @@ public class Lesson05Test {
         InputStream inputStream = C_QSortOptimized.class.getResourceAsStream("dataC.txt");
         C_QSortOptimized instance = new C_QSortOptimized();
         int[] result = instance.getAccessory2(inputStream);
-        boolean ok = Arrays.equals(result, new int[]{1, 0, 0});
+        boolean ok = Arrays.equals(result, new int[]{1, 2, 4, 3, 4, 3, 3, 2, 3, 2, 2, 2, 2, 1, 1 /*1, 0, 0*/});
         assertTrue("C failed", ok);
     }
 

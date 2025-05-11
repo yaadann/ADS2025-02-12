@@ -64,13 +64,103 @@ public class C_QSortOptimized {
         //тут реализуйте логику задачи с применением быстрой сортировки
         //в классе отрезка Segment реализуйте нужный для этой задачи компаратор
 
+        class myQuickSort{
+            static Segment[] sortArr;
+            public static void Do(Segment[] arr, int L, int R){
+                sortArr = arr;
+                DoStep(L, R);
+            }
+            private static void swap(int index1, int index2){
+                Segment temp = sortArr[index1];
+                sortArr[index1] = sortArr[index2];
+                sortArr[index2] = temp;
+            }
+            private static void DoStep(int L, int R){
 
+                while ((R - L) > 1) {
+                    int Lnow = L, Rnow = R, i = R-1, center = (L + R) / 2;
+                    //choose pivot
+                    Segment pivot;
+                    if (((sortArr[L].compareTo(sortArr[center]) >= 0) && (sortArr[center].compareTo(sortArr[R]) >= 0)) ||
+                            ((sortArr[L].compareTo(sortArr[center]) <= 0) && (sortArr[center].compareTo(sortArr[R]) <= 0)))
+                        swap(center, R);
+                    else if (((sortArr[center].compareTo(sortArr[L]) >= 0) && (sortArr[L].compareTo(sortArr[R]) >= 0)) ||
+                            ((sortArr[center].compareTo(sortArr[L]) <= 0) && (sortArr[L].compareTo(sortArr[R]) <= 0))) swap(L, R);
+                    pivot = sortArr[R];
+                    //start sort
+                    while (i >= Lnow) {
+                        if (sortArr[i].compareTo(pivot) < 0) {
+                            swap(i, Lnow);
+                            ++Lnow;
+                        } else if (sortArr[i].compareTo(pivot) > 0) {
+                            swap(i, Rnow);
+                            --i;
+                            --Rnow;
+                        } else --i;
+                    }
+                    if ((Lnow-L) > (R-Rnow)) {
+                        DoStep(Rnow, R);
+                        R = (Lnow - 1);
+                    }
+                    else {
+                        DoStep(L, Lnow - 1);
+                        L = Rnow;
+                    }
+                }
+            }
+        }
+        class binFind{
+            public static int Find(Segment[] arr, int value){
+                int L = 0;
+                int R = arr.length-1;
+                int ans = -1;
+                boolean stop = true;
+                while ((stop) && (L <= R)) {
+                    int check = (L + R) / 2;
+                    if (arr[check].start <= value){
+                        if (check != R){
+                            if (arr[check+1].start > value) {
+                                ans = check;
+                                stop = false;
+                            }
+                        } else {
+                            ans = check;
+                            stop = false;
+                        }
+
+                    }
+                    if (stop) {
+                        if (arr[check].start > value) {
+                            R = check-1;
+                        } else if (arr[check].start < value) {
+                            L = check+1;
+                        }
+                    }
+                }
+                return ans;
+            }
+        }
+        myQuickSort.Do(segments, 0, segments.length-1);
+
+        int index = 0;
+        for (int i: points) {
+            int ans = 0;
+            int start = binFind.Find(segments, i);
+            if (start != -1) {
+                while (start >= 0){
+                    if (segments[start].stop >= i) ++ans;
+                    --start;
+                }
+            }
+            result[index] = ans;
+            index++;
+        }
         //!!!!!!!!!!!!!!!!!!!!!!!!!     КОНЕЦ ЗАДАЧИ     !!!!!!!!!!!!!!!!!!!!!!!!!
         return result;
     }
 
     //отрезок
-    private class Segment implements Comparable {
+    private class Segment implements Comparable<Segment> {
         int start;
         int stop;
 
@@ -80,9 +170,9 @@ public class C_QSortOptimized {
         }
 
         @Override
-        public int compareTo(Object o) {
+        public int compareTo(Segment other) {
             //подумайте, что должен возвращать компаратор отрезков
-            return 0;
+            return Integer.compare(this.start, other.start);
         }
     }
 

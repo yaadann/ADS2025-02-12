@@ -2,6 +2,7 @@ package by.it.group451001.klevko.lesson07;
 
 import java.io.FileNotFoundException;
 import java.io.InputStream;
+import java.util.Arrays;
 import java.util.Scanner;
 
 /*
@@ -41,11 +42,23 @@ public class B_EditDist {
 
     int getDistanceEdinting(String one, String two) {
         //!!!!!!!!!!!!!!!!!!!!!!!!!     НАЧАЛО ЗАДАЧИ     !!!!!!!!!!!!!!!!!!!!!!!!!
+        int[][] fieldMatrix = new int[one.length()+1][two.length()+1];
+        for (int i = 0; i < fieldMatrix.length; i++) {fieldMatrix[i][0] = i;}
+        for (int i = 1; i < fieldMatrix[0].length; i++) {fieldMatrix[0][i] = i;}
 
+        for (int i = 1; i <= one.length(); i++) {
+            for (int j = 1; j <= two.length(); j++) {
+                int min = Math.min(fieldMatrix[i-1][j]+1, fieldMatrix[i][j-1]+1);
+                int item;
+                if (one.charAt(i-1) == two.charAt(j-1)) item = 0;
+                else item = 1;
+                min = Math.min(min, fieldMatrix[i-1][j-1] + item);
+                fieldMatrix[i][j] = min;
+            }
+        }
 
-        int result = 0;
         //!!!!!!!!!!!!!!!!!!!!!!!!!     КОНЕЦ ЗАДАЧИ     !!!!!!!!!!!!!!!!!!!!!!!!!
-        return result;
+        return fieldMatrix[one.length()][two.length()];
     }
 
 

@@ -45,6 +45,12 @@ public class A_QSort {
         }
     }
 
+    /*void Sort(int L, int R){
+
+
+
+    }*/
+
     int[] getAccessory(InputStream stream) throws FileNotFoundException {
         //подготовка к чтению данных
         Scanner scanner = new Scanner(stream);
@@ -66,10 +72,47 @@ public class A_QSort {
         for (int i = 0; i < m; i++) {
             points[i] = scanner.nextInt();
         }
+
         //тут реализуйте логику задачи с применением быстрой сортировки
         //в классе отрезка Segment реализуйте нужный для этой задачи компаратор
+        class myQuickSort{
+            public static void Do(Segment[] arr, int L, int R){
+                if ((R - L) < 2) return;
+                int Lnow = L, Rnow = R, center = (L+R)/2;
+                Segment pivot;
+                if (((arr[L].compareTo(arr[center]) >= 0)&&(arr[center].compareTo(arr[R]) >= 0))||
+                        ((arr[L].compareTo(arr[center]) <= 0)&&(arr[center].compareTo(arr[R]) <= 0))) pivot = arr[center];
+                else if (((arr[center].compareTo(arr[L]) >= 0)&&(arr[L].compareTo(arr[R]) >= 0))||
+                        ((arr[center].compareTo(arr[L]) <= 0)&&(arr[L].compareTo(arr[R]) <= 0))) pivot = arr[L];
+                else pivot = arr[R];
 
+                while (Lnow < Rnow) {
+                    while (arr[Lnow].compareTo(pivot) < 0) Lnow++;
+                    while (arr[Rnow].compareTo(pivot) > 0) Rnow--;
+                    if (Lnow < Rnow) {
+                        Segment temp = arr[Lnow];
+                        arr[Lnow] = arr[Rnow];
+                        arr[Rnow] = temp;
+                        Lnow++;
+                        Rnow--;
+                    }
+                }
+                Do(arr, L, Lnow-1);
+                Do(arr, Rnow+1, R);
+            }
+        }
 
+        myQuickSort.Do(segments, 0, segments.length-1);
+        int index = 0;
+        for (int i: points){
+            int ans = 0;
+            for (Segment now: segments) {
+                if (i < now.start) break;
+                if ((i >= now.start) && (i <= now.stop)) ans++;
+            }
+            result[index] = ans;
+            index++;
+        }
         //!!!!!!!!!!!!!!!!!!!!!!!!!     КОНЕЦ ЗАДАЧИ     !!!!!!!!!!!!!!!!!!!!!!!!!
         return result;
     }
@@ -87,10 +130,12 @@ public class A_QSort {
         }
 
         @Override
-        public int compareTo(Segment o) {
+        public int compareTo(Segment other) {
             //подумайте, что должен возвращать компаратор отрезков
-
-            return 0;
+            return Integer.compare(this.start, other.start);
+            /*if (this.start == other.start) return 0;
+            else if (this.start > other.start) return 1;
+            else return -1;*/
         }
     }
 
