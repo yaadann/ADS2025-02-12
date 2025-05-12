@@ -74,7 +74,13 @@ public class C_HeapMax {
         //Будет мало? Ну тогда можете его собрать как Generic и/или использовать в варианте B
         private List<Long> heap = new ArrayList<>();
 
-        int siftDown(int i) { //просеивание вверх
+        int siftDown(int i) { //просеивание вниз    Находим наибольшего потомка
+
+            //Если потомок больше текущего элемента - меняем их местами
+
+            //Продолжаем процесс для новой позиции элемента
+
+            //Прекращаем, когда элемент больше обоих потомков или достиг дна
             boolean is_sifted = false;
             while (! is_sifted && 2 * i + 1 < heap.size()){
                 int child = 2 * i + 1;
@@ -90,7 +96,12 @@ public class C_HeapMax {
             return i;
         }
 
-        int siftUp(int i) { //просеивание вниз
+        int siftUp(int i) { //просеивание вверх
+            //Сравниваем элемент с родителем
+
+            //Если элемент больше родителя - меняем местами
+
+            //Продолжаем, пока элемент не станет меньше родителя или не достигнет корня
             while (i > 0 && heap.get(i) > heap.get(i / 2)) {
                 long temp = heap.get(i);
                 heap.set(i, heap.get(i / 2));
