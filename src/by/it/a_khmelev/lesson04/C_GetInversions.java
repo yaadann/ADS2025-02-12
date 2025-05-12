@@ -43,7 +43,7 @@ public class C_GetInversions {
         System.out.print(result);
     }
 
-public    int calc(InputStream stream) throws FileNotFoundException {
+    int calc(InputStream stream) throws FileNotFoundException {
         //подготовка к чтению данных
         Scanner scanner = new Scanner(stream);
         //!!!!!!!!!!!!!!!!!!!!!!!!!     НАЧАЛО ЗАДАЧИ     !!!!!!!!!!!!!!!!!!!!!!!!
