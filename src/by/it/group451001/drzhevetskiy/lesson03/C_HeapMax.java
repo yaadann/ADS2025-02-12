@@ -41,18 +41,18 @@ public class C_HeapMax {
         final private List<Long> heap = new ArrayList<>();
 
         void siftDown(int i) {
-            int left = i*2 + 1;
-            int right = i*2 + 2;
-            int largest = i;
+            int l = i*2 + 1;
+            int r = i*2 + 2;
+            int larg = i;
 
-            if (left < heap.size() && heap.get(left) > heap.get(largest))
-                largest = left;
-            if (right < heap.size() && heap.get(right) > heap.get(largest))
-                largest = right;
+            if (l < heap.size() && heap.get(l) > heap.get(larg))
+                larg = l;
+            if (r < heap.size() && heap.get(r) > heap.get(larg))
+                larg = r;
 
-            if (largest != i) {
-                swap(i, largest);
-                siftDown(largest);
+            if (larg != i) {
+                swap(i, larg);
+                siftDown(larg);
             }
 
         }
@@ -101,6 +101,8 @@ public class C_HeapMax {
         }
     }
 
-
-
+    // РЕМАРКА. Это задание исключительно учебное.
+    // Свои собственные кучи нужны довольно редко.
+    // В реальном приложении все иначе. Изучите и используйте коллекции
+    // TreeSet, TreeMap, PriorityQueue и т.д. с нужным CompareTo() для объекта внутри.
 }

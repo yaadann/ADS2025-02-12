@@ -142,18 +142,18 @@ public class A_Huffman {
     //расширение базового класса до листа дерева
     private class LeafNode extends Node {
         //лист
-        char symb; //символы хранятся только в листах
+        char symbol; //символы хранятся только в листах
 
-        LeafNode(int frequence, char symb) {
+        LeafNode(int frequence, char symbol) {
             super(frequence);
-            this.symb = symb;
+            this.symbol = symbol;
         }
 
         @Override
         void fillCodes(String code) {
             //добрались до листа, значит рекурсия закончена, код уже готов
             //и можно запомнить его в индексе для поиска кода по символу.
-            codes.put(this.symb, code);
+            codes.put(this.symbol, code);
         }
     }
 

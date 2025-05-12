@@ -91,7 +91,7 @@ public class B_Huffman {
                 tmp = ((innerNode) tmp).right;
 
             if (tmp instanceof leafNode leaf) {
-                result.append(leaf.symb);
+                result.append(leaf.symbol);
                 tmp = root; // Reset to root
             }
         }
@@ -112,10 +112,10 @@ public class B_Huffman {
         }
     }
     private static class leafNode extends Node{
-        char symb;
+        char symbol;
 
-        leafNode(char symb){
-            this.symb = symb;
+        leafNode(char symbol){
+            this.symbol = symbol;
         }
     }
 }
