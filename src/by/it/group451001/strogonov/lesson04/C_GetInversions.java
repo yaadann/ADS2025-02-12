@@ -1,4 +1,4 @@
-package by.it.a_khmelev.lesson04;
+package by.it.group451001.strogonov.lesson04;
 
 import java.io.FileNotFoundException;
 import java.io.InputStream;
@@ -43,7 +43,7 @@ public class C_GetInversions {
         System.out.print(result);
     }
 
-public    int calc(InputStream stream) throws FileNotFoundException {
+    int calc(InputStream stream) throws FileNotFoundException {
         //подготовка к чтению данных
         Scanner scanner = new Scanner(stream);
         //!!!!!!!!!!!!!!!!!!!!!!!!!     НАЧАЛО ЗАДАЧИ     !!!!!!!!!!!!!!!!!!!!!!!!
@@ -54,11 +54,58 @@ public    int calc(InputStream stream) throws FileNotFoundException {
         for (int i = 0; i < n; i++) {
             a[i] = scanner.nextInt();
         }
-        int result = 0;
         //!!!!!!!!!!!!!!!!!!!!!!!!     тут ваше решение   !!!!!!!!!!!!!!!!!!!!!!!!
 
+        int result = mergeSortAndCount(a, 0, a.length - 1);
 
         //!!!!!!!!!!!!!!!!!!!!!!!!!     КОНЕЦ ЗАДАЧИ     !!!!!!!!!!!!!!!!!!!!!!!!!
         return result;
     }
+
+    private int mergeSortAndCount(int[] array, int left, int right) {
+        int count = 0;
+        if (left < right) {
+            int mid = left + (right - left) / 2;
+            count += mergeSortAndCount(array, left, mid);
+            count += mergeSortAndCount(array, mid + 1, right);
+            count += mergeAndCount(array, left, mid, right);
+        }
+        return count;
+    }
+
+    private int mergeAndCount(int[] array, int left, int mid, int right) {
+        int n1 = mid - left + 1;
+        int n2 = right - mid;
+        int swaps = 0;
+
+        int[] leftArray = new int[n1];
+        int[] rightArray = new int[n2];
+
+        for (int i = 0; i < n1; i++) {
+            leftArray[i] = array[left + i];
+        }
+        for (int j = 0; j < n2; j++) {
+            rightArray[j] = array[mid + 1 + j];
+        }
+
+        int i = 0, j = 0, k = left;
+        while (i < n1 && j < n2) {
+            if (leftArray[i] <= rightArray[j]) {
+                array[k++] = leftArray[i++];
+            } else {
+                array[k++] = rightArray[j++];
+                swaps += (mid + 1) - (left + i);
+            }
+        }
+
+        while (i < n1) {
+            array[k++] = leftArray[i++];
+        }
+
+        while (j < n2) {
+            array[k++] = rightArray[j++];
+        }
+        return swaps;
+    }
+
 }
