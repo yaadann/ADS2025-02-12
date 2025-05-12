@@ -64,7 +64,7 @@ public class B_MergeSort {
 
     private void merge(int[] array, int left, int mid, int right) {
         int n1 = mid - left + 1, n2 = right - mid, k = left;
-        int[] leftArray = new int[n1];
+        int[] leftArray = new int[n1]; 
         int[] rightArray = new int[n2];
         for (int i = 0; i < n1; ++i) leftArray[i] = array[left + i];
         for (int j = 0; j < n2; ++j) rightArray[j] = array[mid + 1 + j];
