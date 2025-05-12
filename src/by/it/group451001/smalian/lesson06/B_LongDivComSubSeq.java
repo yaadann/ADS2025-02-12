@@ -3,6 +3,7 @@ package by.it.group451001.smalian.lesson06;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.util.Scanner;
+import java.util.Arrays;
 
 /*
 Задача на программирование: наибольшая кратная подпоследовательность
@@ -51,8 +52,18 @@ public class B_LongDivComSubSeq {
         //тут реализуйте логику задачи методами динамического программирования (!!!)
         int result = 0;
 
+        int[] dp = new int[n];
+        Arrays.fill(dp, 1);
 
-        //!!!!!!!!!!!!!!!!!!!!!!!!!     КОНЕЦ ЗАДАЧИ     !!!!!!!!!!!!!!!!!!!!!!!!!
+        for (int i = 1; i < n; i++)
+            for (int j = 0; j < i; j++)
+                if (m[i] % m[j] == 0)
+                    dp[i] = Math.max(dp[i], dp[j] + 1);
+
+        for (int length : dp)
+            if (length > result)
+                result = length;
+
         return result;
     }
 

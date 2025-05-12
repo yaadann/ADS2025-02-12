@@ -60,8 +60,6 @@ public class A_BinaryFind {
             int left=0, right=n-1;
             while (left<right) {
                 int mid=(left+right)/2;
-                System.out.println(value);
-                System.out.println(mid);
                 if (a[mid]<value)
                     left = mid+1;
                 else

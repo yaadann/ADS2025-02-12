@@ -41,6 +41,45 @@ public class C_QSortOptimized {
         }
     }
 
+    void Partition(Segment[] Arr,int l,int r,int[] res){
+        Segment x=Arr[l];
+        int j=l-1;
+        Segment temp;
+        for (int i=l;i<=r;i++){
+            if (Arr[i].compareTo(x)<0){
+                j++;
+                res[1]++;
+                temp=Arr[res[1]];
+                Arr[res[1]]=Arr[j];
+                Arr[j]=temp;
+                if(i!=res[1]) {
+                    temp = Arr[i];
+                    Arr[i] = Arr[j];
+                    Arr[j] = temp;
+                }
+            }
+            else{
+                if(Arr[i].compareTo(x)==0){
+                    res[1]++;
+                    temp=Arr[i];
+                    Arr[i]=Arr[res[1]];
+                    Arr[res[1]]=temp;
+                }
+            }
+        }
+        res[0]=j+1;
+    }
+    void QSort(Segment[] Arr,int l,int r){
+        while(l<r){
+            int[] res = new int[2];
+            res[0]=l-1;
+            res[1]=l-1;
+            Partition(Arr,l,r,res);
+            QSort(Arr,l,res[0]-1);
+            l=res[1]+1;
+        }
+    }
+
     int[] getAccessory2(InputStream stream) throws FileNotFoundException {
         //подготовка к чтению данных
         Scanner scanner = new Scanner(stream);
@@ -65,130 +104,50 @@ public class C_QSortOptimized {
         //тут реализуйте логику задачи с применением быстрой сортировки
         //в классе отрезка Segment реализуйте нужный для этой задачи компаратор
 
-
-        quickSort(segments, 0, segments.length - 1);
-
-        int[] starts = new int[n];
-        int[] ends = new int[n];
-        for (int i = 0; i < n; i++) {
-            starts[i] = segments[i].start;
-            ends[i] = segments[i].stop;
+        QSort(segments,0,n-1);
+        for(int i=0;i<m;i++){
+            int j=0;
+            result[i]=0;
+            while((j<n)&&(segments[j].start<=points[i])){
+                if (points[i]<=segments[j].stop){
+                    result[i]++;
+                }
+                j++;
+            }
         }
-        Arrays.sort(ends);
-
-        for (int i = 0; i < m; i++) {
-            int x = points[i];
-            int left = upperBound(starts, x);
-            int right = lowerBound(ends, x);
-            result[i] = left - right;
-        }
-
-
         //!!!!!!!!!!!!!!!!!!!!!!!!!     КОНЕЦ ЗАДАЧИ     !!!!!!!!!!!!!!!!!!!!!!!!!
         return result;
     }
 
-    private static void swap(Segment[] arr, int i, int j) {
-        Segment temp = arr[i];
-        arr[i] = arr[j];
-        arr[j] = temp;
-    }
-
-    private static int medianOfThree(Segment[] arr, int a, int b, int c) {
-        if (arr[a].compareTo(arr[b]) > 0) {
-            swap(arr, a, b);
-        }
-        if (arr[a].compareTo(arr[c]) > 0) {
-            swap(arr, a, c);
-        }
-        if (arr[b].compareTo(arr[c]) > 0) {
-            swap(arr, b, c);
-        }
-        return b;
-    }
-
-    private static int[] partition(Segment[] arr, int low, int high) {
-        int mid = low + (high - low) / 2;
-        int pivotIndex = medianOfThree(arr, low, mid, high);
-        swap(arr, pivotIndex, high);
-        Segment pivot = arr[high];
-
-        int i = low;
-        int j = high;
-        int k = low;
-
-        while (k <= j) {
-            int cmp = arr[k].compareTo(pivot);
-            if (cmp < 0) {
-                swap(arr, i++, k++);
-            } else if (cmp > 0) {
-                swap(arr, k, j--);
-            } else {
-                k++;
-            }
-        }
-        return new int[]{i, j};
-    }
-
-    private static void quickSort(Segment[] arr, int low, int high) {
-        while (low < high) {
-            int[] pivotIndices = partition(arr, low, high);
-            if (pivotIndices[0] - low < high - pivotIndices[1]) {
-                quickSort(arr, low, pivotIndices[0] - 1);
-                low = pivotIndices[1] + 1;
-            } else {
-                quickSort(arr, pivotIndices[1] + 1, high);
-                high = pivotIndices[0] - 1;
-            }
-        }
-    }
-
-    private static int upperBound(int[] arr, int key) {
-        int low = 0;
-        int high = arr.length;
-        while (low < high) {
-            int mid = (low + high) / 2;
-            if (arr[mid] <= key) {
-                low = mid + 1;
-            } else {
-                high = mid;
-            }
-        }
-        return low;
-    }
-
-    private static int lowerBound(int[] arr, int key) {
-        int low = 0;
-        int high = arr.length;
-        while (low < high) {
-            int mid = (low + high) / 2;
-            if (arr[mid] < key) {
-                low = mid + 1;
-            } else {
-                high = mid;
-            }
-        }
-        return low;
-    }
-
     //отрезок
-    private class Segment implements Comparable {
+    private class Segment implements Comparable<Segment> {
         int start;
         int stop;
 
-        Segment(int start, int stop) {
-            this.start = start;
-            this.stop = stop;
+        Segment(int start, int stop){
+            if (start<=stop){
+                this.start = start;
+                this.stop = stop;
+            }
+            else{
+                this.start=stop;
+                this.stop=start;
+            }
         }
 
         @Override
-        public int compareTo(Object o) {
-            Segment b = o instanceof Segment ? (Segment) o : null;
-            if (start != b.start) {
-                return Integer.compare(start, b.start);
+        public int compareTo(Segment o) {
+            if (start< o.start){
+                return -1;
             }
-            return Integer.compare(stop, b.stop);
-            //подумайте, что должен возвращать компаратор отрезков
+            else{
+                if (start==o.start){
+                    return 0;
+                }
+                else{
+                    return 1;
+                }
+            }
         }
     }
 

@@ -3,6 +3,7 @@ package by.it.group451001.smalian.lesson07;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.util.Scanner;
+import java.util.Arrays;
 
 /*
 Задача на программирование: расстояние Левенштейна
@@ -39,13 +40,29 @@ import java.util.Scanner;
 public class A_EditDist {
 
 
+    private int[][] dp;
+
+    private int calc(String a, String b, int i, int j) {
+        if (i == 0) return j;
+        if (j == 0) return i;
+        if (dp[i][j] != -1) return dp[i][j];
+        int delete = calc(a, b, i - 1, j) + 1;
+        int insert = calc(a, b, i, j - 1) + 1;
+        int cost = (a.charAt(i - 1) == b.charAt(j - 1)) ? 0 : 1;
+        int replace = calc(a, b, i - 1, j - 1) + cost;
+        int res = Math.min(delete, Math.min(insert, replace));
+        dp[i][j] = res;
+        return res;
+    }
+
     int getDistanceEdinting(String one, String two) {
-        //!!!!!!!!!!!!!!!!!!!!!!!!!     НАЧАЛО ЗАДАЧИ     !!!!!!!!!!!!!!!!!!!!!!!!!
-
-
-        int result = 0;
-        //!!!!!!!!!!!!!!!!!!!!!!!!!     КОНЕЦ ЗАДАЧИ     !!!!!!!!!!!!!!!!!!!!!!!!!
-        return result;
+        int n = one.length();
+        int m = two.length();
+        dp = new int[n + 1][m + 1];
+        for (int i = 0; i <= n; i++) {
+            Arrays.fill(dp[i], -1);
+        }
+        return calc(one, two, n, m);
     }
 
 
