@@ -56,11 +56,32 @@ public class B_Huffman {
         Integer count = scanner.nextInt();
         Integer length = scanner.nextInt();
         //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! НАЧАЛО ЗАДАЧИ !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!1
-        //тут запишите ваше решение
-
+        
+        // Создаем словарь для хранения кодов символов
+        // Ключ - код, значение - символ
+        java.util.Map<String, Character> codes = new java.util.HashMap<>();
+        
+        scanner.nextLine(); // Пропускаем остаток строки после чисел
+        for (int i = 0; i < count; i++) {
+            String line = scanner.nextLine();
+            char letter = line.charAt(0);
+            String code = line.substring(3); // Пропускаем "x: " и берем код
+            codes.put(code, letter);
+        }
+        
+        String encodedString = scanner.next();
+        
+        StringBuilder currentCode = new StringBuilder();
+        for (char bit : encodedString.toCharArray()) {
+            currentCode.append(bit);
+            if (codes.containsKey(currentCode.toString())) {
+                result.append(codes.get(currentCode.toString()));
+                currentCode = new StringBuilder();
+            }
+        }
 
         //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! КОНЕЦ ЗАДАЧИ !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!1
-        return result.toString(); //01001100100111
+        return result.toString();
     }
 
 
