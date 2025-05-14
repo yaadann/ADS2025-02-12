@@ -61,16 +61,81 @@ public class C_QSortOptimized {
         for (int i = 0; i < m; i++) {
             points[i] = scanner.nextInt();
         }
-        //тут реализуйте логику задачи с применением быстрой сортировки
-        //в классе отрезка Segment реализуйте нужный для этой задачи компаратор
+        quickSort(segments, 0, segments.length - 1);
 
+        for (int i = 0; i < m; i++) {
+            result[i] = countContainingSegments(segments, points[i]);
+        }
 
-        //!!!!!!!!!!!!!!!!!!!!!!!!!     КОНЕЦ ЗАДАЧИ     !!!!!!!!!!!!!!!!!!!!!!!!!
         return result;
     }
 
+    private int countContainingSegments(Segment[] segments, int point) {
+        int left = 0;
+        int right = segments.length - 1;
+        int firstIndex = -1;
+
+        // бинарный поиск первого отрезка, который может содержать точку
+        while (left <= right) {
+            int mid = (left + right) / 2;
+            if (segments[mid].start <= point) {
+                if (segments[mid].stop >= point) {
+                    firstIndex = mid;
+                }
+                left = mid + 1;
+            } else {
+                right = mid - 1;
+            }
+        }
+        if (firstIndex == -1) return 0;
+
+        int count = 0;
+        // влево от firstIndex
+        for (int i = firstIndex; i >= 0 && segments[i].start <= point; i--) {
+            if (segments[i].stop >= point) {
+                count++;
+            }
+        }
+        // вправо от firstIndex + 1
+        for (int i = firstIndex + 1; i < segments.length && segments[i].start <= point; i++) {
+            if (segments[i].stop >= point) {
+                count++;
+            }
+        }
+
+        return count;
+    }
+
+    private void quickSort(Segment[] a, int lo, int hi) {
+        while (lo < hi) {
+            int lt = lo, gt = hi;
+            Segment v = a[lo];
+            int i = lo + 1;
+            while (i <= gt) {
+                int cmp = a[i].compareTo(v);
+                if (cmp < 0) swap(a, lt++, i++);
+                else if (cmp > 0) swap(a, i, gt--);
+                else i++;
+            }
+
+            if (lt - lo < hi - gt) {
+                quickSort(a, lo, lt - 1);
+                lo = gt + 1; // tail recursion elimination
+            } else {
+                quickSort(a, gt + 1, hi);
+                hi = lt - 1;
+            }
+        }
+    }
+
+    private void swap(Segment[] a, int i, int j) {
+        Segment temp = a[i];
+        a[i] = a[j];
+        a[j] = temp;
+    }
+
     //отрезок
-    private class Segment implements Comparable {
+    private class Segment implements Comparable<Segment> {
         int start;
         int stop;
 
@@ -80,10 +145,13 @@ public class C_QSortOptimized {
         }
 
         @Override
-        public int compareTo(Object o) {
-            //подумайте, что должен возвращать компаратор отрезков
-            return 0;
+        public int compareTo(Segment other) {
+            if (this.start != other.start) {
+                return Integer.compare(this.start, other.start);
+            } else {
+                return Integer.compare(this.stop, other.stop);
+            }
         }
     }
-
 }
+
