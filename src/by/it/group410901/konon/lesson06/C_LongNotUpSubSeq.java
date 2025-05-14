@@ -3,7 +3,7 @@ package by.it.group410901.konon.lesson06;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.util.Scanner;
-
+import java.util.Arrays;
 /*
 Задача на программирование: наибольшая невозростающая подпоследовательность
 
@@ -51,12 +51,58 @@ public class C_LongNotUpSubSeq {
         //общая длина последовательности
         int n = scanner.nextInt();
         int[] m = new int[n];
+        int[] P = new int[n];
+        int[] M = new int[n + 1];
+        int L = 0;
+        Arrays.fill(P, -1);
         //читаем всю последовательность
         for (int i = 0; i < n; i++) {
             m[i] = scanner.nextInt();
+            int lo = 1;
+            int hi = L + 1;
+
+            while (lo < hi) {
+                int mid = (lo + hi) / 2;
+
+                if (m[M[mid]] < m[i]) {
+                    hi = mid;
+                } else {
+                    lo = mid + 1;
+                }
+            }
+
+            int newL = lo;
+
+
+            P[i] = (newL > 1) ? M[newL - 1] : -1;
+
+
+            M[newL] = i;
+
+
+            if (newL > L) {
+                L = newL;
+            }
         }
-        //тут реализуйте логику задачи методами динамического программирования (!!!)
-        int result = 0;
+
+        // Восстановление LIS
+        int[] S = new int[L];
+        int[] otv =new int[L];
+        int k = M[L];
+
+        for (int i = L - 1; i >= 0; i--) {
+            S[i] = m[k];
+            otv[i]=k+1 ;
+            k = P[k];
+
+        }
+        for (int i = 0; i <=L-1; i++) {
+            System.out.print(otv[i] + " ");
+        }
+
+
+        int result = L;
+
 
 
         //!!!!!!!!!!!!!!!!!!!!!!!!!     КОНЕЦ ЗАДАЧИ     !!!!!!!!!!!!!!!!!!!!!!!!!
