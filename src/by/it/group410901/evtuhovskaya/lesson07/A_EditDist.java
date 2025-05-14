@@ -10,7 +10,6 @@ public class A_EditDist {
         int m = one.length();
         int n = two.length();
 
-        // Создаем таблицу для хранения результатов подзадач
         int[][] dp = new int[m + 1][n + 1];
 
         // Инициализация базовых случаев
@@ -42,7 +41,7 @@ public class A_EditDist {
     public static void main(String[] args) throws FileNotFoundException {
         InputStream stream = A_EditDist.class.getResourceAsStream("dataABC.txt");
         A_EditDist instance = new A_EditDist();
-        Scanner scanner = new Scanner(stream);
+        Scanner scanner = new Scanner( stream);
         System.out.println(instance.getDistanceEdinting(scanner.nextLine(), scanner.nextLine()));
         System.out.println(instance.getDistanceEdinting(scanner.nextLine(), scanner.nextLine()));
         System.out.println(instance.getDistanceEdinting(scanner.nextLine(), scanner.nextLine()));

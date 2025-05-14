@@ -10,15 +10,14 @@ public class B_EditDist {
         int m = one.length();
         int n = two.length();
 
-        // Создаем матрицу для хранения расстояний
         int[][] dp = new int[m + 1][n + 1];
 
         // Инициализация базовых случаев
         for (int i = 0; i <= m; i++) {
-            dp[i][0] = i; // Для преобразования в пустую строку (удаление всех символов)
+            dp[i][0] = i; // Для преобразования в пустую строку
         }
         for (int j = 0; j <= n; j++) {
-            dp[0][j] = j; // Для преобразования из пустой строки (вставка всех символов)
+            dp[0][j] = j; // Для преобразования из пустой строки
         }
 
         // Заполняем матрицу итеративно
@@ -38,7 +37,7 @@ public class B_EditDist {
             }
         }
 
-        return dp[m][n];
+        return  dp[m][n];
     }
 
     public static void main(String[] args) throws FileNotFoundException {

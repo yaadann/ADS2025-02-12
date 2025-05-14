@@ -10,7 +10,6 @@ public class C_EditDist {
         int m = one.length();
         int n = two.length();
 
-        // Создаем матрицу для хранения расстояний
         int[][] dp = new int[m + 1][n + 1];
 
         // Инициализация базовых случаев
@@ -35,7 +34,6 @@ public class C_EditDist {
             }
         }
 
-        // Восстанавливаем редакционное предписание
         StringBuilder result = new StringBuilder();
         int i = m, j = n;
 
