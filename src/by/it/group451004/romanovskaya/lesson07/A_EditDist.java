@@ -38,16 +38,40 @@ import java.util.Scanner;
 
 public class A_EditDist {
 
-
     int getDistanceEdinting(String one, String two) {
-        //!!!!!!!!!!!!!!!!!!!!!!!!!     НАЧАЛО ЗАДАЧИ     !!!!!!!!!!!!!!!!!!!!!!!!!
+        int m = one.length();
+        int n = two.length();
 
+        // Создание таблицы для хранения результатов подзадач
+        int[][] dp = new int[m + 1][n + 1];
 
-        int result = 0;
-        //!!!!!!!!!!!!!!!!!!!!!!!!!     КОНЕЦ ЗАДАЧИ     !!!!!!!!!!!!!!!!!!!!!!!!!
-        return result;
+        // Заполнение базовых случаев (если одна из строк пуста)
+        for (int i = 0; i <= m; i++) {
+            dp[i][0] = i;  // Расстояние от строки one к пустой строке
+        }
+
+        for (int j = 0; j <= n; j++) {
+            dp[0][j] = j;  // Расстояние от пустой строки к строке two
+        }
+
+        // Заполнение таблицы
+        for (int i = 1; i <= m; i++) {
+            for (int j = 1; j <= n; j++) {
+                if (one.charAt(i - 1) == two.charAt(j - 1)) {
+                    // Если символы одинаковые, то расстояние не меняется
+                    dp[i][j] = dp[i - 1][j - 1];
+                } else {
+                    // Если символы разные, то минимальный шаг: вставка, удаление или замена
+                    dp[i][j] = Math.min(Math.min(dp[i - 1][j] + 1,  // Удаление
+                                    dp[i][j - 1] + 1),  // Вставка
+                            dp[i - 1][j - 1] + 1); // Замена
+                }
+            }
+        }
+
+        // Ответ находится в правом нижнем углу таблицы
+        return dp[m][n];
     }
-
 
     public static void main(String[] args) throws FileNotFoundException {
         InputStream stream = A_EditDist.class.getResourceAsStream("dataABC.txt");

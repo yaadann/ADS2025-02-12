@@ -40,13 +40,40 @@ public class B_EditDist {
 
 
     int getDistanceEdinting(String one, String two) {
-        //!!!!!!!!!!!!!!!!!!!!!!!!!     НАЧАЛО ЗАДАЧИ     !!!!!!!!!!!!!!!!!!!!!!!!!
+        int m = one.length();
+        int n = two.length();
 
+        // Создаем матрицу для хранения расстояний
+        int[][] dp = new int[m + 1][n + 1];
 
-        int result = 0;
-        //!!!!!!!!!!!!!!!!!!!!!!!!!     КОНЕЦ ЗАДАЧИ     !!!!!!!!!!!!!!!!!!!!!!!!!
-        return result;
+        // Инициализация базовых случаев
+        for (int i = 0; i <= m; i++) {
+            dp[i][0] = i; // преобразование в пустую строку
+        }
+        for (int j = 0; j <= n; j++) {
+            dp[0][j] = j; // преобразование из пустой строки
+        }
+
+        // Заполнение матрицы
+        for (int i = 1; i <= m; i++) {
+            for (int j = 1; j <= n; j++) {
+                if (one.charAt(i - 1) == two.charAt(j - 1)) {
+                    dp[i][j] = dp[i - 1][j - 1]; // символы совпадают
+                } else {
+                    dp[i][j] = 1 + Math.min(
+                            dp[i - 1][j],    // удаление
+                            Math.min(
+                                    dp[i][j - 1], // вставка
+                                    dp[i - 1][j - 1] // замена
+                            )
+                    );
+                }
+            }
+        }
+
+        return dp[m][n];
     }
+
 
 
     public static void main(String[] args) throws FileNotFoundException {
