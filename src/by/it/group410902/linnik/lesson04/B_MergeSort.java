@@ -19,7 +19,7 @@ Sample Output:
 2 2 3 9 9
 */
 public class B_MergeSort {
-
+//ntetete
     public static void main(String[] args) throws FileNotFoundException {
         InputStream stream = B_MergeSort.class.getResourceAsStream("dataB.txt");
         B_MergeSort instance = new B_MergeSort();
