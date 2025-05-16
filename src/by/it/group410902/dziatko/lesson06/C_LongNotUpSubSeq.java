@@ -3,6 +3,7 @@ package by.it.group410902.dziatko.lesson06;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.util.Scanner;
+import java.util.Arrays;
 
 /*
 Задача на программирование: наибольшая невозростающая подпоследовательность
@@ -56,11 +57,25 @@ public class C_LongNotUpSubSeq {
             m[i] = scanner.nextInt();
         }
         //тут реализуйте логику задачи методами динамического программирования (!!!)
-        int result = 0;
-
-
+        int m_p_str[] = new int[n], sub_tre_ind[] = new int[n], max_length;
+        Arrays.fill(m_p_str, 1);
+        for (int i = n-1; i >= 0; i--) {
+            for (int j = n-1; j > i; j--) {
+                if (!(m[j] > m[i])) {
+                    m_p_str[i] = Math.max(m_p_str[i], m_p_str[j]+1);
+                }
+            }
+        }
+        int max_for_it = Arrays.stream(m_p_str).max().getAsInt(), index = 0;
+        max_length = max_for_it;
+        for (int i = 0; i < n; i++) {
+            if (m_p_str[i] == max_for_it) {
+                sub_tre_ind[index] = i;
+                max_for_it--;
+            }
+        }
         //!!!!!!!!!!!!!!!!!!!!!!!!!     КОНЕЦ ЗАДАЧИ     !!!!!!!!!!!!!!!!!!!!!!!!!
-        return result;
+        return max_length;
     }
 
 }

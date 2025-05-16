@@ -41,13 +41,36 @@ public class A_EditDist {
 
     int getDistanceEdinting(String one, String two) {
         //!!!!!!!!!!!!!!!!!!!!!!!!!     НАЧАЛО ЗАДАЧИ     !!!!!!!!!!!!!!!!!!!!!!!!!
+        int n = one.length(), m = two.length();
+        int[][] memo = new int[n + 1][m + 1];
 
+        for (int i = 0; i <= n; i++)
+            for (int j = 0; j <= m; j++)
+                memo[i][j] = -1;
 
-        int result = 0;
+        int result = levenshtein(one, two, n, m, memo);;
         //!!!!!!!!!!!!!!!!!!!!!!!!!     КОНЕЦ ЗАДАЧИ     !!!!!!!!!!!!!!!!!!!!!!!!!
         return result;
     }
 
+    public static int levenshtein(String s1, String s2, int i, int j, int[][] memo) {
+        if (i == 0) return j;
+        if (j == 0) return i;
+
+        if (memo[i][j] != -1) return memo[i][j];
+
+        if (s1.charAt(i - 1) == s2.charAt(j - 1)) {
+            memo[i][j] = levenshtein(s1, s2, i - 1, j - 1, memo);
+        } else {
+            int insert = levenshtein(s1, s2, i, j - 1, memo);
+            int delete = levenshtein(s1, s2, i - 1, j, memo);
+            int replace = levenshtein(s1, s2, i - 1, j - 1, memo);
+
+            memo[i][j] = 1 + Math.min(insert, Math.min(delete, replace));
+        }
+
+        return memo[i][j];
+    }
 
     public static void main(String[] args) throws FileNotFoundException {
         InputStream stream = A_EditDist.class.getResourceAsStream("dataABC.txt");

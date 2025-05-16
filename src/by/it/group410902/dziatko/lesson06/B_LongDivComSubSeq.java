@@ -2,6 +2,7 @@ package by.it.group410902.dziatko.lesson06;
 
 import java.io.FileNotFoundException;
 import java.io.InputStream;
+import java.util.Arrays;
 import java.util.Scanner;
 
 /*
@@ -49,11 +50,18 @@ public class B_LongDivComSubSeq {
             m[i] = scanner.nextInt();
         }
         //тут реализуйте логику задачи методами динамического программирования (!!!)
-        int result = 0;
+        int m_p_str[] = new int[n];
+        Arrays.fill(m_p_str, 1);
+        for (int i = 1; i < n; i++) {
+            for (int j = 0; j < i; j++) {
+                if(m[i] % m[j] == 0){
+                    m_p_str[i] = Math.max(m_p_str[i], m_p_str[j]+1);
+                }
+            }
 
-
+        }
         //!!!!!!!!!!!!!!!!!!!!!!!!!     КОНЕЦ ЗАДАЧИ     !!!!!!!!!!!!!!!!!!!!!!!!!
-        return result;
+        return Arrays.stream(m_p_str).max().getAsInt();
     }
 
 }
