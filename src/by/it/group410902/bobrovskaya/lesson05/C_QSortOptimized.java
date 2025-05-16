@@ -79,8 +79,8 @@ public class C_QSortOptimized {
     // Реализация быстрой сортировки с трех-разбиением
     private void quickSort(Segment[] arr, int low, int high) {
         while (low < high) {
-            int lt = low, gt = high, i = low + 1;
-            Segment pivot = arr[low];
+            int lt = low, gt = high, i = low + 1; //Разделяем массив на три части
+            Segment pivot = arr[low]; //Выбираем опорный элемент, первый в массиве
 
             while (i <= gt) {
                 if (arr[i].compareTo(pivot) < 0) swap(arr, lt++, i++);
@@ -88,7 +88,7 @@ public class C_QSortOptimized {
                 else i++;
             }
 
-            quickSort(arr, low, lt - 1);
+            quickSort(arr, low, lt - 1); //Сортируем левую часть рекурсивно.
             low = gt + 1; // Элиминация хвостовой рекурсии
         }
     }
