@@ -43,22 +43,64 @@ public class C_GetInversions {
         System.out.print(result);
     }
 
+
     int calc(InputStream stream) throws FileNotFoundException {
-        //подготовка к чтению данных
         Scanner scanner = new Scanner(stream);
-        //!!!!!!!!!!!!!!!!!!!!!!!!!     НАЧАЛО ЗАДАЧИ     !!!!!!!!!!!!!!!!!!!!!!!!
-        //размер массива
         int n = scanner.nextInt();
-        //сам массив
         int[] a = new int[n];
         for (int i = 0; i < n; i++) {
             a[i] = scanner.nextInt();
         }
-        int result = 0;
-        //!!!!!!!!!!!!!!!!!!!!!!!!     тут ваше решение   !!!!!!!!!!!!!!!!!!!!!!!!
+        scanner.close();
+        return countInversions(a);
+    }
 
+    private int countInversions(int[] array) {
+        if (array == null || array.length <= 1) {
+            return 0;
+        }
+        int[] temp = new int[array.length];
+        return mergeSortAndCount(array, temp, 0, array.length - 1);
+    }
 
-        //!!!!!!!!!!!!!!!!!!!!!!!!!     КОНЕЦ ЗАДАЧИ     !!!!!!!!!!!!!!!!!!!!!!!!!
-        return result;
+    private int mergeSortAndCount(int[] array, int[] temp, int left, int right) {
+        int inversions = 0;
+        if (left < right) {
+            int mid = left + (right - left) / 2;
+            inversions += mergeSortAndCount(array, temp, left, mid);
+            inversions += mergeSortAndCount(array, temp, mid + 1, right);
+            inversions += mergeAndCount(array, temp, left, mid, right);
+        }
+        return inversions;
+    }
+
+    private int mergeAndCount(int[] array, int[] temp, int left, int mid, int right) {
+        int i = left;
+        int j = mid + 1;
+        int k = left;
+        int inversions = 0;
+
+        while (i <= mid && j <= right) {
+            if (array[i] <= array[j]) {
+                temp[k++] = array[i++];
+            } else {
+                temp[k++] = array[j++];
+                inversions += (mid - i + 1);
+            }
+        }
+
+        while (i <= mid) {
+            temp[k++] = array[i++];
+        }
+
+        while (j <= right) {
+            temp[k++] = array[j++];
+        }
+
+        for (i = left; i <= right; i++) {
+            array[i] = temp[i];
+        }
+
+        return inversions;
     }
 }

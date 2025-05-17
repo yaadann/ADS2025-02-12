@@ -37,31 +37,61 @@ public class A_BinaryFind {
         }
     }
 
+    // Метод для нахождения индексов
     int[] findIndex(InputStream stream) throws FileNotFoundException {
-        //подготовка к чтению данных
+        // Создаем сканер для чтения данных из потока
         Scanner scanner = new Scanner(stream);
-        //!!!!!!!!!!!!!!!!!!!!!!!!!     НАЧАЛО ЗАДАЧИ     !!!!!!!!!!!!!!!!!!!!!!!!!
 
-        //размер отсортированного массива
-        int n = scanner.nextInt();
-        //сам отсортированный массива
+        // Чтение первой строки, которая содержит размер массива и сам массив
+        String firstLine = scanner.nextLine();
+        Scanner firstLineScanner = new Scanner(firstLine);
+
+        // Считываем размер массива n
+        int n = firstLineScanner.nextInt();
         int[] a = new int[n];
-        for (int i = 1; i <= n; i++) {
-            a[i - 1] = scanner.nextInt();
+        // Считываем элементы массива
+        for (int i = 0; i < n; i++) {
+            a[i] = firstLineScanner.nextInt();
         }
+        firstLineScanner.close(); // Закрываем сканер для первой строки
 
-        //размер массива индексов
-        int k = scanner.nextInt();
+        // Чтение второй строки, которая содержит количество чисел для поиска и сами числа
+        String secondLine = scanner.nextLine();
+        Scanner secondLineScanner = new Scanner(secondLine);
+
+        // Считываем количество чисел для поиска k
+        int k = secondLineScanner.nextInt();
         int[] result = new int[k];
+        // Для каждого числа из второй строки выполняем бинарный поиск
         for (int i = 0; i < k; i++) {
-            int value = scanner.nextInt();
-            //тут реализуйте бинарный поиск индекса
-
-
-            result[i] = 0;
+            int value = secondLineScanner.nextInt();
+            // Результат бинарного поиска с добавлением 1 для корректного индекса (с 1)
+            result[i] = binarySearch(a, value) + 1; // +1 для 1-базированного индекса
         }
-        //!!!!!!!!!!!!!!!!!!!!!!!!!     КОНЕЦ ЗАДАЧИ     !!!!!!!!!!!!!!!!!!!!!!!!!
-        return result;
+        secondLineScanner.close(); // Закрываем сканер для второй строки
+
+        scanner.close(); // Закрываем основной сканер
+        return result; // Возвращаем массив с результатами поиска
     }
 
+    // Метод для бинарного поиска в отсортированном массиве
+    private int binarySearch(int[] array, int target) {
+        int left = 0;
+        int right = array.length - 1;
+
+        // Процесс бинарного поиска
+        while (left <= right) {
+            int mid = left + (right - left) / 2; // Находим середину
+
+            if (array[mid] == target) {
+                return mid; // Если нашли элемент, возвращаем индекс
+            } else if (array[mid] < target) {
+                left = mid + 1; // Если элемент больше, ищем справа
+            } else {
+                right = mid - 1; // Если элемент меньше, ищем слева
+            }
+        }
+
+        return -2; // Если не нашли элемент, возвращаем -2 (что после прибавления 1 даёт -1)
+    }
 }
