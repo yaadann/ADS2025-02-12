@@ -64,33 +64,41 @@ public class C_QSortOptimized {
         }
         //тут реализуйте логику задачи с применением быстрой сортировки
         //в классе отрезка Segment реализуйте нужный для этой задачи компаратор
+
+        // сортировка отрезков по началу и (если равны) по концу
         quickSort(segments, 0, segments.length - 1);
 
+
+        // Разделяем отрезки на два отдельных массива: начала и концы
         int[] starts = new int[n];
         int[] ends = new int[n];
         for (int i = 0; i < n; i++) {
             starts[i] = segments[i].start;
             ends[i] = segments[i].stop;
         }
+        // Отдельно сортируем массив концов отрезков для последующего бинарного поиска
         Arrays.sort(ends);
 
+        // Для каждой точки считаем, сколько отрезков её покрывают
         for (int i = 0; i < m; i++) {
             int x = points[i];
-            int left = upperBound(starts, x);
-            int right = lowerBound(ends, x);
-            result[i] = left - right;
+            int left = upperBound(starts, x); // Количество отрезков, начавшихся до или на точке
+            int right = lowerBound(ends, x);  // Количество отрезков, закончившихся до точки
+            result[i] = left - right;         // Количество покрывающих отрезков
         }
 
         //!!!!!!!!!!!!!!!!!!!!!!!!!     КОНЕЦ ЗАДАЧИ     !!!!!!!!!!!!!!!!!!!!!!!!!
-        return result;
+        return result;   // отдельно сортируем окончания
     }
 
+    // Меняет местами два элемента в массиве отрезков
     private static void swap(Segment[] arr, int i, int j) {
         Segment temp = arr[i];
         arr[i] = arr[j];
         arr[j] = temp;
     }
 
+    // Выбирает медианный элемент из трёх по значению (используется как pivot в quicksort)
     private static int medianOfThree(Segment[] arr, int a, int b, int c) {
         if (arr[a].compareTo(arr[b]) > 0) {
             swap(arr, a, b);
@@ -101,18 +109,19 @@ public class C_QSortOptimized {
         if (arr[b].compareTo(arr[c]) > 0) {
             swap(arr, b, c);
         }
-        return b;
+        return b; // Возвращает индекс медианного значения
     }
 
+    // Трёхпутевое разбиение массива (Dutch National Flag) с выбранным медианным pivot
     private static int[] partition(Segment[] arr, int low, int high) {
         int mid = low + (high - low) / 2;
         int pivotIndex = medianOfThree(arr, low, mid, high);
         swap(arr, pivotIndex, high);
         Segment pivot = arr[high];
 
-        int i = low;
-        int j = high;
-        int k = low;
+        int i = low;   // указатель на конец области меньших элементов
+        int j = high;  // указатель на начало области больших элементов
+        int k = low;   // текущий элемент
 
         while (k <= j) {
             int cmp = arr[k].compareTo(pivot);
@@ -124,9 +133,10 @@ public class C_QSortOptimized {
                 k++;
             }
         }
-        return new int[]{i, j};
+        return new int[]{i, j}; // возвращаем границы области, равной pivot;
     }
 
+    // Быстрая сортировка с хвостовой рекурсией
     private static void quickSort(Segment[] arr, int low, int high) {
         while (low < high) {
             int[] pivotIndices = partition(arr, low, high);
@@ -139,7 +149,7 @@ public class C_QSortOptimized {
             }
         }
     }
-
+    // upperBound — находит индекс первого элемента > key
     private static int upperBound(int[] arr, int key) {
         int low = 0;
         int high = arr.length;
@@ -154,6 +164,7 @@ public class C_QSortOptimized {
         return low;
     }
 
+    // lowerBound — находит индекс первого элемента >= key
     private static int lowerBound(int[] arr, int key) {
         int low = 0;
         int high = arr.length;
@@ -178,6 +189,7 @@ public class C_QSortOptimized {
             this.stop = stop;
         }
 
+        // Метод сравнения отрезков: сначала по start, затем по stop
         @Override
         public int compareTo(Object o) {
             Segment b = o instanceof Segment ? (Segment) o : null;

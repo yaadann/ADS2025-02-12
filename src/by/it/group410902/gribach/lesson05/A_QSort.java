@@ -70,21 +70,31 @@ public class A_QSort {
         //тут реализуйте логику задачи с применением быстрой сортировки
         //в классе отрезка Segment реализуйте нужный для этой задачи компаратор
 
+        // Выделяем отдельные массивы для начала и конца отрезков
         int[] starts = new int[n];
         int[] ends = new int[n];
+
         for (int i = 0; i < n; i++) {
             starts[i] = segments[i].start;
             ends[i] = segments[i].stop;
         }
+
+        // Сортируем начала и концы отрезков
         Arrays.sort(starts);
         Arrays.sort(ends);
 
         for (int i = 0; i < m; i++) {
             int point = points[i];
+
+            // upperBound: сколько отрезков начинается ≤ point
             int left = upperBound(starts, point);
+
+            // lowerBound: сколько отрезков заканчивается < point
             int right = lowerBound(ends, point);
+
             result[i] = left - right;
         }
+
 
         //!!!!!!!!!!!!!!!!!!!!!!!!!     КОНЕЦ ЗАДАЧИ     !!!!!!!!!!!!!!!!!!!!!!!!!
         return result;
@@ -101,7 +111,7 @@ public class A_QSort {
                 high = mid;
             }
         }
-        return low;
+        return low; // индекс первого элемента > key
     }
 
     private static int lowerBound(int[] arr, int key) {
@@ -115,7 +125,7 @@ public class A_QSort {
                 high = mid;
             }
         }
-        return low;
+        return low; // индекс первого элемента ≥ key
     }
 
     //отрезок

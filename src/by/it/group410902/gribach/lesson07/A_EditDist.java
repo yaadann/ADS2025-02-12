@@ -39,29 +39,51 @@ import java.util.Scanner;
 
 public class A_EditDist {
 
+    // memo[i][j] хранит минимальное расстояние между первыми i символами строки a и первыми j символами строки b
     private int[][] memo;
 
+    // Рекурсивная функция с мемоизацией для вычисления редакционного расстояния
     private int dp(String a, String b, int i, int j) {
+        // Если строка a пуста, нужно j вставок, чтобы получить b
         if (i == 0) return j;
+
+        // Если строка b пуста, нужно i удалений, чтобы из a получить пустую строку
         if (j == 0) return i;
+
+        // Если уже вычисляли это подзадачу — возвращаем из кэша
         if (memo[i][j] != -1) return memo[i][j];
+
+        // Стоимость замены: если символы равны — 0, иначе — 1
         int cost = (a.charAt(i - 1) == b.charAt(j - 1)) ? 0 : 1;
-        int delete = dp(a, b, i - 1, j) + 1;
-        int insert = dp(a, b, i, j - 1) + 1;
-        int replace = dp(a, b, i - 1, j - 1) + cost;
+
+        // Опции:
+        int delete = dp(a, b, i - 1, j) + 1;         // Удаление символа из a
+        int insert = dp(a, b, i, j - 1) + 1;         // Вставка символа в a
+        int replace = dp(a, b, i - 1, j - 1) + cost; // Замена символа в a (если нужно)
+
+        // Минимальное из трёх возможных действий
         int res = Math.min(delete, Math.min(insert, replace));
+
+        // Сохраняем результат в таблицу
         memo[i][j] = res;
+
         return res;
     }
 
+    // Метод-обёртка, вызывающий рекурсивную функцию и инициализирующий таблицу мемоизации
     int getDistanceEdinting(String one, String two) {
-        //!!!!!!!!!!!!!!!!!!!!!!!!!     НАЧАЛО ЗАДАЧИ     !!!!!!!!!!!!!!!!!!!!!!!!!
         int n = one.length();
         int m = two.length();
+
+        // Инициализация таблицы для хранения результатов подзадач
         memo = new int[n + 1][m + 1];
+
+        // Заполняем таблицу значениями -1 (ещё не вычисляли)
         for (int i = 0; i <= n; i++) {
             Arrays.fill(memo[i], -1);
         }
+
+        // Вызываем основную рекурсивную функцию
         return dp(one, two, n, m);
     }
 
