@@ -54,6 +54,7 @@ public class B_MergeSort {
             int middle = (end + start) / 2;
         }
 
+
         //!!!!!!!!!!!!!!!!!!!!!!!!!     КОНЕЦ ЗАДАЧИ     !!!!!!!!!!!!!!!!!!!!!!!!!
         mergeSort(a, 0, a.length - 1);
         return a;
