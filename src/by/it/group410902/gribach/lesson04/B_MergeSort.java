@@ -33,40 +33,50 @@ public class B_MergeSort {
     }
 
     int[] getMergeSort(InputStream stream) throws FileNotFoundException {
-        //подготовка к чтению данных
+        // Подготовка к чтению данных
         Scanner scanner = new Scanner(stream);
-        //!!!!!!!!!!!!!!!!!!!!!!!!!     НАЧАЛО ЗАДАЧИ     !!!!!!!!!!!!!!!!!!!!!!!!!
 
-        //размер массива
+        // Считываем размер массива
         int n = scanner.nextInt();
-        //сам массив
+
+        // Считываем сам массив
         int[] a = new int[n];
         for (int i = 0; i < n; i++) {
             a[i] = scanner.nextInt();
-            System.out.println(a[i]);
+            // System.out.println(a[i]); // Можно раскомментировать для отладки
         }
 
-        // тут ваше решение (реализуйте сортировку слиянием)
-        // https://ru.wikipedia.org/wiki/Сортировка_слиянием
-
+        // Вызываем сортировку слиянием
         sort(a);
-        //!!!!!!!!!!!!!!!!!!!!!!!!!     КОНЕЦ ЗАДАЧИ     !!!!!!!!!!!!!!!!!!!!!!!!!
+
         return a;
     }
+
+    // Рекурсивная сортировка слиянием
     public static void sort(int[] array) {
+        // Базовый случай: если длина массива <= 1, он уже отсортирован
         if (array.length <= 1) {
             return;
         }
+
+        // Делим массив пополам
         int mid = array.length / 2;
         int[] left = Arrays.copyOfRange(array, 0, mid);
         int[] right = Arrays.copyOfRange(array, mid, array.length);
+
+        // Рекурсивно сортируем каждую половину
         sort(left);
         sort(right);
+
+        // Сливаем отсортированные половины обратно в оригинальный массив
         merge(array, left, right);
     }
 
+    // Метод для слияния двух отсортированных массивов
     private static void merge(int[] array, int[] left, int[] right) {
         int i = 0, j = 0, k = 0;
+
+        // Пока есть элементы в обеих половинах
         while (i < left.length && j < right.length) {
             if (left[i] < right[j]) {
                 array[k++] = left[i++];
@@ -74,9 +84,13 @@ public class B_MergeSort {
                 array[k++] = right[j++];
             }
         }
+
+        // Копируем оставшиеся элементы (если остались) из левой половины
         while (i < left.length) {
             array[k++] = left[i++];
         }
+
+        // Копируем оставшиеся элементы из правой половины
         while (j < right.length) {
             array[k++] = right[j++];
         }

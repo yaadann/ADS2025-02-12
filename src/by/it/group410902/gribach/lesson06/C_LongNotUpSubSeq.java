@@ -56,11 +56,32 @@ public class C_LongNotUpSubSeq {
             m[i] = scanner.nextInt();
         }
         //тут реализуйте логику задачи методами динамического программирования (!!!)
-        int result = 0;
+        int[] tail = new int[n];
+        int[] tailIndices = new int[n];
+        int[] prev = new int[n];
+        int length = 0;
 
-
+        for (int i = 0; i < n; i++) {
+            int x = m[i];
+            int l = 0, r = length;
+            while (l < r) {
+                int mid = (l + r) / 2;
+                if (tail[mid] >= x) {
+                    l = mid + 1;
+                } else {
+                    r = mid;
+                }
+            }
+            int pos = l;
+            tail[pos] = x;
+            tailIndices[pos] = i;
+            prev[i] = (pos > 0) ? tailIndices[pos - 1] : -1;
+            if (pos == length) {
+                length++;
+            }
+        }
         //!!!!!!!!!!!!!!!!!!!!!!!!!     КОНЕЦ ЗАДАЧИ     !!!!!!!!!!!!!!!!!!!!!!!!!
-        return result;
+        return length;
     }
 
 }

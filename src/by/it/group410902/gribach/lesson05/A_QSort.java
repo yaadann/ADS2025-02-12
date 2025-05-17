@@ -3,6 +3,7 @@ package by.it.group410902.gribach.lesson05;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.util.Scanner;
+import java.util.Arrays;
 
 /*
 Видеорегистраторы и площадь.
@@ -69,9 +70,52 @@ public class A_QSort {
         //тут реализуйте логику задачи с применением быстрой сортировки
         //в классе отрезка Segment реализуйте нужный для этой задачи компаратор
 
+        int[] starts = new int[n];
+        int[] ends = new int[n];
+        for (int i = 0; i < n; i++) {
+            starts[i] = segments[i].start;
+            ends[i] = segments[i].stop;
+        }
+        Arrays.sort(starts);
+        Arrays.sort(ends);
+
+        for (int i = 0; i < m; i++) {
+            int point = points[i];
+            int left = upperBound(starts, point);
+            int right = lowerBound(ends, point);
+            result[i] = left - right;
+        }
 
         //!!!!!!!!!!!!!!!!!!!!!!!!!     КОНЕЦ ЗАДАЧИ     !!!!!!!!!!!!!!!!!!!!!!!!!
         return result;
+    }
+
+    private static int upperBound(int[] arr, int key) {
+        int low = 0;
+        int high = arr.length;
+        while (low < high) {
+            int mid = (low + high) / 2;
+            if (arr[mid] <= key) {
+                low = mid + 1;
+            } else {
+                high = mid;
+            }
+        }
+        return low;
+    }
+
+    private static int lowerBound(int[] arr, int key) {
+        int low = 0;
+        int high = arr.length;
+        while (low < high) {
+            int mid = (low + high) / 2;
+            if (arr[mid] < key) {
+                low = mid + 1;
+            } else {
+                high = mid;
+            }
+        }
+        return low;
     }
 
     //отрезок
@@ -80,8 +124,13 @@ public class A_QSort {
         int stop;
 
         Segment(int start, int stop) {
-            this.start = start;
-            this.stop = stop;
+            if (start > stop) {
+                this.start = stop;
+                this.stop = start;
+            } else {
+                this.start = start;
+                this.stop = stop;
+            }
             //тут вообще-то лучше доделать конструктор на случай если
             //концы отрезков придут в обратном порядке
         }

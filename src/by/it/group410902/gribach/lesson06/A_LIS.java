@@ -2,6 +2,7 @@ package by.it.group410902.gribach.lesson06;
 
 import java.io.FileNotFoundException;
 import java.io.InputStream;
+import java.util.Arrays;
 import java.util.Scanner;
 
 /*
@@ -51,6 +52,20 @@ public class A_LIS {
             m[i] = scanner.nextInt();
         }
         int result = 0;
+        int[] dp = new int[n];
+        Arrays.fill(dp, 1);
+        for (int i = 1; i < n; i++) {
+            for (int j = 0; j < i; j++) {
+                if (m[i] > m[j]) {
+                    dp[i] = Math.max(dp[i], dp[j] + 1);
+                }
+            }
+        }
+        for (int length : dp) {
+            if (length > result) {
+                result = length;
+            }
+        }
         //!!!!!!!!!!!!!!!!!!!!!!!!!     КОНЕЦ ЗАДАЧИ     !!!!!!!!!!!!!!!!!!!!!!!!!
         return result;
     }

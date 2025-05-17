@@ -2,6 +2,7 @@ package by.it.group410902.gribach.lesson07;
 
 import java.io.FileNotFoundException;
 import java.io.InputStream;
+import java.util.Arrays;
 import java.util.Scanner;
 
 /*
@@ -38,14 +39,30 @@ import java.util.Scanner;
 
 public class A_EditDist {
 
+    private int[][] memo;
+
+    private int dp(String a, String b, int i, int j) {
+        if (i == 0) return j;
+        if (j == 0) return i;
+        if (memo[i][j] != -1) return memo[i][j];
+        int cost = (a.charAt(i - 1) == b.charAt(j - 1)) ? 0 : 1;
+        int delete = dp(a, b, i - 1, j) + 1;
+        int insert = dp(a, b, i, j - 1) + 1;
+        int replace = dp(a, b, i - 1, j - 1) + cost;
+        int res = Math.min(delete, Math.min(insert, replace));
+        memo[i][j] = res;
+        return res;
+    }
 
     int getDistanceEdinting(String one, String two) {
         //!!!!!!!!!!!!!!!!!!!!!!!!!     НАЧАЛО ЗАДАЧИ     !!!!!!!!!!!!!!!!!!!!!!!!!
-
-
-        int result = 0;
-        //!!!!!!!!!!!!!!!!!!!!!!!!!     КОНЕЦ ЗАДАЧИ     !!!!!!!!!!!!!!!!!!!!!!!!!
-        return result;
+        int n = one.length();
+        int m = two.length();
+        memo = new int[n + 1][m + 1];
+        for (int i = 0; i <= n; i++) {
+            Arrays.fill(memo[i], -1);
+        }
+        return dp(one, two, n, m);
     }
 
 
