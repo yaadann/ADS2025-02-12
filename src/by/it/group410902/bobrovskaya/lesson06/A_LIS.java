@@ -51,14 +51,17 @@ public class A_LIS {
         for (int i = 0; i < n; i++) {
             m[i] = scanner.nextInt();
         }
-        int[] dp = new int[n];
-        Arrays.fill(dp, 1);
+        int[] dp = new int[n]; // хранит длину n - длину последовательности
+        Arrays.fill(dp, 1); // заполняем, мин подпоследовательнось - 1 элемент
 
         int result = 1;
 
-        for (int i = 1; i < n; i++) {
-            for (int j = 0; j < i; j++) {
-                if (m[i] > m[j]) {
+        for (int i = 1; i < n; i++)
+        {
+            for (int j = 0; j < i; j++)
+            {
+                if (m[i] > m[j]) // сравниваем i-элемент с элементами до него
+                {
                     dp[i] = Math.max(dp[i], dp[j] + 1);
                 }
             }

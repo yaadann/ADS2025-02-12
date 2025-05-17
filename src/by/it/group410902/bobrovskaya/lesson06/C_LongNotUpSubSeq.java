@@ -62,9 +62,12 @@ public class C_LongNotUpSubSeq {
 
         int result = 1;
 
-        for (int i = 1; i < n; i++) {
-            for (int j = 0; j < i; j++) {
-                if (m[i] <= m[j] && dp[i] < dp[j] + 1) {
+        for (int i = 1; i < n; i++)
+        {
+            for (int j = 0; j < i; j++)
+            {
+                if (m[i] <= m[j] && dp[i] < dp[j] + 1)
+                {
                     dp[i] = dp[j] + 1;
                 }
             }
@@ -73,5 +76,4 @@ public class C_LongNotUpSubSeq {
         //!!!!!!!!!!!!!!!!!!!!!!!!!     КОНЕЦ ЗАДАЧИ     !!!!!!!!!!!!!!!!!!!!!!!!!
         return result;
     }
-
 }

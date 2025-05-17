@@ -54,9 +54,8 @@ public class C_EditDist {
 
         int m = one.length();
         int n = two.length();
-        int[][] dp = new int[m + 1][n + 1];
+        int[][] dp = new int[m + 1][n + 1]; // для хранения минимального количества операций редактирования
 
-        // Заполняем базовые случаи
         for (int i = 0; i <= m; i++) {
             dp[i][0] = i;
         }
@@ -64,9 +63,13 @@ public class C_EditDist {
             dp[0][j] = j;
         }
 
-        // Заполняем матрицу расстояний
-        for (int i = 1; i <= m; i++) {
-            for (int j = 1; j <= n; j++) {
+        // Заполняем матрицу
+        for (int i = 1; i <= m; i++)
+        {
+            for (int j = 1; j <= n; j++)
+            {
+                // соответствующие символы строки 1 и 2 совпадают, то cost = 0 (ничего не меняем)
+                // если НЕ совпадают, то cost = 1 (нужна замена)
                 int cost = (one.charAt(i - 1) == two.charAt(j - 1)) ? 0 : 1;
                 dp[i][j] = Math.min(dp[i - 1][j] + 1, // Удаление
                         Math.min(dp[i][j - 1] + 1, // Вставка
@@ -79,16 +82,21 @@ public class C_EditDist {
         int i = m, j = n;
 
         while (i > 0 || j > 0) {
-            if (i > 0 && dp[i][j] == dp[i - 1][j] + 1) {
+            if (i > 0 && dp[i][j] == dp[i - 1][j] + 1)
+            {
                 result.insert(0, "-" + one.charAt(i - 1) + ",");
                 i--;
-            } else if (j > 0 && dp[i][j] == dp[i][j - 1] + 1) {
+            } else if (j > 0 && dp[i][j] == dp[i][j - 1] + 1)
+            {
                 result.insert(0, "+" + two.charAt(j - 1) + ",");
                 j--;
-            } else {
-                if (one.charAt(i - 1) == two.charAt(j - 1)) {
+            } else
+            {
+                if (one.charAt(i - 1) == two.charAt(j - 1))
+                {
                     result.insert(0, "#,");
-                } else {
+                } else
+                {
                     result.insert(0, "~" + two.charAt(j - 1) + ",");
                 }
                 i--;

@@ -55,8 +55,10 @@ public class B_EditDist {
         }
 
         // Заполняем таблицу
-        for (int i = 1; i <= m; i++) {
-            for (int j = 1; j <= n; j++) {
+        for (int i = 1; i <= m; i++)
+        {
+            for (int j = 1; j <= n; j++)
+            {
                 int cost = (one.charAt(i - 1) == two.charAt(j - 1)) ? 0 : 1;
                 dp[i][j] = Math.min(dp[i - 1][j] + 1, // Удаление
                         Math.min(dp[i][j - 1] + 1, // Вставка
