@@ -55,12 +55,51 @@ public class C_LongNotUpSubSeq {
         for (int i = 0; i < n; i++) {
             m[i] = scanner.nextInt();
         }
-        //тут реализуйте логику задачи методами динамического программирования (!!!)
-        int result = 0;
 
+        // Создаем массивы lastIndForLength, хранящий последние индексы для определённой длины,
+        // и prevIndices, хранящий предыдущие индексы
+        int[] lastIndForLength = new int[n + 1];
+        int[] prevIndices = new int[n];
+        lastIndForLength[0] = -1;
+
+        // Поиск максимальной невозрастающей подпоследовательности
+        int maxLen = 0;
+        for (int i = 0; i < n; i++) {
+            // Ищем последний индекс l, такой что m[lastIndForLength[l]] >= m[I]
+            int low = 1, high = maxLen + 1, mid;
+            while (low < high) {
+                mid = (low + high) / 2;
+                if (m[lastIndForLength[mid]] < m[i]) { high = mid; }
+                else { low = mid + 1; }
+            }
+
+            // Переопределяем новую максимальную длину
+            int newMaxLen = low;
+
+            // Обновляем предыдущий и последний индекс для текущей длины
+            prevIndices[i] = lastIndForLength[newMaxLen-1];
+            lastIndForLength[newMaxLen] = i;
+
+            // Если новая длина больше, то меняем
+            if (newMaxLen > maxLen) { maxLen = newMaxLen; }
+        }
+
+        // Инициализация массива S для максимальной подпоследовательности и заполнение его с конца
+        int[] S = new int[maxLen];
+        int k = lastIndForLength[maxLen];
+        for (int i = maxLen - 1; i >= 0; i--) {
+            S[i] = m[k];
+            k = prevIndices[k];
+        }
+
+        // Вывод максимальной подпоследовательности
+        for (int i = 0; i < maxLen; i++) {
+            System.out.print(S[i] + " ");
+        }
+        System.out.println();
 
         //!!!!!!!!!!!!!!!!!!!!!!!!!     КОНЕЦ ЗАДАЧИ     !!!!!!!!!!!!!!!!!!!!!!!!!
-        return result;
+        return maxLen;
     }
 
 }

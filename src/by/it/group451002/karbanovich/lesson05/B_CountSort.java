@@ -40,6 +40,26 @@ public class B_CountSort {
         }
         //тут реализуйте логику задачи с применением сортировки подсчетом
 
+        // Если массив пустой, то возвращаем его
+        if (n == 0) { return points; }
+
+        // Находим максимальное и минимальное значение из заданного массива
+        int max = points[0], min = points[0];
+        for (int i = 1; i < n; i++) {
+            if (points[i] > max) { max = points[i]; }
+            else if (points[i] < min) { min = points[i]; }
+        }
+
+        // Создаем массив длиной [max - min + 1] и указываем количество повторений каждого числа
+        // в сортируемом массиве
+        int[] count = new int[max - min + 1];
+        for (int point : points) { count[point-min]++; }
+
+        // Проходимся по массиву с повторениями и сортируем изначальный массив
+        int b = 0;
+        for (int i = 0; i < count.length; i++) {
+            for (int j = 0; j < count[i]; j++) { points[b++] = i + min; }
+        }
 
         //!!!!!!!!!!!!!!!!!!!!!!!!!     КОНЕЦ ЗАДАЧИ     !!!!!!!!!!!!!!!!!!!!!!!!!
         return points;

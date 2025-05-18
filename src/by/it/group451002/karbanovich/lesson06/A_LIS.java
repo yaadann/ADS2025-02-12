@@ -50,7 +50,31 @@ public class A_LIS {
         for (int i = 0; i < n; i++) {
             m[i] = scanner.nextInt();
         }
+
+        // Возвращаемый результат - максимальная длина возрастающей последовательности
         int result = 0;
+
+        // Объявляем массив maxLengths, значение каждого элемента - максимальная длина возрастающей последовательности,
+        // где maxLengths[i] - последний элемент
+        int[] maxLengths = new int[n];
+
+        // Проходимся по всем элементам массива
+        for (int i = 0; i < n; i++) {
+            maxLengths[i] = 1;
+
+            // Проходимся по всем элементам до текущего и увеличиваем maxLength[i], если найдена большая длина
+            for (int j = 0; j < i; j++) {
+                if (m[j] < m[i] && maxLengths[j] + 1 > maxLengths[i]) {
+                    maxLengths[i] = maxLengths[j] + 1;
+                }
+            }
+        }
+
+        // Ищем максимальную длину подпоследовательности
+        for (int i = 0; i < n; i++) {
+            if (maxLengths[i] > result) { result = maxLengths[i]; }
+        }
+
         //!!!!!!!!!!!!!!!!!!!!!!!!!     КОНЕЦ ЗАДАЧИ     !!!!!!!!!!!!!!!!!!!!!!!!!
         return result;
     }
