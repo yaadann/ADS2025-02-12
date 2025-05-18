@@ -1,7 +1,9 @@
 package by.it.group410902.saliev.lesson02;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+
 /*
 Даны события events
 реализуйте метод calcStartTimes, так, чтобы число включений регистратора на
@@ -23,22 +25,25 @@ public class A_VideoRegistrator {
     List<Double> calcStartTimes(double[] events, double workDuration) {
         //events - события которые нужно зарегистрировать
         //timeWorkDuration время работы видеокамеры после старта
-        List<Double> result;
-        result = new ArrayList<>();
-        int i = 0;                              //i - это индекс события events[i]
-        //Комментарии от проверочного решения сохранены для подсказки, но вы можете их удалить.
-        //Подготовка к жадному поглощению массива событий
-        //hint: сортировка Arrays.sort обеспечит скорость алгоритма
-        //C*(n log n) + C1*n = O(n log n)
 
-        //пока есть незарегистрированные события
-        //получим одно событие по левому краю
-        //и запомним время старта видеокамеры
-        //вычислим момент окончания работы видеокамеры
-        //и теперь пропустим все покрываемые события
-        //за время до конца работы, увеличивая индекс
+        List<Double> result = new ArrayList<>(); //сюда будем добавлять старты
+        int i = 0;                               //i - это индекс события events[i]
 
+        // Сначала отсортируем все события по времени
+        Arrays.sort(events);
 
-        return result;                        //вернем итог
+        // Пока остались непокрытые события
+        while (i < events.length) {
+            double start = events[i];           // Берём самое раннее событие
+            result.add(start);                  // Включаем камеру в этот момент
+            double end = start + workDuration;  // Считаем момент окончания работы камеры
+
+            // Пропускаем все события, попавшие в интервал работы камеры
+            while (i < events.length && events[i] <= end) {
+                i++;
+            }
+        }
+
+        return result;                          // Вернем итог
     }
 }

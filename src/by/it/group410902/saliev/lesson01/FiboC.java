@@ -24,9 +24,25 @@ public class FiboC {
     long fasterC(long n, int m) {
         //Интуитивно найти решение не всегда просто и
         //возможно потребуется дополнительный поиск информации
-        return -1L;
+
+        // 1. Найдём период Пизано — длину повторяющейся последовательности остатков
+        int[] pisano = new int[m * 6]; // максимум длины периода — 6*m
+        pisano[0] = 0;
+        pisano[1] = 1;
+
+        int period = 0;
+        for (int i = 2; i < pisano.length; i++) {
+            pisano[i] = (pisano[i - 1] + pisano[i - 2]) % m;
+            if (pisano[i - 1] == 0 && pisano[i] == 1) {
+                period = i - 1;
+                break;
+            }
+        }
+
+        // 2. Теперь находим остаток от деления n на длину периода
+        int index = (int)(n % period);
+
+        // 3. Возвращаем нужное значение Фибоначчи по модулю m
+        return pisano[index];
     }
-
-
 }
-

@@ -31,7 +31,6 @@ Sample Output:
 Большой тестовый массив можно прочитать свой или сгенерировать его программно.
 */
 
-
 public class C_GetInversions {
 
     public static void main(String[] args) throws FileNotFoundException {
@@ -46,7 +45,7 @@ public class C_GetInversions {
     int calc(InputStream stream) throws FileNotFoundException {
         //подготовка к чтению данных
         Scanner scanner = new Scanner(stream);
-        //!!!!!!!!!!!!!!!!!!!!!!!!!     НАЧАЛО ЗАДАЧИ     !!!!!!!!!!!!!!!!!!!!!!!!
+        //!!!!!!!!!!!!!!!!!!!!!!!!!     НАЧАЛО ЗАДАЧИ     !!!!!!!!!!!!!!!!!!!!!!!!!
         //размер массива
         int n = scanner.nextInt();
         //сам массив
@@ -57,6 +56,54 @@ public class C_GetInversions {
         int result = 0;
         //!!!!!!!!!!!!!!!!!!!!!!!!     тут ваше решение   !!!!!!!!!!!!!!!!!!!!!!!!
 
+        // реализация слияния с подсчетом инверсий
+        class MergeInversion {
+            int mergeSort(int[] array, int[] temp, int left, int right) {
+                int invCount = 0;
+                if (left < right) {
+                    int mid = (left + right) / 2;
+
+                    invCount += mergeSort(array, temp, left, mid);
+                    invCount += mergeSort(array, temp, mid + 1, right);
+                    invCount += merge(array, temp, left, mid, right);
+                }
+                return invCount;
+            }
+
+            int merge(int[] array, int[] temp, int left, int mid, int right) {
+                int i = left;
+                int j = mid + 1;
+                int k = left;
+                int invCount = 0;
+
+                while (i <= mid && j <= right) {
+                    if (array[i] <= array[j]) {
+                        temp[k++] = array[i++];
+                    } else {
+                        temp[k++] = array[j++];
+                        invCount += (mid - i + 1); // все элементы от i до mid больше
+                    }
+                }
+
+                while (i <= mid) {
+                    temp[k++] = array[i++];
+                }
+
+                while (j <= right) {
+                    temp[k++] = array[j++];
+                }
+
+                for (int t = left; t <= right; t++) {
+                    array[t] = temp[t];
+                }
+
+                return invCount;
+            }
+        }
+
+        MergeInversion mi = new MergeInversion();
+        int[] temp = new int[n];
+        result = mi.mergeSort(a, temp, 0, n - 1);
 
         //!!!!!!!!!!!!!!!!!!!!!!!!!     КОНЕЦ ЗАДАЧИ     !!!!!!!!!!!!!!!!!!!!!!!!!
         return result;
