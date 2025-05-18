@@ -40,12 +40,23 @@ public class A_EditDist {
 
 
     int getDistanceEdinting(String one, String two) {
-        //!!!!!!!!!!!!!!!!!!!!!!!!!     НАЧАЛО ЗАДАЧИ     !!!!!!!!!!!!!!!!!!!!!!!!!
+        return editDistance(one, two, one.length(), two.length());
+    }
 
+    private int editDistance(String s1, String s2, int i, int j) {
+        if (i == 0) return j;
+        if (j == 0) return i;
 
-        int result = 0;
-        //!!!!!!!!!!!!!!!!!!!!!!!!!     КОНЕЦ ЗАДАЧИ     !!!!!!!!!!!!!!!!!!!!!!!!!
-        return result;
+        if (s1.charAt(i - 1) == s2.charAt(j - 1)) {
+            // Символы равны, двигаемся дальше без операции
+            return editDistance(s1, s2, i - 1, j - 1);
+        } else {
+            // Выбираем минимальную из трёх возможных операций
+            int insert = editDistance(s1, s2, i, j - 1);     // вставка
+            int delete = editDistance(s1, s2, i - 1, j);     // удаление
+            int replace = editDistance(s1, s2, i - 1, j - 1); // замена
+            return 1 + Math.min(insert, Math.min(delete, replace));
+        }
     }
 
 
