@@ -70,10 +70,6 @@ public class C_GetInversions {
         if (left < right) {
             int mid = left + (right - left) / 2;
 
-            count += mergeSortAndCount(arr, left, mid);
-
-            count += mergeSortAndCount(arr, mid + 1, right);
-
             count += mergeAndCount(arr, left, mid, right);
         }
         return count;

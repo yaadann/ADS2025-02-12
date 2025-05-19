@@ -95,7 +95,6 @@ public class A_Huffman {
 
         Node root = priorityQueue.poll();
         if (count.size() == 1) {
-            // Special case: only one character type
             root.fillCodes("0");
         } else {
             root.fillCodes("");
