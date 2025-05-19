@@ -39,30 +39,26 @@ public class B_CountSort {
             points[i] = scanner.nextInt();
         }
         //тут реализуйте логику задачи с применением сортировки подсчетом
-        int max = 10; // as per the problem statement, numbers do not exceed 10
-        int[] count = new int[max + 1]; // indices 0..10
 
-        // Step 1: Count the occurrences of each number
-        for (int num : points) {
+        // 1.считаем частоту чисел
+        int[] count = new int[11];
+        for (int i = 0; i < n; i++) {
+            int num = points[i];
             count[num]++;
         }
 
-        // Step 2: Calculate the starting positions (optional, can directly overwrite)
-        for (int i = 1; i <= max; i++) {
-            count[i] += count[i - 1];
+        // 2. Записываем числа в отсортированном порядке
+        int[] sorted = new int[n];
+        int index = 0;
+        for (int num = 0; num <= 10; num++) {
+            while (count[num] > 0) {
+                sorted[index++] = num;
+                count[num]--;
+            }
         }
-
-        // Step 3: Place the numbers in the output array in sorted order
-        int[] output = new int[n];
-        for (int i = n - 1; i >= 0; i--) {
-            int num = points[i];
-            output[count[num] - 1] = num;
-            count[num]--;
-        }
-
 
         //!!!!!!!!!!!!!!!!!!!!!!!!!     КОНЕЦ ЗАДАЧИ     !!!!!!!!!!!!!!!!!!!!!!!!!
-        return output;
+        return sorted;
     }
 
 }
