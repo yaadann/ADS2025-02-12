@@ -57,8 +57,59 @@ public class C_GetInversions {
         int result = 0;
         //!!!!!!!!!!!!!!!!!!!!!!!!     тут ваше решение   !!!!!!!!!!!!!!!!!!!!!!!!
 
-
+        result = countInversions(a);
         //!!!!!!!!!!!!!!!!!!!!!!!!!     КОНЕЦ ЗАДАЧИ     !!!!!!!!!!!!!!!!!!!!!!!!!
         return result;
+    }
+    private int countInversions(int[] arr) {
+        return mergeSortAndCount(arr, 0, arr.length - 1);
+    }
+
+    private int mergeSortAndCount(int[] arr, int left, int right) {
+        int count = 0;
+        if (left < right) {
+            int mid = left + (right - left) / 2;
+
+            count += mergeSortAndCount(arr, left, mid);
+
+            count += mergeSortAndCount(arr, mid + 1, right);
+
+            count += mergeAndCount(arr, left, mid, right);
+        }
+        return count;
+    }
+
+    private int mergeAndCount(int[] arr, int left, int mid, int right) {
+        int[] leftArray = new int[mid - left + 1];
+        int[] rightArray = new int[right - mid];
+
+        for (int i = 0; i < leftArray.length; i++) {
+            leftArray[i] = arr[left + i];
+        }
+        for (int j = 0; j < rightArray.length; j++) {
+            rightArray[j] = arr[mid + 1 + j];
+        }
+
+        int i = 0, j = 0, k = left;
+        int swaps = 0;
+
+        while (i < leftArray.length && j < rightArray.length) {
+            if (leftArray[i] <= rightArray[j]) {
+                arr[k++] = leftArray[i++];
+            } else {
+                arr[k++] = rightArray[j++];
+                swaps += (mid + 1) - (left + i);
+            }
+        }
+
+        while (i < leftArray.length) {
+            arr[k++] = leftArray[i++];
+        }
+
+        while (j < rightArray.length) {
+            arr[k++] = rightArray[j++];
+        }
+
+        return swaps;
     }
 }
