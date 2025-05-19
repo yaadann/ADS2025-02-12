@@ -57,6 +57,36 @@ public class C_GetInversions {
         int result = 0;
         //!!!!!!!!!!!!!!!!!!!!!!!!     тут ваше решение   !!!!!!!!!!!!!!!!!!!!!!!!
 
+        int[] buf = new int[n];
+        for(int size = 1; size < n; size = 2*size){
+            for(int left = 0; left < n-1; left +=2*size ){
+                int mid = Math.min(left + size-1 , n-1);
+                int right = Math.min(left +2*size-1, n-1);
+                for(int i = left ; i <= right ; i++){
+                    buf[i]= a[i];
+                }
+                int i = left;
+                int j = mid +1;
+                int k = left;
+                while(i <= mid && j <= right){
+                    if (buf[i]<= buf[j]){
+                        a[k]= buf[i];
+                        i++;
+
+                    }else{
+                        a[k]= buf[j];
+                        j++;
+                        result++;
+                    }
+                    k++;
+                }
+                while(i <= mid){
+                    a[k]=buf[i];
+                    i++;
+                    k++;
+                }
+            }
+        }
 
         //!!!!!!!!!!!!!!!!!!!!!!!!!     КОНЕЦ ЗАДАЧИ     !!!!!!!!!!!!!!!!!!!!!!!!!
         return result;
