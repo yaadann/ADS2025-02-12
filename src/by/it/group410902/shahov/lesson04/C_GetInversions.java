@@ -94,7 +94,7 @@ public class C_GetInversions {
         int swaps = 0;
 
         while (i < leftArray.length && j < rightArray.length) {
-            if (leftArray[i] <= rightArray[j]){
+            if (leftArray[i] <= rightArray[j]) {
                 arr[k++] = leftArray[i++];
             } else {
                 arr[k++] = rightArray[j++];
