@@ -11,7 +11,7 @@ import java.util.Arrays;
 */
 
 public class B_Sheduler {
-    public static void main(String[] args)  {
+    public static void main(String[] args) {
         B_Sheduler instance = new B_Sheduler();
         Event[] events = {new Event(0, 3), new Event(0, 1), new Event(1, 2), new Event(3, 5),
                 new Event(1, 3), new Event(1, 3), new Event(1, 3), new Event(3, 6),

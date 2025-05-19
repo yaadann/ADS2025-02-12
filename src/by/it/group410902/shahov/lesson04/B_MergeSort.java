@@ -54,7 +54,7 @@ public class B_MergeSort {
         mergeSort(a, 0, a.length - 1);
         return a;
     }
-    private void mergeSort(int[] arr, int left, int right)  {
+    private void mergeSort(int[] arr, int left, int right) {
         if (left < right) {
             int mid = left + (right - left) / 2;
 

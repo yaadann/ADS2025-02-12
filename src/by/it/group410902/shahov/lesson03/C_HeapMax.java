@@ -99,7 +99,7 @@ public class C_HeapMax {
             return i;
         }
 
-        void insert(Long value)  { //вставка
+        void insert(Long value) { //вставка
             heap.add(value);
             siftUp(heap.size() - 1);
         }

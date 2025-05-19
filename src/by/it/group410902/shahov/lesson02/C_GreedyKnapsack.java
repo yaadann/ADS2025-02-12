@@ -26,7 +26,7 @@ public class C_GreedyKnapsack {
         System.out.printf("Общая стоимость %f (время %d)", costFinal, finishTime - startTime);
     }
 
-    double calc(InputStream inputStream) throws FileNotFoundException  {
+    double calc(InputStream inputStream) throws FileNotFoundException {
         Scanner input = new Scanner(inputStream);
         int n = input.nextInt();      //сколько предметов в файле
         int W = input.nextInt();      //какой вес у рюкзака

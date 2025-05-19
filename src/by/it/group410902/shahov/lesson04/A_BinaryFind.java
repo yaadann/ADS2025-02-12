@@ -60,7 +60,7 @@ public class A_BinaryFind {
             int right = n - 1;
             int index = -1;
 
-            while (left <= right)  {
+            while (left <= right) {
                 int mid = left + (right - left) / 2;
                 if (a[mid] == value) {
                     index = mid + 1; // +1 потому что в задании индексация с 1

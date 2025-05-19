@@ -74,7 +74,7 @@ public class B_Huffman {
 
         // Декодируем строку
         java.lang.StringBuilder currentCode = new java.lang.StringBuilder();
-        for (int i = 0; i < encoded.length(); i++)  {
+        for (int i = 0; i < encoded.length(); i++) {
             currentCode.append(encoded.charAt(i));
             Character decodedChar = codeMap.get(currentCode.toString());
             if (decodedChar != null) {
