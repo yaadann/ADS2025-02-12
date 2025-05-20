@@ -17,15 +17,15 @@ public class C_GreedyKnapsack {
 
     double calc(InputStream inputStream) throws FileNotFoundException {
         Scanner input = new Scanner(inputStream);
-        int n = input.nextInt();      // количество предметов
-        int W = input.nextInt();      // вместимость рюкзака
-        Item[] items = new Item[n];   // массив предметов
+        int n = input.nextInt();
+        int W = input.nextInt();
+        Item[] items = new Item[n];
 
         for (int i = 0; i < n; i++) {
             items[i] = new Item(input.nextInt(), input.nextInt());
         }
 
-        // Сортировка предметов по убыванию соотношения стоимость/вес
+
         Arrays.sort(items, new Comparator<Item>() {
             @Override
             public int compare(Item a, Item b) {

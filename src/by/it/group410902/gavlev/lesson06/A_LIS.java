@@ -45,27 +45,19 @@ public class A_LIS {
         for (int i = 0; i < n; i++) {
             m[i] = scanner.nextInt();
         }
-
-        int[] dp = new int[n];
-        for (int i = 0; i < n; i++) {
-            dp[i] = 1; // Минимальная длина последовательности - 1
-        }
-
-        // Заполняем dp-массив по алгоритму LIS
-        for (int i = 1; i < n; i++) {
-            for (int j = 0; j < i; j++) {
-                if (m[i] > m[j] && dp[i] < dp[j] + 1) {
-                    dp[i] = dp[j] + 1;
+        int result = 0;
+        int[] len = new int[n];
+        for(int i = 0; i < n; i++) len[i] = 1;
+        for(int i = 0; i < n; i++){
+            for(int j = 0; j < i; j++){
+                if(m[j] < m [i]){
+                    if(len[j]+1 > len[i]) {
+                        len[i] = len[j] + 1;
+                    }
                 }
             }
         }
-
-        // Находим максимальное значение в dp-массиве
-        int result = 0;
-        for (int val : dp) {
-            result = Math.max(result, val);
-        }
-
+        for(int i = 0; i < n; i++) if(len[i] > result) result = len[i];
         return result;
     }
 }

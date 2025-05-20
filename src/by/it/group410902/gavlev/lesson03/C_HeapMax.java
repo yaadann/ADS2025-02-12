@@ -74,12 +74,12 @@ public class C_HeapMax {
         //Будет мало? Ну тогда можете его собрать как Generic и/или использовать в варианте B
         private List<Long> heap = new ArrayList<>();
 
-        int siftDown(int i) { //просеивание вниз
+        int siftDown(int i) {
             int maxIndex = i;
             int left = 2 * i + 1;
             int right = 2 * i + 2;
 
-            // Ищем максимальный среди текущего элемента и его детей
+
             if (left < heap.size() && heap.get(left) > heap.get(maxIndex)) {
                 maxIndex = left;
             }
@@ -87,7 +87,7 @@ public class C_HeapMax {
                 maxIndex = right;
             }
 
-            // Если нашли большего потомка — меняем местами и продолжаем
+
             if (maxIndex != i) {
                 swap(i, maxIndex);
                 return siftDown(maxIndex);
@@ -95,8 +95,8 @@ public class C_HeapMax {
             return i;
         }
 
-        int siftUp(int i) { //просеивание вверх
-            if (i == 0) return i; // Корень не имеет родителя
+        int siftUp(int i) {
+            if (i == 0) return i;
 
             int parent = (i - 1) / 2;
             if (heap.get(i) > heap.get(parent)) {
@@ -112,18 +112,18 @@ public class C_HeapMax {
             siftUp(heap.size() - 1);
         }
 
-        Long extractMax() { //извлечение и удаление максимума
+        Long extractMax() {
             if (heap.isEmpty()) return null;
             Long max = heap.get(0);
 
-            // Заменяем корень последним элементом
+
             if (heap.size() > 1) {
                 heap.set(0, heap.get(heap.size() - 1));
             }
             heap.remove(heap.size() - 1);
 
             if (!heap.isEmpty()) {
-                siftDown(0); // Просеиваем новый корень вниз
+                siftDown(0);
             }
             return max;
         }

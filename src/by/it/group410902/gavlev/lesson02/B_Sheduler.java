@@ -24,14 +24,13 @@ public class B_Sheduler {
         List<Event> result = new ArrayList<>();
         List<Event> filtered = new ArrayList<>();
 
-        // Filter events that are within the [from, to] interval
         for (Event e : events) {
             if (e.start >= from && e.stop <= to) {
                 filtered.add(e);
             }
         }
 
-        // Sort the filtered events by their end times
+
         Collections.sort(filtered, new Comparator<Event>() {
             @Override
             public int compare(Event e1, Event e2) {
@@ -39,7 +38,7 @@ public class B_Sheduler {
             }
         });
 
-        // Select non-overlapping events
+
         if (!filtered.isEmpty()) {
             Event lastSelected = filtered.get(0);
             result.add(lastSelected);

@@ -3,8 +3,6 @@ package by.it.group410902.gavlev.lesson06;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.util.Scanner;
-import java.util.ArrayList;
-import java.util.List;
 
 /*
 Задача на программирование: наибольшая невозростающая подпоследовательность
@@ -46,43 +44,54 @@ public class C_LongNotUpSubSeq {
     }
 
     int getNotUpSeqSize(InputStream stream) throws FileNotFoundException {
+        //подготовка к чтению данных
         Scanner scanner = new Scanner(stream);
+        //!!!!!!!!!!!!!!!!!!!!!!!!!     НАЧАЛО ЗАДАЧИ     !!!!!!!!!!!!!!!!!!!!!!!!!
+        //общая длина последовательности
         int n = scanner.nextInt();
         int[] m = new int[n];
+        //читаем всю последовательность
         for (int i = 0; i < n; i++) {
             m[i] = scanner.nextInt();
         }
+        //тут реализуйте логику задачи методами динамического программирования (!!!)
 
-        List<Integer> tailsValues = new ArrayList<>();
-        List<Integer> tailsIndices = new ArrayList<>();
+        int result = 0;
+
+        int[] dp = new int[n];
+        int[] parent = new int[n];
+        int[] pos = new int[n];
+
 
         for (int i = 0; i < n; i++) {
-            int x = m[i];
-            int pos = binarySearch(tailsValues, x);
+            int low = 0;
+            int high = result;
+            while (low < high) {
+                int mid = (low + high) / 2;
+                if (dp[mid] >= m[i]) {
+                    low = mid + 1;
+                } else {
+                    high = mid;
+                }
+            }
 
-            if (pos < tailsValues.size()) {
-                tailsValues.set(pos, x);
-                tailsIndices.set(pos, i);
-            } else {
-                tailsValues.add(x);
-                tailsIndices.add(i);
+            dp[low] = m[i];
+            pos[low] = i;
+            parent[i] = (low > 0) ? pos[low - 1] : -1;
+
+            if (low == result) {
+                result++;
             }
         }
 
-        return tailsValues.size();
+        int[] sequence = new int[result];
+        int current = pos[result - 1];
+        for (int i = result - 1; i >= 0; i--) {
+            sequence[i] = current + 1;
+            current = parent[current];
+        }
+
+        return result;
     }
 
-    private int binarySearch(List<Integer> list, int x) {
-        int left = 0;
-        int right = list.size();
-        while (left < right) {
-            int mid = left + (right - left) / 2;
-            if (list.get(mid) < x) {
-                right = mid;
-            } else {
-                left = mid + 1;
-            }
-        }
-        return left;
-    }
 }

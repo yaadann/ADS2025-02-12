@@ -43,25 +43,23 @@ public class B_LongDivComSubSeq {
         for (int i = 0; i < n; i++) {
             m[i] = scanner.nextInt();
         }
-
-        int[] dp = new int[n];
-        for (int i = 0; i < n; i++) {
-            dp[i] = 1; // Каждый элемент сам по себе подпоследовательность длины 1
-        }
-
-        for (int i = 1; i < n; i++) {
-            for (int j = 0; j < i; j++) {
-                if (m[i] % m[j] == 0 && dp[i] < dp[j] + 1) {
-                    dp[i] = dp[j] + 1;
+        int result = 0;
+        int[] len = new int[n];
+        for(int i = 0; i < n; i++) len[i] = 1;
+        for(int i = 0; i < n; i++)
+        {
+            for(int j = 0; j < i; j++)
+            {
+                if(m[i] % m [j] == 0)
+                {
+                    if(len[j]+1 > len[i])
+                    {
+                        len[i] = len[j] + 1;
+                    }
                 }
             }
         }
-
-        int result = 0;
-        for (int val : dp) {
-            result = Math.max(result, val);
-        }
-
+        for(int i = 0; i < n; i++) if(len[i] > result) result = len[i];
         return result;
     }
 }

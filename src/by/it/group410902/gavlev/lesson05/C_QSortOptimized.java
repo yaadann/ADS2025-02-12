@@ -150,9 +150,6 @@ public class C_QSortOptimized {
         return low;
     }
 
-
-
-
     //отрезок
     private class Segment implements Comparable<Segment> {
         int start;

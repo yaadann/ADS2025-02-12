@@ -15,13 +15,12 @@ public class A_VideoRegistrator {
 
         List<Double> calcStartTimes(double[] events, double workDuration) {
             List<Double> result = new ArrayList<>();
-            Arrays.sort(events); // Sort the events in ascending order
+            Arrays.sort(events);
             int i = 0;
             while (i < events.length) {
                 double start = events[i];
-                result.add(start); // Add the current start time
+                result.add(start);
                 double end = start + workDuration;
-                // Move to the next event that is beyond the current coverage end
                 while (i < events.length && events[i] <= end) {
                     i++;
                 }

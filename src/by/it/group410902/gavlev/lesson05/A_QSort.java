@@ -55,18 +55,15 @@ public class A_QSort {
         int[] points = new int[m];
         int[] result = new int[m];
 
-        // Чтение отрезков
         for (int i = 0; i < n; i++) {
             starts[i] = scanner.nextInt();
             ends[i] = scanner.nextInt();
         }
 
-        // Чтение точек
         for (int i = 0; i < m; i++) {
             points[i] = scanner.nextInt();
         }
 
-        // Сортировка массивов начал и концов отрезков
         Arrays.sort(starts);
         Arrays.sort(ends);
 
@@ -81,7 +78,7 @@ public class A_QSort {
         return result;
     }
 
-    // Поиск первого элемента большего p (количество элементов <= p)
+
     private int upperBound(int[] arr, int p) {
         int left = 0, right = arr.length;
         while (left < right) {
@@ -95,7 +92,6 @@ public class A_QSort {
         return left;
     }
 
-    // Поиск первого элемента >= p (количество элементов < p)
     private int lowerBound(int[] arr, int p) {
         int left = 0, right = arr.length;
         while (left < right) {

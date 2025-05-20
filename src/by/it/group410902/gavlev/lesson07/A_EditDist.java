@@ -40,12 +40,41 @@ public class A_EditDist {
 
 
     int getDistanceEdinting(String one, String two) {
-        //!!!!!!!!!!!!!!!!!!!!!!!!!     НАЧАЛО ЗАДАЧИ     !!!!!!!!!!!!!!!!!!!!!!!!!
+        int[][] matrix = new int[one.length() + 1][two.length() + 1];
 
+        for (int i = 0; i <= one.length(); i++) {
+            for (int j = 0; j <= two.length(); j++) {
+                matrix[i][j] = -1;
+            }
+        }
 
-        int result = 0;
-        //!!!!!!!!!!!!!!!!!!!!!!!!!     КОНЕЦ ЗАДАЧИ     !!!!!!!!!!!!!!!!!!!!!!!!!
-        return result;
+        return getLevenshLen(matrix, one, two, one.length(), two.length());
+    }
+
+    int getLevenshLen(int[][] matrix, String one, String two, int i, int j) {
+        if (matrix[i][j] != -1) {
+            return matrix[i][j];
+        }
+
+        if (i == 0) {
+            matrix[i][j] = j;
+            return j;
+        }
+        if (j == 0) {
+            matrix[i][j] = i;
+            return i;
+        }
+
+        int delete = getLevenshLen(matrix, one, two, i-1, j) + 1;
+        int insert = getLevenshLen(matrix, one, two, i, j-1) + 1;
+
+        int cost = (one.charAt(i-1) == two.charAt(j-1)) ? 0 : 1;
+        int replace = getLevenshLen(matrix, one, two, i-1, j-1) + cost;
+
+        // Выбираем минимальное из трех значений
+        matrix[i][j] = Math.min(Math.min(delete, insert), replace);
+
+        return matrix[i][j];
     }
 
 
