@@ -7,16 +7,16 @@ import java.util.*;
 //Lesson 3. A_Huffman.
 //Разработайте метод encode(File file) для кодирования строки (код Хаффмана)
 
-// По данным файла (непустой строке ss длины не более 104104),
+// По данным файла (непустой строке ss длины не более 10⁴),
 // состоящей из строчных букв латинского алфавита,
 // постройте оптимальный по суммарной длине беспрефиксный код.
 
 // Используйте Алгоритм Хаффмана — жадный алгоритм оптимального
 // безпрефиксного кодирования алфавита с минимальной избыточностью.
 
-// В первой строке выведите количество различных букв kk,
+// В первой строке выведите количество различных букв k,
 // встречающихся в строке, и размер получившейся закодированной строки.
-// В следующих kk строках запишите коды букв в формате "letter: code".
+// В следующих k строках запишите коды букв в формате "letter: code".
 // В последней строке выведите закодированную строку. Примеры ниже
 
 //        Sample Input 1:
@@ -26,7 +26,7 @@ import java.util.*;
 //        1 1
 //        a: 0
 //        0
-
+//
 //        Sample Input 2:
 //        abacabad
 //
@@ -58,35 +58,39 @@ public class A_Huffman {
 
     //!!!!!!!!!!!!!!!!!!!!!!!!!     НАЧАЛО ЗАДАЧИ     !!!!!!!!!!!!!!!!!!!!!!!!!
     String encode(InputStream inputStream) throws FileNotFoundException {
-        //прочитаем строку для кодирования из тестового файла
         Scanner scanner = new Scanner(inputStream);
         String s = scanner.next();
 
-        //все комментарии от тестового решения были оставлены т.к. это задание A.
-        //если они вам мешают их можно удалить
-
         Map<Character, Integer> count = new HashMap<>();
-        //1. переберем все символы по очереди и рассчитаем их частоту в Map count
-        //для каждого символа добавим 1 если его в карте еще нет или инкремент если есть.
+        for (char c : s.toCharArray()) {
+            count.put(c, count.getOrDefault(c, 0) + 1);
+        }
 
-        //2. перенесем все символы в приоритетную очередь в виде листьев
         PriorityQueue<Node> priorityQueue = new PriorityQueue<>();
+        for (Map.Entry<Character, Integer> e : count.entrySet()) {
+            priorityQueue.add(new LeafNode(e.getValue(), e.getKey()));
+        }
 
-        //3. вынимая по два узла из очереди (для сборки родителя)
-        //и возвращая этого родителя обратно в очередь
-        //построим дерево кодирования Хаффмана.
-        //У родителя частоты детей складываются.
-
-        //4. последний из родителей будет корнем этого дерева
-        //это будет последний и единственный элемент оставшийся в очереди priorityQueue.
+        if (priorityQueue.size() == 1) {
+            priorityQueue.poll().fillCodes("0");
+        } else {
+            while (priorityQueue.size() > 1) {
+                Node left = priorityQueue.poll();
+                Node right = priorityQueue.poll();
+                priorityQueue.add(new InternalNode(left, right));
+            }
+            priorityQueue.poll().fillCodes("");
+        }
         StringBuilder sb = new StringBuilder();
-        //.....
+        for (char c : s.toCharArray()) {
+            sb.append(codes.get(c));
+        }
 
         return sb.toString();
         //01001100100111
         //01001100100111
     }
-
+    ////////////////////////////////////////////////////////////////////////////////////
     //Изучите классы Node InternalNode LeafNode
     abstract class Node implements Comparable<Node> {
         //абстрактный класс элемент дерева
@@ -131,10 +135,7 @@ public class A_Huffman {
             left.fillCodes(code + "0");
             right.fillCodes(code + "1");
         }
-
     }
-    //!!!!!!!!!!!!!!!!!!!!!!!!!     КОНЕЦ ЗАДАЧИ     !!!!!!!!!!!!!!!!!!!!!!!!!
-
     ////////////////////////////////////////////////////////////////////////////////////
     //расширение базового класса до листа дерева
     private class LeafNode extends Node {
@@ -153,5 +154,6 @@ public class A_Huffman {
             codes.put(this.symbol, code);
         }
     }
-
+    ////////////////////////////////////////////////////////////////////////////////////
+    // !!!!!!!!!!!!!!!!!!!!!!!!!     КОНЕЦ ЗАДАЧИ     !!!!!!!!!!!!!!!!!!!!!!!!!
 }

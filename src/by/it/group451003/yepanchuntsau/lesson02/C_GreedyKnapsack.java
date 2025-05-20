@@ -16,30 +16,26 @@ public class C_GreedyKnapsack {
 
     double calc(InputStream inputStream) throws FileNotFoundException {
         Scanner input = new Scanner(inputStream);
-        int n = input.nextInt();      // количество предметов в файле
-        int W = input.nextInt();      // вместимость рюкзака
-        Item[] items = new Item[n];   // список предметов
+        int n = input.nextInt();
+        int W = input.nextInt();
+        Item[] items = new Item[n];
         for (int i = 0; i < n; i++) {
             items[i] = new Item(input.nextInt(), input.nextInt());
         }
-        // показ предметов
         for (Item item : items) {
             System.out.println(item);
         }
         System.out.printf("Всего предметов: %d. Рюкзак вмещает %d кг.\n", n, W);
 
-        // реализация жадного алгоритма
-        Arrays.sort(items);  // сортировка по убыванию стоимости на единицу веса
+        Arrays.sort(items);
         double result = 0;
         int remaining = W;
         for (Item item : items) {
             if (remaining == 0) break;
             if (item.weight <= remaining) {
-                // берем весь предмет
                 result += item.cost;
                 remaining -= item.weight;
             } else {
-                // берем дробную часть
                 result += item.cost * (remaining / (double) item.weight);
                 remaining = 0;
             }

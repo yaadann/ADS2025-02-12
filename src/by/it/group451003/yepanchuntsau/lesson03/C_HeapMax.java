@@ -5,14 +5,15 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
+import java.util.Collections;
 
 // Lesson 3. C_Heap.
 // Задача: построить max-кучу = пирамиду = бинарное сбалансированное дерево на массиве.
-// ВАЖНО! НЕЛЬЗЯ ИСПОЛЬЗОВАТЬ НИКАКИЕ КОЛЛЕКЦИИ, КРОМЕ ARRAYLIST (его можно, но только для массива)
+// ВАЖНО! НЕЛЬЗЯ ИСПОЛЬЗАТЬ НИКАКИЕ КОЛЛЕКЦИИ, КРОМЕ ARRAYLIST (его можно, но только для массива)
 
 //      Проверка проводится по данным файла
 //      Первая строка входа содержит число операций 1 ≤ n ≤ 100000.
-//      Каждая из последующих nn строк задают операцию одного из следующих двух типов:
+//      Каждая из последующих n строк задают операцию одного из следующих двух типов:
 
 //      Insert x, где 0 ≤ x ≤ 1000000000 — целое число;
 //      ExtractMax.
@@ -42,11 +43,9 @@ public class C_HeapMax {
         System.out.println("MAX=" + instance.findMaxValue(stream));
     }
 
-    //эта процедура читает данные из файла, ее можно не менять.
     Long findMaxValue(InputStream stream) {
         Long maxValue = 0L;
         MaxHeap heap = new MaxHeap();
-        //прочитаем строку для кодирования из тестового файла
         Scanner scanner = new Scanner(stream);
         Integer count = scanner.nextInt();
         for (int i = 0; i < count; ) {
@@ -54,7 +53,7 @@ public class C_HeapMax {
             if (s.equalsIgnoreCase("extractMax")) {
                 Long res = heap.extractMax();
                 if (res != null && res > maxValue) maxValue = res;
-                System.out.println();
+                System.out.println(res);
                 i++;
             }
             if (s.contains(" ")) {
@@ -62,7 +61,6 @@ public class C_HeapMax {
                 if (p[0].equalsIgnoreCase("insert"))
                     heap.insert(Long.parseLong(p[1]));
                 i++;
-                //System.out.println(heap); //debug
             }
         }
         return maxValue;
@@ -75,21 +73,55 @@ public class C_HeapMax {
         private List<Long> heap = new ArrayList<>();
 
         int siftDown(int i) { //просеивание вверх
-
+            int size = heap.size();
+            while (true) {
+                int left  = 2 * i + 1;
+                int right = 2 * i + 2;
+                int largest = i;
+                if (left < size && heap.get(left) > heap.get(largest)) {
+                    largest = left;
+                }
+                if (right < size && heap.get(right) > heap.get(largest)) {
+                    largest = right;
+                }
+                if (largest == i) {
+                    break;
+                }
+                Collections.swap(heap, i, largest);
+                i = largest;
+            }
             return i;
         }
 
         int siftUp(int i) { //просеивание вниз
-
+            while (i > 0) {
+                int parent = (i - 1) / 2;
+                if (heap.get(parent) < heap.get(i)) {
+                    Collections.swap(heap, parent, i);
+                    i = parent;
+                } else {
+                    break;
+                }
+            }
             return i;
         }
 
         void insert(Long value) { //вставка
+            heap.add(value);
+            siftUp(heap.size() - 1);
         }
 
         Long extractMax() { //извлечение и удаление максимума
-            Long result = null;
-
+            if (heap.isEmpty()) {
+                return null;
+            }
+            Long result = heap.get(0);
+            int lastIndex = heap.size() - 1;
+            Long lastValue = heap.remove(lastIndex);
+            if (!heap.isEmpty()) {
+                heap.set(0, lastValue);
+                siftDown(0);
+            }
             return result;
         }
         //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! КОНЕЦ ЗАДАЧИ !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!1

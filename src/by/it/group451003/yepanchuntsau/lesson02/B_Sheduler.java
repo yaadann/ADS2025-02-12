@@ -31,13 +31,11 @@ public class B_Sheduler {
 
     List<Event> calcStartTimes(Event[] events, int from, int to) {
         List<Event> result = new ArrayList<>();
-        // Преобразуем массив в список и сортируем по возрастанию времени окончания
         List<Event> sorted = new ArrayList<>(Arrays.asList(events));
         Collections.sort(sorted, Comparator.comparingInt(e -> e.stop));
 
         int currentTime = from;
         for (Event event : sorted) {
-            // Выбираем событие, если оно не пересекается с предыдущим и укладывается в интервал
             if (event.start >= currentTime && event.stop <= to) {
                 result.add(event);
                 currentTime = event.stop;
