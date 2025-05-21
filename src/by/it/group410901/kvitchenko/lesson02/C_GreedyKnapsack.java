@@ -26,6 +26,25 @@ public class C_GreedyKnapsack {
         System.out.printf("Общая стоимость %f (время %d)", costFinal, finishTime - startTime);
     }
 
+    private static void sortItems(Item[] its){
+        int m;
+        Item temp;
+
+        for(int i = 0; i < its.length; i++){
+            m = i;
+            for(int j = i; j < its.length; j++){
+                if(its[m].compareTo(its[j]) < 0){
+                    m = j;
+                }
+            }
+            temp = its[i];
+            its[i] = its[m];
+            its[m] = temp;
+
+
+        }
+    }
+
     double calc(InputStream inputStream) throws FileNotFoundException {
         Scanner input = new Scanner(inputStream);
         int n = input.nextInt();      //сколько предметов в файле
@@ -35,6 +54,11 @@ public class C_GreedyKnapsack {
             items[i] = new Item(input.nextInt(), input.nextInt());
         }
         //покажем предметы
+        for (Item item : items) {
+            System.out.println(item);
+        }
+        sortItems(items);
+        System.out.println("\n________\n");
         for (Item item : items) {
             System.out.println(item);
         }
@@ -49,11 +73,23 @@ public class C_GreedyKnapsack {
         //кроме того, можете описать свой компаратор в классе Item
 
         //ваше решение.
-
+        int c = 0;
+        int currentWeight = 0;
+        do{
+            if(currentWeight + items[c].weight > W){
+                result += (double) items[c].cost * (W - currentWeight) / items[c].weight;
+                break;
+            }
+            result += items[c].cost;
+            currentWeight += items[c].weight;
+            c++;
+        }
+        while(c < n);
 
         System.out.printf("Удалось собрать рюкзак на сумму %f\n", result);
         return result;
     }
+
 
     private static class Item implements Comparable<Item> {
         int cost;
@@ -75,9 +111,12 @@ public class C_GreedyKnapsack {
         @Override
         public int compareTo(Item o) {
             //тут может быть ваш компаратор
+            double r1 = (double) cost / weight;
+            double r2 = (double) o.cost / o.weight;
 
-
-            return 0;
+            if(r1 == r2) return 0;
+            if(r1 < r2) return -1;
+            return 1;
         }
     }
 }
