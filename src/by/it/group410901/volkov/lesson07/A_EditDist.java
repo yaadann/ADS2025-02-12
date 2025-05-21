@@ -3,92 +3,61 @@ package by.it.group410901.volkov.lesson07;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.util.Scanner;
-
-/*
-Задача на программирование: расстояние Левенштейна
-    https://ru.wikipedia.org/wiki/Расстояние_Левенштейна
-    http://planetcalc.ru/1721/
-
-Дано:
-    Две данных непустые строки длины не более 100, содержащие строчные буквы латинского алфавита.
-
-Необходимо:
-    Решить задачу МЕТОДАМИ ДИНАМИЧЕСКОГО ПРОГРАММИРОВАНИЯ
-    Рекурсивно вычислить расстояние редактирования двух данных непустых строк
-
-    Sample Input 1:
-    ab
-    ab
-    Sample Output 1:
-    0
-
-    Sample Input 2:
-    short
-    ports
-    Sample Output 2:
-    3
-
-    Sample Input 3:
-    distance
-    editing
-    Sample Output 3:
-    5
-
-*/
+import java.util.HashMap;
+import java.util.Map;
 
 public class A_EditDist {
+    private Map<String, Integer> memo = new HashMap<>();
 
     int getDistanceEdinting(String one, String two) {
-        //!!!!!!!!!!!!!!!!!!!!!!!!! НАЧАЛО ЗАДАЧИ !!!!!!!!!!!!!!!!!!!!!!!!!
+        // Очищаем кэш перед новым вычислением
+        memo.clear();
+        return calculateDistance(one, two, one.length(), two.length());
+    }
 
-        // Получаем длины обеих строк
-        int m = one.length();
-        int n = two.length();
-
-        // Создаем матрицу для хранения расстояний
-        int[][] dp = new int[m + 1][n + 1];
-
-        // Инициализация базовых случаев:
-        // Если вторая строка пустая, нужно удалить все символы из первой
-        for (int i = 0; i <= m; i++) {
-            dp[i][0] = i;
+    private int calculateDistance(String one, String two, int i, int j) {
+        // Если результат уже вычислен, возвращаем его из кэша
+        String key = i + "," + j;
+        if (memo.containsKey(key)) {
+            return memo.get(key);
         }
 
+        int result;
+        // Базовые случаи:
         // Если первая строка пустая, нужно вставить все символы второй строки
-        for (int j = 0; j <= n; j++) {
-            dp[0][j] = j;
+        if (i == 0) {
+            result = j;
+        }
+        // Если вторая строка пустая, нужно удалить все символы первой строки
+        else if (j == 0) {
+            result = i;
+        }
+        // Если последние символы совпадают, переходим к следующим символам
+        else if (one.charAt(i - 1) == two.charAt(j - 1)) {
+            result = calculateDistance(one, two, i - 1, j - 1);
+        }
+        else {
+            // Иначе выбираем минимальное из трех возможных операций:
+            // 1. Удаление (удаляем символ из первой строки)
+            int delete = calculateDistance(one, two, i - 1, j);
+            // 2. Вставка (вставляем символ во вторую строку)
+            int insert = calculateDistance(one, two, i, j - 1);
+            // 3. Замена (заменяем символ в первой строке на символ из второй)
+            int replace = calculateDistance(one, two, i - 1, j - 1);
+
+            result = 1 + Math.min(Math.min(delete, insert), replace);
         }
 
-        // Заполняем матрицу dp
-        for (int i = 1; i <= m; i++) {
-            for (int j = 1; j <= n; j++) {
-                // Если символы совпадают, берем значение из диагонали
-                if (one.charAt(i - 1) == two.charAt(j - 1)) {
-                    dp[i][j] = dp[i - 1][j - 1];
-                } else {
-                    // Иначе выбираем минимальное из трех возможных операций:
-                    // 1. Удаление (верхняя ячейка + 1)
-                    // 2. Вставка (левая ячейка + 1)
-                    // 3. Замена (диагональная ячейка + 1)
-                    dp[i][j] = 1 + Math.min(Math.min(dp[i - 1][j], dp[i][j - 1]), dp[i - 1][j - 1]);
-                }
-            }
-        }
-
-        // Результат находится в правом нижнем углу матрицы
-        int result = dp[m][n];
-
-        //!!!!!!!!!!!!!!!!!!!!!!!!! КОНЕЦ ЗАДАЧИ !!!!!!!!!!!!!!!!!!!!!!!!!
+        // Сохраняем результат в кэш перед возвратом
+        memo.put(key, result);
         return result;
     }
 
     public static void main(String[] args) throws FileNotFoundException {
-        // Создаем поток для чтения данных из файла
         InputStream stream = A_EditDist.class.getResourceAsStream("dataABC.txt");
         A_EditDist instance = new A_EditDist();
         Scanner scanner = new Scanner(stream);
 
-        // Читаем и выводим результаты для трех пар строк
         System.out.println(instance.getDistanceEdinting(scanner.nextLine(), scanner.nextLine()));
         System.out.println(instance.getDistanceEdinting(scanner.nextLine(), scanner.nextLine()));
         System.out.println(instance.getDistanceEdinting(scanner.nextLine(), scanner.nextLine()));
