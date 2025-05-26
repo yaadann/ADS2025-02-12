@@ -45,8 +45,6 @@ public class A_VideoRegistrator {
                 i++;
             }
         }
-
-
-        return result;                        //вернем итог
+        return result;
     }
 }
