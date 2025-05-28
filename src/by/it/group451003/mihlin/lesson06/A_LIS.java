@@ -1,4 +1,4 @@
-package by.it.a_khmelev.lesson06;
+package by.it.group451003.mihlin.lesson06;
 
 import java.io.FileNotFoundException;
 import java.io.InputStream;
@@ -50,7 +50,32 @@ public class A_LIS {
         for (int i = 0; i < n; i++) {
             m[i] = scanner.nextInt();
         }
+
+        // Динамическое программирование для нахождения LIS
+        // dp[i] - длина наибольшей возрастающей подпоследовательности, заканчивающейся в позиции i
+        int[] dp = new int[n];
+
+        // Инициализация: минимальная длина подпоследовательности равна 1 (сам элемент)
+        for (int i = 0; i < n; i++) {
+            dp[i] = 1;
+        }
+
+        // Основной алгоритм: находим оптимальную длину для каждой позиции
+        for (int i = 1; i < n; i++) {
+            for (int j = 0; j < i; j++) {
+                // Если текущий элемент больше предыдущего, то можем увеличить LIS
+                if (m[i] > m[j]) {
+                    dp[i] = Math.max(dp[i], dp[j] + 1);
+                }
+            }
+        }
+
+        // Находим максимальную длину среди всех dp[i]
         int result = 0;
+        for (int i = 0; i < n; i++) {
+            result = Math.max(result, dp[i]);
+        }
+
         //!!!!!!!!!!!!!!!!!!!!!!!!!     КОНЕЦ ЗАДАЧИ     !!!!!!!!!!!!!!!!!!!!!!!!!
         return result;
     }

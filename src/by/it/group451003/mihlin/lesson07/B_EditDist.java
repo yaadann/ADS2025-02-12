@@ -1,4 +1,4 @@
-package by.it.a_khmelev.lesson07;
+package by.it.group451003.mihlin.lesson07;
 
 import java.io.FileNotFoundException;
 import java.io.InputStream;
@@ -42,8 +42,41 @@ public class B_EditDist {
     int getDistanceEdinting(String one, String two) {
         //!!!!!!!!!!!!!!!!!!!!!!!!!     НАЧАЛО ЗАДАЧИ     !!!!!!!!!!!!!!!!!!!!!!!!!
 
+        int m = one.length();
+        int n = two.length();
 
-        int result = 0;
+        // Создаем матрицу dp для хранения расстояний
+        int[][] dp = new int[m + 1][n + 1];
+
+        // Инициализируем первую строку и первый столбец
+        for (int i = 0; i <= m; i++) {
+            dp[i][0] = i; // Если вторая строка пуста, потребуется i удалений
+        }
+
+        for (int j = 0; j <= n; j++) {
+            dp[0][j] = j; // Если первая строка пуста, потребуется j вставок
+        }
+
+        // Заполняем матрицу dp итеративно
+        for (int i = 1; i <= m; i++) {
+            for (int j = 1; j <= n; j++) {
+                // Если текущие символы совпадают, операций не требуется
+                if (one.charAt(i - 1) == two.charAt(j - 1)) {
+                    dp[i][j] = dp[i - 1][j - 1];
+                } else {
+                    // Если символы различаются, берем минимум из трех операций и добавляем 1
+                    int insert = dp[i][j - 1];     // Вставка
+                    int delete = dp[i - 1][j];     // Удаление
+                    int replace = dp[i - 1][j - 1]; // Замена
+
+                    dp[i][j] = 1 + Math.min(Math.min(insert, delete), replace);
+                }
+            }
+        }
+
+        // Результат находится в правом нижнем углу матрицы
+        int result = dp[m][n];
+
         //!!!!!!!!!!!!!!!!!!!!!!!!!     КОНЕЦ ЗАДАЧИ     !!!!!!!!!!!!!!!!!!!!!!!!!
         return result;
     }
