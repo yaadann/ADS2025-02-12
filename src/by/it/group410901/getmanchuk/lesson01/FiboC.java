@@ -1,10 +1,7 @@
 package by.it.group410901.getmanchuk.lesson01;
 
-/*
- * Даны целые числа 1<=n<=1E18 и 2<=m<=1E5,
- * необходимо найти остаток от деления n-го числа Фибоначчи на m
- * время расчета должно быть не более 2 секунд
- */
+import java.util.ArrayList;
+import java.util.List;
 
 public class FiboC {
 
@@ -12,7 +9,7 @@ public class FiboC {
 
     public static void main(String[] args) {
         FiboC fibo = new FiboC();
-        int n = 55555;
+        long n = 55555;
         int m = 1000;
         System.out.printf("fasterC(%d)=%d \n\t time=%d \n\n", n, fibo.fasterC(n, m), fibo.time());
     }
@@ -22,11 +19,29 @@ public class FiboC {
     }
 
     long fasterC(long n, int m) {
-        //Интуитивно найти решение не всегда просто и
-        //возможно потребуется дополнительный поиск информации
-        return -1L;
+        if (m == 1) return 0;
+        if (n == 1) return 1;
+
+        // Находим период Пизано для m
+        List<Long> pisano = new ArrayList<>();
+        pisano.add(0L);
+        pisano.add(1L);
+
+        for (int i = 2; i < m * 6; i++) {
+            long next = (pisano.get(i - 1) + pisano.get(i - 2)) % m;
+            pisano.add(next);
+
+            // Проверяем, не начался ли новый период
+            if (pisano.get(i) == 1 && pisano.get(i - 1) == 0) {
+                pisano.remove(i);
+                pisano.remove(i - 1);
+                break;
+            }
+        }
+
+        int period = pisano.size();
+        int index = (int)(n % period);
+
+        return pisano.get(index);
     }
-
-
 }
-
