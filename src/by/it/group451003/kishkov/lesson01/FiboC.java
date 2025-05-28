@@ -43,7 +43,7 @@ public class FiboC {
         n %= period;
 
         for (int i = 2; i <= n;++i){
-            remain = (x1+x2) % m;
+            remain = (x1+x2)% m;
             x1 = x2;
             x2 = remain;
         }
