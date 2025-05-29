@@ -1,6 +1,6 @@
 package by.it.group410902.skobyalko.lesson02;
 import java.util.*;
-
+/// /
 public class B_Sheduler {
 
     public static void main(String[] args) {

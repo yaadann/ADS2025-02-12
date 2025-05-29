@@ -41,7 +41,7 @@ public class A_LIS {
 
     int getSeqSize(InputStream stream) throws FileNotFoundException {
         Scanner scanner = new Scanner(stream);
-        /// ///////////////
+        /// ////////////////
 
         int n = scanner.nextInt();
         int[] m = new int[n];

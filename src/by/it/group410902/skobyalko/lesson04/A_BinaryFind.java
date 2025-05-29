@@ -16,7 +16,7 @@ public class A_BinaryFind {
 
     int[] findIndex(InputStream stream) throws FileNotFoundException {
         Scanner scanner = new Scanner(stream);
-/// //////////////////////////
+/// ///////////////////////////
         int n = scanner.nextInt(); // длина массива A
         int[] a = new int[n];
         for (int i = 0; i < n; i++) {

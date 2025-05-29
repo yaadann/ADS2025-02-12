@@ -101,7 +101,7 @@ public class A_Huffman {
             right.fillCodes(code + "1");
         }
     }
-/// /////////////////////////////
+/// /////////////////////////////.
     // Лист дерева
     private class LeafNode extends Node {
         char symbol;

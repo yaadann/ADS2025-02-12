@@ -49,7 +49,7 @@ public class C_LongNotUpSubSeq {
     int getNotUpSeqSize(InputStream stream) throws FileNotFoundException {
         Scanner scanner = new Scanner(stream);
 
-        //!!!!!!!!!!!!!!!!!!!!!!!!!     НАЧАЛО ЗАДАЧИ     !!!!!!!!!!!!!!!!!!!!!!!!!
+        ///!!!!!!!!!!!!!!!!!!!!!!!!!     НАЧАЛО ЗАДАЧИ     !!!!!!!!!!!!!!!!!!!!!!!!!
         int n = scanner.nextInt();
         int[] m = new int[n];
         for (int i = 0; i < n; i++) {

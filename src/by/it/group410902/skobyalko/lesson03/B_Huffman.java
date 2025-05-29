@@ -48,7 +48,7 @@ public class B_Huffman {
         }
 
         return result.toString();
-        /// //////////////////
+        /// //////////////////.
     }
 }
 

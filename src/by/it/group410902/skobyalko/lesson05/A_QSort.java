@@ -18,7 +18,7 @@ public class A_QSort {
 
     int[] getAccessory(InputStream stream) throws FileNotFoundException {
         Scanner scanner = new Scanner(stream);
-        /// /////////////////////////////
+        /// //////////////////////////////
         int n = scanner.nextInt();
         Segment[] segments = new Segment[n];
         int m = scanner.nextInt();

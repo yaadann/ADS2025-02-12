@@ -40,7 +40,7 @@ public class C_HeapMax {
         }
         return maxValue;
     }
-/// ////////////////////////////
+/// ////////////////////////////.
     private static class MaxHeap {
         private final List<Long> heap = new ArrayList<>();
 
