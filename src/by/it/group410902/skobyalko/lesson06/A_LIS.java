@@ -40,18 +40,36 @@ public class A_LIS {
     }
 
     int getSeqSize(InputStream stream) throws FileNotFoundException {
-        //подготовка к чтению данных
         Scanner scanner = new Scanner(stream);
-        //!!!!!!!!!!!!!!!!!!!!!!!!!     НАЧАЛО ЗАДАЧИ     !!!!!!!!!!!!!!!!!!!!!!!!!
-        //общая длина последовательности
+        /// ///////////////
+
         int n = scanner.nextInt();
         int[] m = new int[n];
-        //читаем всю последовательность
+
         for (int i = 0; i < n; i++) {
             m[i] = scanner.nextInt();
         }
-        int result = 0;
-        //!!!!!!!!!!!!!!!!!!!!!!!!!     КОНЕЦ ЗАДАЧИ     !!!!!!!!!!!!!!!!!!!!!!!!!
-        return result;
+
+        int[] dp = new int[n]; // dp[i] - длина LIS, заканчивающейся в позиции i
+        int maxLen = 1;
+
+        // Инициализация: минимальная длина LIS в каждой точке — 1 (сам элемент)
+        for (int i = 0; i < n; i++) {
+            dp[i] = 1;
+        }
+
+        // Основной цикл DP: для каждого i ищем j < i с меньшим значением
+        for (int i = 1; i < n; i++) {
+            for (int j = 0; j < i; j++) {
+                if (m[j] < m[i] && dp[j] + 1 > dp[i]) {
+                    dp[i] = dp[j] + 1;
+                }
+            }
+            if (dp[i] > maxLen) {
+                maxLen = dp[i];
+            }
+        }
+
+        return maxLen;
     }
 }

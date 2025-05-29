@@ -3,6 +3,8 @@ package by.it.group410902.skobyalko.lesson06;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.util.Scanner;
+import java.util.ArrayList;
+import java.util.Collections;
 
 /*
 Задача на программирование: наибольшая невозростающая подпоследовательность
@@ -45,22 +47,58 @@ public class C_LongNotUpSubSeq {
     }
 
     int getNotUpSeqSize(InputStream stream) throws FileNotFoundException {
-        //подготовка к чтению данных
         Scanner scanner = new Scanner(stream);
+
         //!!!!!!!!!!!!!!!!!!!!!!!!!     НАЧАЛО ЗАДАЧИ     !!!!!!!!!!!!!!!!!!!!!!!!!
-        //общая длина последовательности
         int n = scanner.nextInt();
         int[] m = new int[n];
-        //читаем всю последовательность
         for (int i = 0; i < n; i++) {
             m[i] = scanner.nextInt();
         }
-        //тут реализуйте логику задачи методами динамического программирования (!!!)
-        int result = 0;
 
+        int[] dp = new int[n];         // dp[i] - длина Невозрастающей подпоследовательности, оканчивающейся в i
+        int[] parent = new int[n];     // parent[i] - индекс предыдущего элемента в последовательности
+        for (int i = 0; i < n; i++) {
+            dp[i] = 1;
+            parent[i] = -1;
+        }
 
+        int maxLen = 1;
+        int maxIndex = 0;
+
+        for (int i = 1; i < n; i++) {
+            for (int j = 0; j < i; j++) {
+                if (m[j] >= m[i] && dp[j] + 1 > dp[i]) {
+                    dp[i] = dp[j] + 1;
+                    parent[i] = j;
+                }
+            }
+            if (dp[i] > maxLen) {
+                maxLen = dp[i];
+                maxIndex = i;
+            }
+        }
+
+        // Восстановление последовательности индексов
+        ArrayList<Integer> sequence = new ArrayList<>();
+        int current = maxIndex;
+        while (current != -1) {
+            sequence.add(current + 1); // индексы начинаются с 1
+            current = parent[current];
+        }
+        Collections.reverse(sequence);
+
+        // Выводим длину
+        System.out.println(maxLen);
+        // Выводим индексы
+        for (int idx : sequence) {
+            System.out.print(idx + " ");
+        }
+        System.out.println();
+
+        // Возвращаем длину (можно вернуть maxLen)
+        return maxLen;
         //!!!!!!!!!!!!!!!!!!!!!!!!!     КОНЕЦ ЗАДАЧИ     !!!!!!!!!!!!!!!!!!!!!!!!!
-        return result;
     }
 
 }
