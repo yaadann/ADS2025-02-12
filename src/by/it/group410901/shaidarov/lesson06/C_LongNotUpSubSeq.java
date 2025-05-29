@@ -56,9 +56,50 @@ public class C_LongNotUpSubSeq {
             m[i] = scanner.nextInt();
         }
         //тут реализуйте логику задачи методами динамического программирования (!!!)
-        int result = 0;
 
+        int[] dp = new int[n];      // dp[i] — длина наибольшей невозрастающей подпоследовательности, заканчивающейся в i
+        int[] prev = new int[n];    // prev[i] — предыдущий индекс в подпоследовательности
 
+        for (int i = 0; i < n; i++) {
+            dp[i] = 1;
+            prev[i] = -1;
+        }
+
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < i; j++) {
+                if (m[j] >= m[i] && dp[j] + 1 > dp[i]) {
+                    dp[i] = dp[j] + 1;
+                    prev[i] = j;
+                }
+            }
+        }
+
+        // находим максимальное значение в dp и его индекс
+        int maxLen = 0;
+        int lastIndex = -1;
+        for (int i = 0; i < n; i++) {
+            if (dp[i] > maxLen) {
+                maxLen = dp[i];
+                lastIndex = i;
+            }
+        }
+
+        // восстанавливаем индексы элементов подпоследовательности
+        int[] sequence = new int[maxLen];
+        int pos = maxLen - 1;
+        while (lastIndex != -1) {
+            sequence[pos--] = lastIndex + 1; // +1, так как индексация с 1
+            lastIndex = prev[lastIndex];
+        }
+
+        // вывод результата
+        System.out.println(maxLen);
+        for (int index : sequence) {
+            System.out.print(index + " ");
+        }
+        System.out.println();
+
+        int result = maxLen;
         //!!!!!!!!!!!!!!!!!!!!!!!!!     КОНЕЦ ЗАДАЧИ     !!!!!!!!!!!!!!!!!!!!!!!!!
         return result;
     }

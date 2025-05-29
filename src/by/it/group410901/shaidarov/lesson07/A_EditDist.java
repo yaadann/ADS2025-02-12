@@ -40,12 +40,41 @@ public class A_EditDist {
 
 
     int getDistanceEdinting(String one, String two) {
-        //!!!!!!!!!!!!!!!!!!!!!!!!!     НАЧАЛО ЗАДАЧИ     !!!!!!!!!!!!!!!!!!!!!!!!!
+        if (one.isEmpty())
+            return two.length();
+        if (two.isEmpty())
+            return one.length();
 
+        int cost = (one.charAt(0) == two.charAt(0)) ? 0 : 1;
 
-        int result = 0;
-        //!!!!!!!!!!!!!!!!!!!!!!!!!     КОНЕЦ ЗАДАЧИ     !!!!!!!!!!!!!!!!!!!!!!!!!
-        return result;
+        return Math.min(
+                Math.min(
+                        getDistanceEdinting(one.substring(1), two) + 1,
+                        getDistanceEdinting(one, two.substring(1)) + 1
+                ),
+                getDistanceEdinting(one.substring(1), two.substring(1)) + cost);
+    }
+
+    private int editDistance(String a, String b, int i, int j, int[][] memo) {
+        if (memo[i][j] != -1) {
+            return memo[i][j];
+        }
+
+        if (i == 0) {
+            memo[i][j] = j;
+        } else if (j == 0) {
+            memo[i][j] = i;
+        } else {
+            int cost = (a.charAt(i - 1) == b.charAt(j - 1)) ? 0 : 1;
+
+            int insert = editDistance(a, b, i, j - 1, memo) + 1;
+            int delete = editDistance(a, b, i - 1, j, memo) + 1;
+            int substitute = editDistance(a, b, i - 1, j - 1, memo) + cost;
+
+            memo[i][j] = Math.min(Math.min(insert, delete), substitute);
+        }
+
+        return memo[i][j];
     }
 
 

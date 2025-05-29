@@ -34,37 +34,78 @@ import java.util.Scanner;
     Sample Input 3:
     distance
     editing
-    Sample Output 2:
+    Sample Output 3:
     +e,#,#,-s,#,~i,#,-c,~g,
-
-
-    P.S. В литературе обычно действия редакционных предписаний обозначаются так:
-    - D (англ. delete) — удалить,
-    + I (англ. insert) — вставить,
-    ~ R (replace) — заменить,
-    # M (match) — совпадение.
 */
-
 
 public class C_EditDist {
 
     String getDistanceEdinting(String one, String two) {
         //!!!!!!!!!!!!!!!!!!!!!!!!!     НАЧАЛО ЗАДАЧИ     !!!!!!!!!!!!!!!!!!!!!!!!!
 
+        int n = one.length();
+        int m = two.length();
+        int[][] dp = new int[n + 1][m + 1];
 
-        String result = "";
+        // Заполнение базовых случаев
+        for (int i = 0; i <= n; i++) {
+            dp[i][0] = i;
+        }
+        for (int j = 0; j <= m; j++) {
+            dp[0][j] = j;
+        }
+
+        // Основной цикл динамического программирования
+        for (int i = 1; i <= n; i++) {
+            for (int j = 1; j <= m; j++) {
+                int cost = (one.charAt(i - 1) == two.charAt(j - 1)) ? 0 : 1;
+                dp[i][j] = Math.min(
+                        Math.min(dp[i - 1][j] + 1,    // удаление
+                                dp[i][j - 1] + 1),   // вставка
+                        dp[i - 1][j - 1] + cost        // замена или совпадение
+                );
+            }
+        }
+
+        // Восстановление пути (редакционных операций)
+        StringBuilder result = new StringBuilder();
+        int i = n, j = m;
+        while (i > 0 || j > 0) {
+            if (i > 0 && j > 0) {
+                int cost = (one.charAt(i - 1) == two.charAt(j - 1)) ? 0 : 1;
+                if (dp[i][j] == dp[i - 1][j - 1] + cost) {
+                    if (cost == 0) {
+                        result.insert(0, "#,"); // совпадение
+                    } else {
+                        result.insert(0, "~" + two.charAt(j - 1) + ","); // замена
+                    }
+                    i--;
+                    j--;
+                    continue;
+                }
+            }
+            if (i > 0 && dp[i][j] == dp[i - 1][j] + 1) {
+                result.insert(0, "-" + one.charAt(i - 1) + ","); // удаление
+                i--;
+                continue;
+            }
+            if (j > 0 && dp[i][j] == dp[i][j - 1] + 1) {
+                result.insert(0, "+" + two.charAt(j - 1) + ","); // вставка
+                j--;
+            }
+        }
+
         //!!!!!!!!!!!!!!!!!!!!!!!!!     КОНЕЦ ЗАДАЧИ     !!!!!!!!!!!!!!!!!!!!!!!!!
-        return result;
+        return result.toString();
     }
-
 
     public static void main(String[] args) throws FileNotFoundException {
         InputStream stream = C_EditDist.class.getResourceAsStream("dataABC.txt");
         C_EditDist instance = new C_EditDist();
         Scanner scanner = new Scanner(stream);
-        System.out.println(instance.getDistanceEdinting(scanner.nextLine(),scanner.nextLine()));
-        System.out.println(instance.getDistanceEdinting(scanner.nextLine(),scanner.nextLine()));
-        System.out.println(instance.getDistanceEdinting(scanner.nextLine(),scanner.nextLine()));
+        System.out.println(instance.getDistanceEdinting(scanner.nextLine(), scanner.nextLine()));
+        System.out.println(instance.getDistanceEdinting(scanner.nextLine(), scanner.nextLine()));
+        System.out.println(instance.getDistanceEdinting(scanner.nextLine(), scanner.nextLine()));
     }
 
 }
