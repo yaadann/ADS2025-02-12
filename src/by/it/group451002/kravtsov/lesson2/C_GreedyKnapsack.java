@@ -39,22 +39,34 @@ public class C_GreedyKnapsack {
         for (Item item : items) {
             System.out.println(item);
         }
+        // Вывод общей информации о количестве предметов и вместимости рюкзака
         System.out.printf("Всего предметов: %d. Рюкзак вмещает %d кг.\n", n, W);
+
+        // Результат, который будем вычислять (суммарная стоимость собранных предметов)
         double result = 0;
         Arrays.sort(items);
+
+        // Текущий вес рюкзака (начинается с 0)
         int currentWeight = 0;
+
+        // Перебираем отсортированные предметы
         for (Item item : items) {
+            // Если предмет полностью помещается в оставшееся место рюкзака
             if (currentWeight + item.weight <= W) {
-                result += item.cost;
-                currentWeight += item.weight;
+                result += item.cost;             // Увеличиваем итоговую стоимость
+                currentWeight += item.weight;   // Увеличиваем текущий вес рюкзака
             } else {
-                int remainingWeight = W - currentWeight;
-                result += item.cost * ((double) remainingWeight / item.weight);
-                break;
+                // Если предмет не помещается полностью, добавляем только его часть
+                int remainingWeight = W - currentWeight; // Сколько места осталось
+                result += item.cost * ((double) remainingWeight / item.weight); // Пропорционально весу добавляем стоимость
+                break; // Рюкзак полностью заполнен, выходим из цикла
             }
         }
 
+        // Выводим итоговую стоимость собранного рюкзака
         System.out.printf("Удалось собрать рюкзак на сумму %f\n", result);
+
+        // Возвращаем итоговую стоимость собранных предметов
         return result;
     }
 

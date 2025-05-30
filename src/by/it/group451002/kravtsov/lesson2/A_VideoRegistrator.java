@@ -22,21 +22,27 @@ public class A_VideoRegistrator {
 
     //модификаторы доступа опущены для возможности тестирования
     List<Double> calcStartTimes(double[] events, double workDuration) {
+        // Создаём список для хранения стартовых времён
         List<Double> result = new ArrayList<>();
 
+        // Сортируем массив событий по возрастанию времени
         Arrays.sort(events);
-
+        // Инициализируем индекс для итерации по событиям
         int i = 0;
+        // Пока не обработаны все события
         while (i < events.length) {
+            // Берём текущее время события как старт нового интервала
             double start = events[i];
-            result.add(start);
-
+            result.add(start); // Добавляем стартовое время в список
+            // Рассчитываем время окончания текущего интервала
             double end = start + workDuration;
-
+            // Пропускаем все события, которые попадают в текущий интервал
             while (i < events.length && events[i] <= end) {
                 i++;
             }
         }
+
+        // Возвращаем список стартовых времён
         return result;
     }
 }

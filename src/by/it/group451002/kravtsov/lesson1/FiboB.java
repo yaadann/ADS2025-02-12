@@ -1,4 +1,4 @@
-package by.it.group451002.kravtsov.lesson01;
+package by.it.group451002.kravtsov.lesson1;
 
 import java.math.BigInteger;
 

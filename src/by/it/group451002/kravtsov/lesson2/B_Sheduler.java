@@ -26,16 +26,23 @@ public class B_Sheduler {
     }
 
     List<Event> calcStartTimes(Event[] events, int from, int to) {
+        // Создаём список для хранения оптимального набора событий
         List<Event> result;
         result = new ArrayList<>();
+        // Сортируем массив событий по времени завершения (stop) в порядке возрастания
 
         Arrays.sort(events, (e1, e2) -> Integer.compare(e1.stop, e2.stop));
+        // Устанавливаем начальное время как нижнюю границу интервала
 
         int currentTime = from;
         for (Event event : events) {
+            // Если событие начинается не раньше текущего времени
+            // и заканчивается в пределах интервала [from, to]
             if (event.start >= currentTime && event.stop <= to) {
+                // Добавляем событие в результат
                 result.add(event);
                 currentTime = event.stop;
+                // Обновляем текущее время на время завершения этого события
             }
         }
         return result;
