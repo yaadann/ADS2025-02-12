@@ -13,7 +13,7 @@ public class B_CountSort {
         }
     }
 
-    int[] countSort(InputStream stream) throws FileNotFoundException {
+    int[] countSort(InputStream stream) {
         Scanner scanner = new Scanner(stream);
         int n = scanner.nextInt();
         int[] points = new int[n];
