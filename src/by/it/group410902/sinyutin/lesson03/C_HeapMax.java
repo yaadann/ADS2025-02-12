@@ -75,7 +75,7 @@ public class C_HeapMax {
         private List<Long> heap = new ArrayList<>();
 
         //просеивание вверх
-        int siftDown(int i) {
+        int shiftDown(int i) {
             int leftChild = 2 * i + 1;  //индекс левого ребенка
             int rightChild = 2 * i + 2; //индекс правого ребенка
             int largest = i;  //изначально максимальный элемент - это сам i
@@ -99,11 +99,11 @@ public class C_HeapMax {
             heap.set(largest, temp);
 
             //рекурсивно просеиваем вниз, начиная с нового индекса
-            return siftDown(largest);
+            return shiftDown(largest);
         }
 
         //просеивание вниз
-        int siftUp(int i) {
+        int shiftUp(int i) {
             while (i > 0) {
                 int parent = (i - 1) / 2;  //индекс родительского элемента
                 //если элемент на позиции i больше родителя, меняем их местами
@@ -122,7 +122,7 @@ public class C_HeapMax {
         //вставка нового элемента в кучу
         void insert(Long value) {
             heap.add(value);  //добавляем элемент в конец
-            siftUp(heap.size() - 1);  //просеиваем элемент вверх, начиная с конца
+            shiftUp(heap.size() - 1);  //просеиваем элемент вверх, начиная с конца
         }
 
         //извлечение и удаление максимума
@@ -134,7 +134,7 @@ public class C_HeapMax {
 
             if (!heap.isEmpty()) {
                 heap.set(0, lastElement);  //перемещаем последний элемент на корень
-                siftDown(0);  //просеиваем его вниз, чтобы восстановить структуру кучи
+                shiftDown(0);  //просеиваем его вниз, чтобы восстановить структуру кучи
             }
             return result;  //возвращаем максимальное значение
         }
