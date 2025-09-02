@@ -1,4 +1,4 @@
-package by.it.group451002.kravtsov.lesson01;
+package by.it.group451002.kravtsov.lesson1;
 
 /*
  * Даны целые числа 1<=n<=1E18 и 2<=m<=1E5,
@@ -24,7 +24,7 @@ public class FiboC {
     long fasterC(long n, int m) {
         //Интуитивно найти решение не всегда просто и
         //возможно потребуется дополнительный поиск информации
-        if (n <= 1) return n;
+        if (n<=1) return n;
         long[] PP = GetPP(m);
         int periodLength = PP.length;
         long remainder = n % periodLength;
@@ -33,11 +33,11 @@ public class FiboC {
 
 
     private long[] GetPP(int m) {
-        long[] PP = new long[m * m];
+        long[] PP = new long[m*m];
         PP[0] = 0;
         PP[1] = 1;
 
-        for (int i = 2; i < m * m; i++) {
+        for (int i = 2; i < m*m; i++) {
             PP[i] = (PP[i - 1] + PP[i - 2]) % m;
 
             if (PP[i] == 1 && PP[i - 1] == 0) {
