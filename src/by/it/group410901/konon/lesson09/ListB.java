@@ -10,6 +10,22 @@ public class ListB<E> implements List<E> {
 
     //Создайте аналог списка БЕЗ использования других классов СТАНДАРТНОЙ БИБЛИОТЕКИ
 
+    private static int DEF_CAPACITY = 10;
+    private Object[] elems;
+    private int size;
+
+    ListB(){
+        this.elems = new Object[DEF_CAPACITY];
+        this.size = 0;
+    }
+
+    ListB(int currentSize){
+        if(currentSize<0) throw new IllegalArgumentException("Illegal Capacity: " + currentSize);
+
+        this.elems = new Object[currentSize];
+        this.size = currentSize;
+    }
+
     /////////////////////////////////////////////////////////////////////////
     /////////////////////////////////////////////////////////////////////////
     //////               Обязательные к реализации методы             ///////
@@ -17,31 +33,83 @@ public class ListB<E> implements List<E> {
     /////////////////////////////////////////////////////////////////////////
     @Override
     public String toString() {
-        return "";
+        if(size==0) return "[]";
+
+        String result = "[";
+        for (int i = 0; i < size; i++) {
+            if (i < size - 1) {
+                result += elems[i] + ", ";
+            } else {
+                result += elems[i] + "]";
+            }
+        }
+        return result;
     }
 
     @Override
     public boolean add(E e) {
-        return false;
+        if(size==elems.length) {
+            Object[] newList = new Object[elems.length*2];
+            System.arraycopy(elems, 0, newList, 0,size);
+            elems = newList;
+        }
+        elems[size++] = e;
+        return true;
     }
 
     @Override
     public E remove(int index) {
-        return null;
+        E element =(E) elems[index];
+
+        for (int i = index; i < size - 1; i++) {
+            elems[i] = elems[i + 1];
+        }
+        elems[--size] = null;
+        return element;
     }
 
     @Override
     public int size() {
-        return 0;
+        return size;
     }
 
     @Override
     public void add(int index, E element) {
+        if (index < 0 || index > size) {
+            throw new IndexOutOfBoundsException("Index: " + index + ", Size: " + size);
+        }
 
+        if(elems.length==size){
+            Object[] newList = new Object[elems.length*2];
+            System.arraycopy(elems, 0, newList, 0, size);
+            elems = newList;
+        }
+
+        size++;
+
+        for(int i = size-1; i>index;i--){
+            elems[i]=elems[i-1];
+        }
+        elems[index] = element;
     }
 
     @Override
     public boolean remove(Object o) {
+        if (o == null) {
+            for (int i = 0; i < size; i++) {
+                if (elems[i] == null) {
+                    remove(i);
+                    return true;
+                }
+            }
+        } else {
+            for (int i = 0; i < size; i++) {
+                if (o.equals(elems[i])) {
+                    remove(i);
+                    return true;
+                }
+            }
+        }
         return false;
     }
 
@@ -53,7 +121,7 @@ public class ListB<E> implements List<E> {
 
     @Override
     public boolean isEmpty() {
-        return false;
+        return size == 0;
     }
 
 
@@ -64,12 +132,20 @@ public class ListB<E> implements List<E> {
 
     @Override
     public int indexOf(Object o) {
-        return 0;
+        for(int i=0;i<size;i++){
+            if (o == null) {
+                if (elems[i] == null) return i;
+            } else {
+                if (o.equals(elems[i])) return i;
+            }
+        }
+        return -1;
     }
 
     @Override
     public E get(int index) {
-        return null;
+        if(index<0||index>=size) throw new IndexOutOfBoundsException("Index: " + index + ", Size: " + size);
+        return (E) elems[index];
     }
 
     @Override
