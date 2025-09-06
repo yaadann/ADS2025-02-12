@@ -40,7 +40,7 @@ public class C_Stairs {
         for (int i = 0; i < n; i++) {
             stairs[i]=scanner.nextInt();
         }
-        //!!!!!!!!!!!!!!!!!!!!!!!!!     НАЧАЛО ЗАДАЧИ     !!!!!!!!!!!!!!!!!!!!!!!!!
+        //!!!!!!!!!!!!!!!!!!!!!!!!!     НАЧАЛО ЗАДАЧИ     !!!!!!!!!!!!!!!!!!!!!!!!!!
         int result = 0;
         if (n == 0) return 0;
         int[] dp = new int[n + 1];
