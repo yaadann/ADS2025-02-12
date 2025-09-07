@@ -14,24 +14,75 @@ public class ListA<E> implements List<E> {
     //////               Обязательные к реализации методы             ///////
     /////////////////////////////////////////////////////////////////////////
     /////////////////////////////////////////////////////////////////////////
+    private List_Node<E> start = null;
+
     @Override
     public String toString() {
-        return "";
+        if(this.start != null){
+            String to_str = "[" + this.start.get_value().toString();
+            List_Node<E> temp = this.start.get_next();
+            while (temp != null) {
+                try {
+                    to_str += ", " + temp.get_value().toString();
+                    temp = temp.get_next();
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
+                }
+            }
+            to_str += "]";
+            return to_str;
+        }else {
+            return "[]";
+        }
     }
 
     @Override
     public boolean add(E e) {
-        return false;
+        if(this.start != null){
+            List_Node<E> temp = this.start;
+            while(temp.is_next_not_empty()){
+                temp = temp.get_next();
+            }
+            temp.set_next(new List_Node<E>(e));
+        }else{
+            this.start = new List_Node<E>(e);
+        }
+        return true;
     }
 
     @Override
     public E remove(int index) {
-        return null;
+        if(index < this.size() && index > -1) {
+            List_Node<E> temp = this.start;
+            List_Node<E> prev = null;
+            for (int i = 0; i < index; i++) {
+                prev = temp;
+                temp = temp.get_next();
+            }
+            if(temp.is_next_not_empty()){
+                prev.set_next(temp.get_next());
+            }else{
+                prev.set_next(null);
+            }
+            return temp.get_value();
+        }else{
+            throw new IndexOutOfBoundsException();
+        }
     }
 
     @Override
     public int size() {
-        return 0;
+        List_Node<E> temp = this.start;
+        if(temp != null){
+            int size_of_list = 1;
+            while(temp.is_next_not_empty()){
+                size_of_list++;
+                temp = temp.get_next();
+            }
+            return size_of_list;
+        }else{
+            return 0;
+        }
     }
 
     /////////////////////////////////////////////////////////////////////////
