@@ -9,7 +9,12 @@ public class ListB<E> implements List<E> {
 
 
     //Создайте аналог списка БЕЗ использования других классов СТАНДАРТНОЙ БИБЛИОТЕКИ
-
+    private E[] el;
+    private int size;
+    public ListB(){
+        el=(E[]) new Object[1];
+        size=0;
+    }
     /////////////////////////////////////////////////////////////////////////
     /////////////////////////////////////////////////////////////////////////
     //////               Обязательные к реализации методы             ///////
@@ -17,69 +22,120 @@ public class ListB<E> implements List<E> {
     /////////////////////////////////////////////////////////////////////////
     @Override
     public String toString() {
-        return "";
+        StringBuilder sb=new StringBuilder("[");
+        for (int i=0; i<size; i++) {
+            sb.append(el[i]);
+            if (i<size-1) sb.append(", ");
+        }
+        sb.append(']');
+        return sb.toString();
     }
 
     @Override
     public boolean add(E e) {
-        return false;
+        if (size==el.length) {
+            int newsize=el.length*2;
+            E[] newel=(E[]) new Object[newsize];
+            System.arraycopy(el, 0, newel, 0, size);
+            el=newel;
+        }
+        el[size]=e;
+        size++;
+        return true;
     }
 
     @Override
     public E remove(int index) {
-        return null;
+        if (index < 0 || index >= size) {
+            throw new IndexOutOfBoundsException();
+        }
+        E removed=el[index];
+        for (int i=index; i<size-1; i++){
+            el[i]=el[i+1];
+        }
+        el[size]=null;
+        size--;
+        return removed;
     }
 
     @Override
     public int size() {
-        return 0;
+        return size;
     }
 
     @Override
     public void add(int index, E element) {
-
+        if (index < 0 || index >= size) {
+            throw new IndexOutOfBoundsException();
+        }
+        if (size==el.length) {
+            int newsize=el.length*2;
+            E[] newel=(E[]) new Object[newsize];
+            System.arraycopy(el, 0, newel, 0, size);
+            el=newel;
+        }
+        System.arraycopy(el, index, el, index + 1, size - index);
+        el[index]=element;
+        size++;
     }
 
     @Override
     public boolean remove(Object o) {
+        int index=indexOf(o);
+        if (index>=0) {
+            remove(index);
+            return true;
+        }
         return false;
     }
 
     @Override
     public E set(int index, E element) {
-        return null;
+        if (index < 0 || index >= size) throw new IndexOutOfBoundsException();
+        E ele=el[index];
+        el[index]=element;
+        return ele;
     }
 
 
     @Override
     public boolean isEmpty() {
-        return false;
+        return size==0;
     }
 
 
     @Override
     public void clear() {
-
+        size=0;
+        E[] newel=(E[]) new Object[1];
+        el=newel;
     }
 
     @Override
     public int indexOf(Object o) {
-        return 0;
+        for (int i=0; i<size; i++){
+            if (o.equals(el[i])) return i;
+        }
+        return -1;
     }
 
     @Override
     public E get(int index) {
-        return null;
+        if (index < 0 || index >= size) throw new IndexOutOfBoundsException();
+        return el[index];
     }
 
     @Override
     public boolean contains(Object o) {
-        return false;
+        return indexOf(o)>=0;
     }
 
     @Override
     public int lastIndexOf(Object o) {
-        return 0;
+        for (int i=size-1; i>=0; i--){
+            if (o.equals(el[i])) return i;
+        }
+        return -1;
     }
 
 

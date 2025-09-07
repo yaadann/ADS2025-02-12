@@ -8,7 +8,12 @@ import java.util.ListIterator;
 public class ListA<E> implements List<E> {
 
     //Создайте аналог списка БЕЗ использования других классов СТАНДАРТНОЙ БИБЛИОТЕКИ
-
+    private E[] el;
+    private int size;
+    public ListA(){
+        el=(E[]) new Object[1];
+        size=0;
+    }
     /////////////////////////////////////////////////////////////////////////
     /////////////////////////////////////////////////////////////////////////
     //////               Обязательные к реализации методы             ///////
@@ -16,22 +21,45 @@ public class ListA<E> implements List<E> {
     /////////////////////////////////////////////////////////////////////////
     @Override
     public String toString() {
-        return "";
+        StringBuilder sb=new StringBuilder("[");
+        for (int i=0; i<size; i++) {
+            sb.append(el[i]);
+            if (i<size-1) sb.append(", ");
+        }
+        sb.append(']');
+        return sb.toString();
     }
 
     @Override
     public boolean add(E e) {
-        return false;
+        if (size==el.length) {
+            int newsize=el.length*2;
+            E[] newel=(E[]) new Object[newsize];
+            System.arraycopy(el, 0, newel, 0, size);
+            el=newel;
+        }
+        el[size]=e;
+        size++;
+        return true;
     }
 
     @Override
     public E remove(int index) {
-        return null;
+        if (index < 0 || index >= size) {
+            throw new IndexOutOfBoundsException();
+        }
+        E removed=el[index];
+        for (int i=index; i<size-1; i++){
+            el[i]=el[i+1];
+        }
+        el[size]=null;
+        size--;
+        return removed;
     }
 
     @Override
     public int size() {
-        return 0;
+        return size;
     }
 
     /////////////////////////////////////////////////////////////////////////
