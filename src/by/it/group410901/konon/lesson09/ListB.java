@@ -59,7 +59,7 @@ public class ListB<E> implements List<E> {
 
     @Override
     public E remove(int index) {
-        E element =(E) elems[index];
+        E element = (E) elems[index];
 
         for (int i = index; i < size - 1; i++) {
             elems[i] = elems[i + 1];
@@ -115,7 +115,12 @@ public class ListB<E> implements List<E> {
 
     @Override
     public E set(int index, E element) {
-        return null;
+        if(index>=size || index<0) throw new IndexOutOfBoundsException("Index: " + index + ", Size: " + size);
+
+        E last_element = (E) elems[index];
+
+        elems[index] = element;
+        return last_element;
     }
 
 
@@ -127,7 +132,10 @@ public class ListB<E> implements List<E> {
 
     @Override
     public void clear() {
-
+        for(int i=0; i<size; i++){
+            elems[i] = null;
+        }
+        size = 0;
     }
 
     @Override
@@ -150,12 +158,27 @@ public class ListB<E> implements List<E> {
 
     @Override
     public boolean contains(Object o) {
-        return false;
+        return indexOf(o) >= 0;
     }
 
     @Override
     public int lastIndexOf(Object o) {
-        return 0;
+        if(isEmpty()) return -1;
+
+        if(o==null){
+            for(int i = size-1; i>=0;i--){
+                if(elems[i]==null){
+                    return i;
+                }
+            }
+        }
+        else{
+            for (int i = size-1; i>=0; i--){
+                if(elems[i].equals(o)) return i;
+            }
+        }
+
+        return -1;
     }
 
 
