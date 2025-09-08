@@ -182,21 +182,42 @@ public class ListC<E> implements List<E> {
 
     @Override
     public boolean containsAll(Collection<?> c) {
-        return false;
+        for(Object item : c){
+            if(!contains(item)) return false;
+        }
+        return true;
     }
 
     @Override
     public boolean addAll(Collection<? extends E> c) {
-        return false;
+        if (c.isEmpty()) {
+            return false;
+        }
+
+        for(E item : c){
+            add(item);
+        }
+        return true;
     }
 
     @Override
     public boolean addAll(int index, Collection<? extends E> c) {
-        return false;
+        if(c.isEmpty()) return false;
+        if (index < 0 || index > size) throw new IndexOutOfBoundsException("Index: " + index + ", Size: " + size);
+
+        for(E item : c){
+            add(index++, item);
+        }
+
+        return true;
     }
 
     @Override
     public boolean removeAll(Collection<?> c) {
+        if (c.isEmpty()) {
+            return false;
+        }
+
         return false;
     }
 
