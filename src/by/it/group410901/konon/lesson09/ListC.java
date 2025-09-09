@@ -218,12 +218,40 @@ public class ListC<E> implements List<E> {
             return false;
         }
 
-        return false;
+        boolean flag = false;
+        int i = 0;
+        while (i < size) {
+            if (c.contains(elems[i])) {
+                remove(i);
+                flag = true;
+            } else {
+                i++;
+            }
+        }
+        return flag;
     }
 
     @Override
     public boolean retainAll(Collection<?> c) {
-        return false;
+        if (c.isEmpty()) {
+            if (size > 0) {
+                clear();
+                return true;
+            }
+            return false;
+        }
+
+        boolean flag = false;
+        int i = 0;
+        while (i < size) {
+            if (!c.contains(elems[i])) {
+                remove(i);
+                flag = true;
+            } else {
+                i++;
+            }
+        }
+        return flag;
     }
 
     /////////////////////////////////////////////////////////////////////////
