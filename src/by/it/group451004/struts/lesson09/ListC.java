@@ -10,6 +10,8 @@ public class ListC<E> implements List<E> {
 
     //Создайте аналог списка БЕЗ использования других классов СТАНДАРТНОЙ БИБЛИОТЕКИ
 
+    //пжлст, не воруйте лабу, я на неё реально потратил 8+ часов ;(
+
     private static class ListElement<E> {
         ListElement<E> next = null;
         ListElement<E> prev = null;
@@ -45,7 +47,7 @@ public class ListC<E> implements List<E> {
             builder.append(current.item.toString()).append(", ");
             current = current.next;
         }
-        if (size > 0)
+        if (current != null)
             builder.append(current.item);
         builder.append("]");
         return builder.toString();
@@ -72,15 +74,10 @@ public class ListC<E> implements List<E> {
         if (index >= size)
             throw new IndexOutOfBoundsException();
 
-        Iterator<E> iterator = iterator();
-        E item = null;
-        for (int i = 0; i < index; i++) {
-            if (!iterator.hasNext())
-                throw new IndexOutOfBoundsException();
-            item = iterator.next();
-        }
-
+        MyListIterator<E> iterator = (MyListIterator<E>) listIterator(index);
+        E item = iterator.get();
         iterator.remove();
+
         return item;
     }
 
@@ -105,15 +102,19 @@ public class ListC<E> implements List<E> {
 
     @Override
     public boolean remove(Object o) {
-        Iterator<E> iterator = iterator();
-        E item = iterator.next();
-        while (iterator.hasNext() && !o.equals(item)) {
-            item = iterator.next();
-        }
-        if (iterator.hasNext() || o.equals(item)) {
-            iterator.remove();
-            return true;
-        }
+        MyListIterator<E> iterator = (MyListIterator<E>) listIterator();
+        boolean changed = false;
+        E item;
+        do {
+            item = iterator.get();
+            if (item != null) {
+                if (o.equals(item)) {
+                    iterator.remove();
+                    return true;
+                }
+                iterator.next();
+            }
+        } while (item != null);
 
         return false;
     }
@@ -152,15 +153,17 @@ public class ListC<E> implements List<E> {
     @Override
     public int indexOf(Object o) {
         MyListIterator<E> iterator = (MyListIterator<E>) listIterator();
-        if (first.item == o)
-            return 0;
+        E item;
         int index = 0;
-        while (iterator.hasNext()) {
-            E item = iterator.next();
-            index++;
-            if (o.equals(item))
-                return index;
-        }
+        do {
+            item = iterator.get();
+            if (item != null) {
+                if (o.equals(item))
+                    return index;
+                iterator.next();
+                index++;
+            }
+        } while (item != null);
 
         return -1;
     }
@@ -174,14 +177,15 @@ public class ListC<E> implements List<E> {
     @Override
     public boolean contains(Object o) {
         MyListIterator<E> iterator = (MyListIterator<E>) listIterator();
-        E item = iterator.get();
-        if (o.equals(item))
-            return true;
-        while (iterator.hasNext()) {
-            item = iterator.next();
-            if (o.equals(item))
-                return true;
-        }
+        E item;
+        do {
+            item = iterator.get();
+            if (item != null) {
+                if (o.equals(item))
+                    return true;
+                iterator.next();
+            }
+        } while (item != null);
 
         return false;
     }
@@ -204,12 +208,15 @@ public class ListC<E> implements List<E> {
 
     @Override
     public boolean containsAll(Collection<?> c) {
+        if (c.isEmpty())
+            return true;
+
         for (Object o : c) {
             if (!contains(o))
                 return false;
         }
 
-        return false;
+        return true;
     }
 
     @Override
@@ -224,6 +231,9 @@ public class ListC<E> implements List<E> {
 
     @Override
     public boolean addAll(int index, Collection<? extends E> c) {
+        if (c.isEmpty())
+            return false;
+
         MyListIterator<E> iterator = (MyListIterator<E>) listIterator(index);
         for (E e : c) {
             iterator.add(e);
@@ -234,10 +244,19 @@ public class ListC<E> implements List<E> {
 
     @Override
     public boolean removeAll(Collection<?> c) {
+        MyListIterator<E> iterator = (MyListIterator<E>) listIterator();
         boolean changed = false;
-        for (Object o : c) {
-            changed = remove(o) || changed;
-        }
+        E item;
+        do {
+            item = iterator.get();
+            if (item != null) {
+                if (c.contains(item)) {
+                    iterator.remove();
+                    changed = true;
+                }
+                iterator.next();
+            }
+        } while (item != null);
 
         return changed;
     }
@@ -246,14 +265,17 @@ public class ListC<E> implements List<E> {
     public boolean retainAll(Collection<?> c) {
         MyListIterator<E> iterator = (MyListIterator<E>) listIterator();
         boolean changed = false;
+        E item;
         do {
-            if (!c.contains(iterator.get())) {
-                iterator.remove();
-                changed = true;
-            } else {
+            item = iterator.get();
+            if (item != null) {
+                if (!c.contains(item)) {
+                    iterator.remove();
+                    changed = true;
+                }
                 iterator.next();
             }
-        } while (iterator.hasNext() || iterator.get() != null);
+        } while (item != null);
 
         return changed;
     }
@@ -398,8 +420,6 @@ public class ListC<E> implements List<E> {
                     current.next.prev = current.prev;
                 }
 
-                current = current.next;
-
                 size--;
             }
 
@@ -412,14 +432,14 @@ public class ListC<E> implements List<E> {
             public void add(E e) {
                 ListElement<E> newElement = new ListElement<>(e);
 
+                if (first == current)
+                    first = newElement;
+
                 newElement.next = current;
                 newElement.prev = current.prev;
                 current.prev = newElement;
-                newElement.prev.next = newElement;
-
-                if (last == current) {
-                    last = newElement;
-                }
+                if (newElement.prev != null)
+                    newElement.prev.next = newElement;
 
                 size++;
             }
