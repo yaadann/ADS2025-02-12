@@ -153,4 +153,5 @@ public class A_Huffman {
             codes.put(this.symbol, code);
         }
     }
+
 }
