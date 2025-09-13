@@ -59,8 +59,6 @@ public class A_Knapsack {
                 }
             }
         }
-
-        // Находим максимальный достижимый вес
         for (int i = w; i >= 0; i--) {
             result = i;
             if (dp[i]) {
