@@ -10,6 +10,8 @@ public class ListB<E> implements List<E> {
 
     //Создайте аналог списка БЕЗ использования других классов СТАНДАРТНОЙ БИБЛИОТЕКИ
 
+    //пжлст, не воруйте лабу, я на неё реально потратил 8+ часов ;(
+
     private static class ListElement<E> {
         ListElement<E> next = null;
         ListElement<E> prev = null;

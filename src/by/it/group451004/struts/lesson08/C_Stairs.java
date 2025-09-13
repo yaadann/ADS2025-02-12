@@ -43,7 +43,21 @@ public class C_Stairs {
         //!!!!!!!!!!!!!!!!!!!!!!!!!     НАЧАЛО ЗАДАЧИ     !!!!!!!!!!!!!!!!!!!!!!!!!
         int result = 0;
 
+        int index = 0;
+        while (index < stairs.length) {
+            if (index + 1 >= stairs.length) {
+                result += stairs[index];
+                break;
+            }
 
+            if (result + stairs[index] >= result + stairs[index + 1]) {
+                result += stairs[index];
+                index++;
+            } else {
+                result += stairs[index + 1];
+                index += 2;
+            }
+        }
 
 
         //!!!!!!!!!!!!!!!!!!!!!!!!!     КОНЕЦ ЗАДАЧИ     !!!!!!!!!!!!!!!!!!!!!!!!!
