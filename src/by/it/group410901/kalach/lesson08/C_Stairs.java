@@ -41,11 +41,14 @@ public class C_Stairs {
             stairs[i]=scanner.nextInt();
         }
         //!!!!!!!!!!!!!!!!!!!!!!!!!     НАЧАЛО ЗАДАЧИ     !!!!!!!!!!!!!!!!!!!!!!!!!
-        int result = 0;
-
-
-
-
+        int result;
+        int[] arr = new int[n + 1]; // Массив для хранения максимальных сумм
+        arr[0] = 0; // Нулевая ступенька
+        arr[1] = stairs[0]; // Первая ступенька (нумерация в массиве stairs начинается с 0)
+        for (int i = 2; i <= n; i++) {
+            arr[i] = stairs[i - 1] + Math.max(arr[i - 1], arr[i - 2]);
+        }
+        result = arr[n];
         //!!!!!!!!!!!!!!!!!!!!!!!!!     КОНЕЦ ЗАДАЧИ     !!!!!!!!!!!!!!!!!!!!!!!!!
         return result;
     }
