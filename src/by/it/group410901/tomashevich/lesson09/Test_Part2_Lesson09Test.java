@@ -20,7 +20,7 @@ import static org.junit.Assert.fail;
 
 //поставьте курсор на следующую строку и нажмите Ctrl+Shift+F10
 //для корректной сборки теста добавьте библиотеку init.jar в проект (она находится в корне)
-class Test_Part2_Lesson09Test extends HomeWork {
+public class Test_Part2_Lesson09Test extends HomeWork {
 
     private static final int RND_SEED = 123;
     public static final int INVOCATION_COUNT_PER_METHOD = 10;
@@ -206,9 +206,9 @@ class Test_Part2_Lesson09Test extends HomeWork {
 
     private boolean notComparable(Method m) {
         return m.getReturnType() != Comparable.class &&
-               0 == Arrays.stream(m.getParameterTypes())
-                       .filter(p -> p == Comparable.class)
-                       .count();
+                0 == Arrays.stream(m.getParameterTypes())
+                        .filter(p -> p == Comparable.class)
+                        .count();
     }
 
     private String getSignature(Method method) {
