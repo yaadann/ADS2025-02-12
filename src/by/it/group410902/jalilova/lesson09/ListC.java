@@ -247,7 +247,7 @@ public class ListC<E> implements List<E> {
             throw new IndexOutOfBoundsException();
         }
 
-        ListA<E> subList = new ListA<>();
+        ListC<E> subList = new ListC<>();
         for (int i = fromIndex; i < toIndex; i++) {
             @SuppressWarnings("unchecked")
             E element = (E) elements[i];
