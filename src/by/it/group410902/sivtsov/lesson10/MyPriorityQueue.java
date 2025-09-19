@@ -61,7 +61,6 @@ public class MyPriorityQueue<E> implements Queue<E> {
         }
         return false;
     }
-
     @Override
     public boolean offer(E element) {
         if (element == null) {
