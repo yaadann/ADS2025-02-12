@@ -6,19 +6,25 @@ import java.util.Iterator;
 
 public class MyArrayDeque<E> implements Deque<E> {
     private static final int DEF_CAPACITY = 10;
+    private int head;
+    private int tail;
     private int size;
-    private Object[] elements; //поправить и сделать тип Е
+    private Object[] elements;
 
     MyArrayDeque(){
         this.elements = new Object[DEF_CAPACITY];
+        this.head = 0;
+        this.tail = 0;
         this.size = 0;
     }
 
-    MyArrayDeque(int size){
-        if(size<0) throw new IllegalArgumentException("Illegal Capacity: " + size);
+    MyArrayDeque(int initialCapacity){
+        if(initialCapacity<0) throw new IllegalArgumentException("Illegal Capacity: " + size);
 
-        this.elements = new Object[size];
-        this.size = size;
+        this.elements = new Object[initialCapacity];
+        this.head = 0;
+        this.tail = 0;
+        this.size = 0;
     }
 
     /////////////////////////////////////////////////////////////////////////
