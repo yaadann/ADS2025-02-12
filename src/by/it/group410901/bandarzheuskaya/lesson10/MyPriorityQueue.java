@@ -4,27 +4,23 @@ import java.util.*;
 
 public class MyPriorityQueue<E> implements Queue<E> {
     private static final int DEFAULT_CAPACITY = 10;
-    private E[] heap; // массив для хранения элементов в виде двоичной кучи
+    private E[] heap;
     private int size;
-    private final Comparator<? super E> comparator; // компаратор для сравнения элементов
+    private final Comparator<? super E> comparator;
 
     // Конструкторы
-
-    // Создает пустую очередь с начальной емкостью и естественным порядком
     @SuppressWarnings("unchecked")
     public MyPriorityQueue() {
         this.heap = (E[]) new Object[DEFAULT_CAPACITY];
         this.comparator = null;
     }
 
-    // Создает пустую очередь с компаратором
     @SuppressWarnings("unchecked")
     public MyPriorityQueue(Comparator<? super E> comparator) {
         this.heap = (E[]) new Object[DEFAULT_CAPACITY];
         this.comparator = comparator;
     }
 
-    // Создает очередь из коллекции
     @SuppressWarnings("unchecked")
     public MyPriorityQueue(Collection<? extends E> c) {
         this.comparator = null;
@@ -33,8 +29,6 @@ public class MyPriorityQueue<E> implements Queue<E> {
     }
 
     // Вспомогательные методы для работы с кучей
-
-    // Увеличивает емкость массива при необходимости
     private void ensureCapacity() {
         if (size == heap.length) {
             @SuppressWarnings("unchecked")
@@ -44,7 +38,6 @@ public class MyPriorityQueue<E> implements Queue<E> {
         }
     }
 
-    // Сравнивает два элемента с использованием компаратора или естественного порядка
     @SuppressWarnings("unchecked")
     private int compare(E a, E b) {
         if (comparator != null) {
@@ -54,42 +47,37 @@ public class MyPriorityQueue<E> implements Queue<E> {
         }
     }
 
-    // Просеивание вверх - восстанавливает свойства кучи при добавлении элемента
     private void heapifyUp(int index) {
         while (index > 0) {
-            int parent = (index - 1) / 2; // индекс родительского узла
+            int parent = (index - 1) / 2;
             if (compare(heap[index], heap[parent]) >= 0) {
-                break; // свойство кучи не нарушено
+                break;
             }
-            swap(index, parent); // меняем местами с родителем
-            index = parent; // продолжаем проверку с новой позиции
+            swap(index, parent);
+            index = parent;
         }
     }
 
-    // Просеивание вниз - восстанавливает свойства кучи при удалении корня
     private void heapifyDown(int index) {
         while (true) {
-            int left = 2 * index + 1; // индекс левого потомка
-            int right = 2 * index + 2; // индекс правого потомка
-            int smallest = index; // предполагаем, что текущий узел наименьший
+            int left = 2 * index + 1;
+            int right = 2 * index + 2;
+            int smallest = index;
 
-            // Сравниваем с левым потомком
             if (left < size && compare(heap[left], heap[smallest]) < 0) {
                 smallest = left;
             }
-            // Сравниваем с правым потомком
             if (right < size && compare(heap[right], heap[smallest]) < 0) {
                 smallest = right;
             }
             if (smallest == index) {
-                break; // свойство кучи восстановлено
+                break;
             }
-            swap(index, smallest); // меняем местами с наименьшим потомком
-            index = smallest; // продолжаем проверку с новой позиции
+            swap(index, smallest);
+            index = smallest;
         }
     }
 
-    // Меняет местами два элемента в куче
     private void swap(int i, int j) {
         E temp = heap[i];
         heap[i] = heap[j];
@@ -97,7 +85,6 @@ public class MyPriorityQueue<E> implements Queue<E> {
     }
 
     // Основные методы Queue
-
     @Override
     public String toString() {
         if (size == 0) return "[]";
@@ -117,16 +104,14 @@ public class MyPriorityQueue<E> implements Queue<E> {
     @Override
     public void clear() {
         for (int i = 0; i < size; i++) {
-            heap[i] = null; // очищаем ссылки для сборщика мусора
+            heap[i] = null;
         }
         size = 0;
     }
 
-    // Добавляет элемент в очередь
     @Override
     public boolean add(E element) { return offer(element); }
 
-    // Удаляет и возвращает головной элемент
     @Override
     public E remove() {
         if (size == 0) throw new NoSuchElementException();
@@ -135,36 +120,31 @@ public class MyPriorityQueue<E> implements Queue<E> {
 
     @Override
     public boolean contains(Object element) {
-        // Линейный поиск по массиву кучи
         for (int i = 0; i < size; i++) {
             if (Objects.equals(element, heap[i])) return true;
         }
         return false;
     }
 
-    // Добавляет элемент в очередь
     @Override
     public boolean offer(E element) {
         if (element == null) throw new NullPointerException();
-        ensureCapacity(); // проверяем емкость
-        heap[size] = element; // добавляем в конец
-        heapifyUp(size); // восстанавливаем свойства кучи
+        ensureCapacity();
+        heap[size] = element;
+        heapifyUp(size);
         size++;
         return true;
     }
 
-    // Удаляет и возвращает головной элемент
     @Override
     public E poll() {
         if (size == 0) return null;
-        return removeAt(0); // удаляем корневой элемент
+        return removeAt(0);
     }
 
-    // Возвращает головной элемент без удаления
     @Override
     public E peek() { return (size == 0) ? null : heap[0]; }
 
-    // Возвращает головной элемент без удаления
     @Override
     public E element() {
         if (size == 0) throw new NoSuchElementException();
@@ -174,16 +154,14 @@ public class MyPriorityQueue<E> implements Queue<E> {
     @Override
     public boolean isEmpty() { return size == 0; }
 
-    // Удаляет элемент по индексу и восстанавливает свойства кучи
     private E removeAt(int index) {
-        E removed = heap[index]; // сохраняем удаляемый элемент
-        heap[index] = heap[size - 1]; // заменяем последним элементом
-        heap[size - 1] = null; // очищаем последнюю позицию
+        E removed = heap[index];
+        heap[index] = heap[size - 1];
+        heap[size - 1] = null;
         size--;
 
         if (index < size) {
-            heapifyDown(index); // просеиваем вниз
-            // Если элемент стал меньше родителя, просеиваем вверх
+            heapifyDown(index);
             if (index > 0 && compare(heap[index], heap[(index - 1) / 2]) < 0) {
                 heapifyUp(index);
             }
@@ -191,10 +169,8 @@ public class MyPriorityQueue<E> implements Queue<E> {
         return removed;
     }
 
-    // Удаляет первое вхождение указанного элемента
     @Override
     public boolean remove(Object o) {
-        // Линейный поиск и удаление
         for (int i = 0; i < size; i++) {
             if (Objects.equals(o, heap[i])) {
                 removeAt(i);
@@ -214,8 +190,7 @@ public class MyPriorityQueue<E> implements Queue<E> {
         return false;
     }
 
-
-    // Проверяет, содержатся ли все элементы коллекции в очереди
+    // Оптимизированные методы bulk operations за O(n)
     @Override
     public boolean containsAll(Collection<?> c) {
         for (Object element : c) {
@@ -224,7 +199,6 @@ public class MyPriorityQueue<E> implements Queue<E> {
         return true;
     }
 
-    // Добавляет все элементы коллекции в очередь
     @Override
     public boolean addAll(Collection<? extends E> c) {
         boolean modified = false;
@@ -234,7 +208,6 @@ public class MyPriorityQueue<E> implements Queue<E> {
         return modified;
     }
 
-    // Удаляет все элементы, содержащиеся в указанной коллекции
     @Override
     public boolean removeAll(Collection<?> c) {
         // Оптимизированная версия за O(n*m), но без использования HashSet
@@ -261,7 +234,6 @@ public class MyPriorityQueue<E> implements Queue<E> {
         return modified;
     }
 
-    // Оставляет только элементы, содержащиеся в указанной коллекции
     @Override
     public boolean retainAll(Collection<?> c) {
         // Оптимизированная версия за O(n*m), но без использования HashSet
@@ -293,17 +265,14 @@ public class MyPriorityQueue<E> implements Queue<E> {
     }
 
     // Итератор и остальные методы
-
-    // Возвращает итератор для обхода элементов очереди
     @Override
     public Iterator<E> iterator() {
         return new PriorityQueueIterator();
     }
 
-    // Внутренний класс итератора
     private class PriorityQueueIterator implements Iterator<E> {
-        private int currentIndex = 0; // текущая позиция итератора
-        private int lastReturned = -1; // индекс последнего возвращенного элемента
+        private int currentIndex = 0;
+        private int lastReturned = -1;
 
         @Override
         public boolean hasNext() { return currentIndex < size; }
@@ -324,7 +293,6 @@ public class MyPriorityQueue<E> implements Queue<E> {
         }
     }
 
-    // Возвращает массив, содержащий все элементы очереди
     @Override
     public Object[] toArray() {
         Object[] result = new Object[size];
@@ -332,7 +300,6 @@ public class MyPriorityQueue<E> implements Queue<E> {
         return result;
     }
 
-    // Возвращает массив, содержащий все элементы очереди
     @Override
     @SuppressWarnings("unchecked")
     public <T> T[] toArray(T[] a) {
@@ -344,7 +311,6 @@ public class MyPriorityQueue<E> implements Queue<E> {
         return a;
     }
 
-    // Сравнивает эту очередь с другой очередью
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -356,7 +322,6 @@ public class MyPriorityQueue<E> implements Queue<E> {
         MyPriorityQueue<E> copy1 = new MyPriorityQueue<>(this);
         Queue<?> copy2 = createCopy(other);
 
-        // Сравниваем элементы в порядке извлечения
         while (!copy1.isEmpty() && !copy2.isEmpty()) {
             if (!Objects.equals(copy1.poll(), copy2.poll())) {
                 return false;
@@ -365,7 +330,6 @@ public class MyPriorityQueue<E> implements Queue<E> {
         return copy1.isEmpty() && copy2.isEmpty();
     }
 
-    // Создает копию очереди для сравнения
     private Queue<?> createCopy(Queue<?> queue) {
         // Простая реализация создания копии через массив
         Object[] elements = queue.toArray();
@@ -376,7 +340,6 @@ public class MyPriorityQueue<E> implements Queue<E> {
         return copy;
     }
 
-    // Возвращает хеш-код очереди
     @Override
     public int hashCode() {
         int result = 1;
