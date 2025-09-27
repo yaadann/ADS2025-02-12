@@ -2,6 +2,7 @@ package by.it.group451001.sobol.lesson11;
 
 
 import org.junit.Test;
+import by.it.HomeWork;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -19,7 +20,7 @@ import static org.junit.Assert.fail;
 
 //поставьте курсор на следующую строку и нажмите Ctrl+Shift+F10
 //для корректной сборки теста добавьте библиотеку init.jar в проект (она находится в корне)
-public class Test_Part2_Lesson11Test {
+public class Test_Part2_Lesson11Test extends HomeWork{
 
     private static final int RND_SEED = 123;
     public static final int INVOCATION_COUNT_PER_METHOD = 10;
@@ -29,11 +30,6 @@ public class Test_Part2_Lesson11Test {
     private Collection<Number> aObject;
 
     private Map<Method, String> cache = new HashMap<>();
-
-    private Class<?> findClass(String className) throws ClassNotFoundException {
-        String fullName = this.getClass().getPackage().getName() + "." + className;
-        return Class.forName(fullName);
-    }
 
     @Test(timeout = 5000)
     public void testTaskA() throws Exception {
