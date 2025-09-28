@@ -33,37 +33,61 @@ public class ListA<E> implements List<E> {
     @Override
     public String toString() {
         String sb = new String();
+        // Если список пустой, сразу возвращаем "[]"
         if(size == 0) {return "[]";}
+
+        // Начинаем формировать строку с открывающей скобки и первого элемента
         sb += '[' + elementData[0].toString();
+
+        // Добавляем остальные элементы через запятую
         for (int i = 1; i < size; i++) {
             sb += ", " + elementData[i].toString();
         }
+
+        // Закрываем скобку и возвращаем результат
         sb += "]";
         return sb;
     }
 
     @Override
     public boolean add(E e) {
+        // Проверяем, нужно ли увеличивать вместимость массива
         if(size == elementData.length) {
+            // Создаем новый массив с увеличенной вместимостью:
+            // старая длина + 50% от старой длины + 1 (стандартный подход в ArrayList)
             Object[] newElementData = new Object[elementData.length + (elementData.length >> 1) + 1];
-            System.arraycopy(elementData, 0, newElementData, 0, elementData.length);
-            elementData = newElementData;
 
+            // Копируем все элементы из старого массива в новый
+            System.arraycopy(elementData, 0, newElementData, 0, elementData.length);
+
+            // Заменяем ссылку на массив
+            elementData = newElementData;
         }
+
+        // Добавляем новый элемент в конец и увеличиваем счетчик размера
         elementData[size++] = e;
         return true;
     }
 
     @Override
     public E remove(int index) {
+        // Сохраняем ссылку на удаляемый элемент для возврата
         E Old = (E)elementData[index];
+
+        // Сдвигаем все элементы справа от удаляемого на одну позицию влево
+        // Это перезапишет удаляемый элемент
         System.arraycopy(elementData, index + 1, elementData, index, size - index - 1);
+
+        // Обнуляем последнюю ссылку (теперь она дублируется) и уменьшаем размер
         elementData[--size] = null;
+
+        // Возвращаем удаленный элемент
         return Old;
     }
 
     @Override
     public int size() {
+        // Возвращаем текущее количество элементов в списке
         return size;
     }
 
