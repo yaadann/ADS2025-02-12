@@ -14,24 +14,63 @@ public class ListA<E> implements List<E> {
     //////               Обязательные к реализации методы             ///////
     /////////////////////////////////////////////////////////////////////////
     /////////////////////////////////////////////////////////////////////////
+    static final int defaultSize = 8;
+    E[] _list;
+    int _current;
+
+    public ListA() {
+        this(defaultSize);
+    }
+
+
+    public ListA(int size) {
+        _list = (E[]) new Object[size];
+    }
+
+
     @Override
     public String toString() {
-        return "";
+        StringBuilder sb = new StringBuilder();
+        sb.append('[');
+        for (int i = 0; i < _current; i++) {
+            sb.append(_list[i]);
+            if (i < _current - 1) {
+                sb.append(", ");
+            }
+        }
+        sb.append("]");
+        return sb.toString();
     }
 
     @Override
     public boolean add(E e) {
-        return false;
+        ensureCapacity(_current + 1);
+        _list[_current++] = e;
+        return true;
     }
 
-    @Override
+    private void ensureCapacity(int minCapacity) {
+        if (minCapacity > _list.length) {
+            int newCapacity = Math.max(_list.length * 2, minCapacity);
+            E[] newArray = (E[]) new Object[newCapacity];
+            System.arraycopy(_list, 0, newArray, 0, _current);
+            _list = newArray;
+        }
+    }
+
     public E remove(int index) {
+        if (index > -1 && index < _current) {
+            E elem = _list[index];
+            for (int i = index; i < _current - 1; i++)
+                _list[i] = _list[i + 1];
+            _current--;
+            return elem;
+        }
         return null;
     }
-
     @Override
     public int size() {
-        return 0;
+        return _current;
     }
 
     /////////////////////////////////////////////////////////////////////////
