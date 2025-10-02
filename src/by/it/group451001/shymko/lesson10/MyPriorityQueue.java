@@ -136,6 +136,9 @@ public class MyPriorityQueue<E> implements Queue<E> {
     }
 
     public boolean addAll(Collection<? extends E> c) {
+        if(c.isEmpty()){
+            return false;
+        }
         if(size + c.size() > elements.length){
             resize(size + c.size());
         }
