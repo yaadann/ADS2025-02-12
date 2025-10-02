@@ -27,6 +27,20 @@ public class MyArrayDeque<E> implements Deque<E> {
         this.size = 0;
     }
 
+    private void ensureCapacity() {
+        if (size == elements.length) {
+            int newCapacity = elements.length * 2;
+            Object[] newArr = new Object[newCapacity];
+            for (int i = 0; i < size; i++) {
+                newArr[i] = elements[(head + i) % elements.length];
+            }
+            elements = newArr;
+            head = 0;
+            tail = size;
+        }
+    }
+
+
     /////////////////////////////////////////////////////////////////////////
     //////               Обязательные к реализации методы             ///////
     /////////////////////////////////////////////////////////////////////////
