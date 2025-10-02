@@ -3,14 +3,13 @@ package by.it.group410902.siomchena.lesson10;
 import java.util.*;
 
 public class MyPriorityQueue<E> implements Queue<E> {
-    private static final int DEFAULT_CAPACITY = 10;
+    private static final int capacity = 10;
     private E[] heap;
     private int size;
     private Comparator<? super E> comparator;
 
-    // Конструкторы
     public MyPriorityQueue() {
-        this(DEFAULT_CAPACITY, null);
+        this(capacity, null);
     }
 
     public MyPriorityQueue(int initialCapacity) {
@@ -18,7 +17,7 @@ public class MyPriorityQueue<E> implements Queue<E> {
     }
 
     public MyPriorityQueue(Comparator<? super E> comparator) {
-        this(DEFAULT_CAPACITY, comparator);
+        this(capacity, comparator);
     }
 
     public MyPriorityQueue(int initialCapacity, Comparator<? super E> comparator) {
@@ -31,7 +30,7 @@ public class MyPriorityQueue<E> implements Queue<E> {
 
     @SuppressWarnings("unchecked")
     public MyPriorityQueue(Collection<? extends E> c) {
-        this.heap = (E[]) new Object[Math.max(c.size(), DEFAULT_CAPACITY)];
+        this.heap = (E[]) new Object[Math.max(c.size(), capacity)];
         this.size = 0;
         this.comparator = null;
 
@@ -44,13 +43,11 @@ public class MyPriorityQueue<E> implements Queue<E> {
             }
         }
 
-        // Правильное построение кучи
         for (int i = size / 2 - 1; i >= 0; i--) {
             heapifyDown(i);
         }
     }
 
-    // Вспомогательные методы для работы с кучей
     private void resize() {
         int newCapacity = heap.length * 2;
         E[] newHeap = (E[]) new Object[newCapacity];
@@ -120,7 +117,6 @@ public class MyPriorityQueue<E> implements Queue<E> {
         }
     }
 
-    // Реализация методов интерфейса Queue<E>
     @Override
     public String toString() {
         if (size == 0) {
@@ -174,16 +170,12 @@ public class MyPriorityQueue<E> implements Queue<E> {
 
         E removed = heap[index];
 
-        // Перемещаем последний элемент на место удаляемого
         heap[index] = heap[size - 1];
         heap[size - 1] = null;
         size--;
 
-        // Восстанавливаем свойства кучи
         if (index < size) {
             heapifyDown(index);
-            // Если после heapifyDown элемент не изменил позицию,
-            // возможно нужно проверить heapifyUp
             if (index > 0 && compare(heap[index], heap[parent(index)]) < 0) {
                 heapifyUp(index);
             }
@@ -288,7 +280,6 @@ public class MyPriorityQueue<E> implements Queue<E> {
         boolean modified = false;
         int newSize = 0;
 
-        // Переносим элементы, которые НЕ нужно удалять, в начало массива
         for (int i = 0; i < size; i++) {
             if (!c.contains(heap[i])) {
                 heap[newSize++] = heap[i];
@@ -297,14 +288,12 @@ public class MyPriorityQueue<E> implements Queue<E> {
             }
         }
 
-        // Очищаем оставшиеся элементы
         for (int i = newSize; i < size; i++) {
             heap[i] = null;
         }
 
         size = newSize;
 
-        // Перестраиваем кучу
         if (modified) {
             for (int i = size / 2 - 1; i >= 0; i--) {
                 heapifyDown(i);
@@ -319,7 +308,6 @@ public class MyPriorityQueue<E> implements Queue<E> {
         boolean modified = false;
         int newSize = 0;
 
-        // Переносим сохраняемые элементы в начало массива
         for (int i = 0; i < size; i++) {
             if (c.contains(heap[i])) {
                 heap[newSize++] = heap[i];
@@ -328,14 +316,12 @@ public class MyPriorityQueue<E> implements Queue<E> {
             }
         }
 
-        // Очищаем оставшиеся элементы
         for (int i = newSize; i < size; i++) {
             heap[i] = null;
         }
 
         size = newSize;
 
-        // Перестраиваем кучу
         if (modified) {
             for (int i = size / 2 - 1; i >= 0; i--) {
                 heapifyDown(i);
@@ -345,7 +331,6 @@ public class MyPriorityQueue<E> implements Queue<E> {
         return modified;
     }
 
-    // Методы, которые не поддерживаются (необязательные)
     @Override
     public Iterator<E> iterator() {
         throw new UnsupportedOperationException();

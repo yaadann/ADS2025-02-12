@@ -9,7 +9,7 @@ public class MyArrayDeque<E> implements Deque<E> {
     private int tail;
 
     public MyArrayDeque() {
-        elements = (E[]) new Object[10]; // начальная емкость 10
+        elements = (E[]) new Object[10];
         size = 0;
         head = 0;
         tail = 0;
