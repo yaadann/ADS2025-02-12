@@ -48,6 +48,7 @@ public class ListC<E> implements List<E> {
         return true;
     }
 
+    //удаление эл
     @Override
     public E remove(int index) {
         if (index < 0 || index >= size) {
