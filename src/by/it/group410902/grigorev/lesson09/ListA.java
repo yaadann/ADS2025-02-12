@@ -22,7 +22,6 @@ public class ListA<E> implements List<E> {
     /////////////////////////////////////////////////////////////////////////
     /////////////////////////////////////////////////////////////////////////
     @Override
-    // возвращает строковое представление списка, с элементами через запятую в квадратных скобках.
     public String toString() {
         StringBuilder res = new StringBuilder();
 
@@ -38,7 +37,6 @@ public class ListA<E> implements List<E> {
     }
 
     @Override
-    // добавляет элемент e в конец списка, увеличивает size и создает новый массив с увеличенным размером
     public boolean add(E e) {
         E[] Temp = (E[]) new Object[this.size + 1];
         System.arraycopy(this.arr, 0, Temp, 0, this.size);
@@ -49,7 +47,6 @@ public class ListA<E> implements List<E> {
     }
 
     @Override
-    // удаляет элемент по заданному индексу, сдвигая элементы после него влево. Возвращает удаленный элемент
     public E remove(int index) {
         E[] Temp = (E[]) new Object[this.size - 1];
         E data = this.arr[index];
