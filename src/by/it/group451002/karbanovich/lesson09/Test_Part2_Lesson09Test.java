@@ -1,4 +1,4 @@
-package by.it.a_khmelev.lesson09;
+package by.it.group451002.karbanovich.lesson09;
 
 
 import by.it.HomeWork;
@@ -27,9 +27,9 @@ public class Test_Part2_Lesson09Test extends HomeWork {
     public static final int MAX_VALUE = 100;
     Random rnd = new Random(RND_SEED);
     private List<Integer> eObject;
-   private List<Integer> aObject;
+    private List<Integer> aObject;
 
-   private Map<Method, String> cache = new HashMap<>();
+    private Map<Method, String> cache = new HashMap<>();
 
     @Test(timeout = 5000)
     public void testTaskA() throws Exception {
@@ -71,7 +71,7 @@ public class Test_Part2_Lesson09Test extends HomeWork {
                 add(Object)
                 remove(int)
                 size()
-          
+                                
                 remove(Object)
                 add(int,Object)
                 remove(Object)
@@ -85,7 +85,7 @@ public class Test_Part2_Lesson09Test extends HomeWork {
                                 
                 containsAll(Collection)
                 addAll(Collection)
-                addAll(int,Collection)
+                addAll(int,Collection)                
                 removeAll(Collection)
                 retainAll(Collection)
                 retainAll(Collection)
@@ -206,9 +206,9 @@ public class Test_Part2_Lesson09Test extends HomeWork {
 
     private boolean notComparable(Method m) {
         return m.getReturnType() != Comparable.class &&
-               0 == Arrays.stream(m.getParameterTypes())
-                       .filter(p -> p == Comparable.class)
-                      .count();
+                0 == Arrays.stream(m.getParameterTypes())
+                        .filter(p -> p == Comparable.class)
+                        .count();
     }
 
     private String getSignature(Method method) {
