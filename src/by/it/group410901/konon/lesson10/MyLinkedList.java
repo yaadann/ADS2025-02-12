@@ -53,6 +53,7 @@ public class MyLinkedList<E> implements Deque<E> {
 
     @Override
     public boolean isEmpty() {
+        if(size==0) return true;
         return false;
     }
 
@@ -87,13 +88,13 @@ public class MyLinkedList<E> implements Deque<E> {
     }
 
     @Override
-    public E element() {
+    public E element() {//унаследован из интерфейса Queue<E>
         if (size == 0) throw new NoSuchElementException();
         return head.item;
     }
 
     @Override
-    public E getFirst() {
+    public E getFirst() {//для linkedlist
         if (size == 0) throw new NoSuchElementException();
         return head.item;
     }
@@ -105,12 +106,12 @@ public class MyLinkedList<E> implements Deque<E> {
     }
 
     @Override
-    public E poll() {
+    public E poll() {//для Queue
         return pollFirst();
     }
 
     @Override
-    public E pollFirst() {
+    public E pollFirst() {//для Deque
         if (size == 0) return null;
         E value = head.item;
         head = head.next;
@@ -166,11 +167,6 @@ public class MyLinkedList<E> implements Deque<E> {
         return false;
     }
 
-    @Override
-    public boolean containsAll(Collection<?> c) {
-        return false;
-    }
-
     private void unlink(Node<E> node) {
         Node<E> prev = node.prev;
         Node<E> next = node.next;
@@ -188,6 +184,7 @@ public class MyLinkedList<E> implements Deque<E> {
     //////              Опциональные к реализации методы              ///////
     /////////////////////////////////////////////////////////////////////////
 
+    @Override public boolean containsAll(Collection<?> c) {return false;}
     @Override public boolean offerFirst(E e) { throw new UnsupportedOperationException(); }
     @Override public boolean offerLast(E e) { throw new UnsupportedOperationException(); }
     @Override public E removeFirst() { throw new UnsupportedOperationException(); }
