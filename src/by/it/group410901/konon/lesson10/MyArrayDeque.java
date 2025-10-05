@@ -3,6 +3,7 @@ package by.it.group410901.konon.lesson10;
 import java.util.Collection;
 import java.util.Deque;
 import java.util.Iterator;
+import java.util.NoSuchElementException;
 
 public class MyArrayDeque<E> implements Deque<E> {
     private static final int DEF_CAPACITY = 10;
@@ -19,7 +20,7 @@ public class MyArrayDeque<E> implements Deque<E> {
     }
 
     MyArrayDeque(int initialCapacity){
-        if(initialCapacity<0) throw new IllegalArgumentException("Illegal Capacity: " + size);
+        if(initialCapacity<0) throw new IllegalArgumentException("Illegal Capacity: " + initialCapacity);
 
         this.elements = new Object[initialCapacity];
         this.head = 0;
@@ -47,8 +48,14 @@ public class MyArrayDeque<E> implements Deque<E> {
 
     @Override
     public String toString(){
-        if(size==0) return "[]";
-        return "";
+        if (size == 0) return "[]";
+        StringBuilder sb = new StringBuilder("[");
+        for (int i = 0; i < size; i++) {
+            sb.append(elements[(head + i) % elements.length]);
+            if (i != size - 1) sb.append(", ");
+        }
+        sb.append("]");
+        return sb.toString();
     }
 
     @Override
@@ -58,42 +65,67 @@ public class MyArrayDeque<E> implements Deque<E> {
 
     @Override
     public boolean add(E e) {
-        return false;
+        addLast(e);
+        return true;
     }
 
     @Override
     public void addFirst(E e) {
-
+        ensureCapacity();
+        head = (head - 1 + elements.length) % elements.length;
+        elements[head] = e;
+        size++;
     }
 
     @Override
     public void addLast(E e) {
-
+        ensureCapacity();
+        elements[tail] = e;
+        tail = (tail + 1) % elements.length;
+        size++;
     }
 
     @Override
     public E element() {
-        return null;
+        if (size == 0) throw new NoSuchElementException();
+        return (E) elements[head];
+    }
+
+    @Override
+    public E getFirst() {
+        if (size == 0) throw new NoSuchElementException();
+        return (E) elements[head];
     }
 
     @Override
     public E getLast() {
-        return null;
+        if (size == 0) throw new NoSuchElementException();
+        return (E) elements[(tail - 1 + elements.length) % elements.length];
     }
 
     @Override
     public E poll() {
-        return null;
+        return pollFirst();
     }
 
     @Override
     public E pollFirst() {
-        return null;
+        if (size == 0) return null;
+        E val = (E) elements[head];
+        elements[head] = null;
+        head = (head + 1) % elements.length;
+        size--;
+        return val;
     }
 
     @Override
     public E pollLast() {
-        return null;
+        if (size == 0) return null;
+        tail = (tail - 1 + elements.length) % elements.length;
+        E val = (E) elements[tail];
+        elements[tail] = null;
+        size--;
+        return val;
     }
 
     /////////////////////////////////////////////////////////////////////////
@@ -122,11 +154,6 @@ public class MyArrayDeque<E> implements Deque<E> {
 
     @Override
     public E removeLast() {
-        return null;
-    }
-
-    @Override
-    public E getFirst() {
         return null;
     }
 
