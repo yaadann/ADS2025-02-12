@@ -65,7 +65,6 @@ public class MyLinkedHashSet<E> implements Set<E> {
         newNode.next = elements[index];
         elements[index] = newNode;
 
-        // Добавляем в конец цепочки порядка
         if (tail == null) {
             head = tail = newNode;
         } else {
@@ -86,7 +85,6 @@ public class MyLinkedHashSet<E> implements Set<E> {
 
         while (current != null) {
             if (Objects.equals(current.data, o)) {
-                // Удаляем из цепочки порядка
                 if (current.before != null) {
                     current.before.after = current.after;
                 } else {
@@ -98,7 +96,6 @@ public class MyLinkedHashSet<E> implements Set<E> {
                     tail = current.before;
                 }
 
-                // Удаляем из bucket'а
                 if (prev == null) {
                     elements[index] = current.next;
                 } else {
