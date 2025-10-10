@@ -7,7 +7,6 @@ public class MyTreeSet<E> implements Set<E> {
     private Object[] elements;
     private int size;
 
-    // Упрощенные конструкторы без компаратора
     public MyTreeSet() {
         this(DEFAULT_CAPACITY);
     }
@@ -38,19 +37,11 @@ public class MyTreeSet<E> implements Set<E> {
         size = 0;
     }
 
-    /**
-     * Сравнивает два элемента используя естественный порядок (Comparable)
-     * Элементы ДОЛЖНЫ реализовывать Comparable интерфейс
-     */
     @SuppressWarnings("unchecked")
     private int compare(E e1, E e2) {
-        // Просто используем естественный порядок сравнения
         return ((Comparable<E>) e1).compareTo(e2);
     }
 
-    /**
-     * Бинарный поиск в отсортированном массиве
-     */
     @SuppressWarnings("unchecked")
     private int binarySearch(Object key) {
         int low = 0;
@@ -66,22 +57,15 @@ public class MyTreeSet<E> implements Set<E> {
             } else if (cmp > 0) {
                 high = mid - 1;
             } else {
-                return mid; // элемент найден
+                return mid;
             }
         }
-        return -(low + 1); // элемент не найден, возвращаем точку вставки
+        return -(low + 1);
     }
 
-    /**
-     * Увеличивает емкость массива при необходимости
-     */
-    private void ensureCapacity(int minCapacity) {
-        if (minCapacity > elements.length) {
-            int newCapacity = elements.length * 2;
-            if (newCapacity < minCapacity) {
-                newCapacity = minCapacity;
-            }
-            // Ручное копирование массива (без Arrays.copyOf)
+    private void ensureCapacity() {
+        if (size >= elements.length) {
+            int newCapacity = elements.length * 2;  // Просто удваиваем
             Object[] newElements = new Object[newCapacity];
             for (int i = 0; i < size; i++) {
                 newElements[i] = elements[i];
@@ -98,13 +82,12 @@ public class MyTreeSet<E> implements Set<E> {
 
         int index = binarySearch(e);
         if (index >= 0) {
-            return false; // элемент уже существует
+            return false;
         }
 
         int insertionPoint = -index - 1;
-        ensureCapacity(size + 1);
+        ensureCapacity();
 
-        // Сдвигаем элементы вправо для освобождения места
         for (int i = size; i > insertionPoint; i--) {
             elements[i] = elements[i - 1];
         }
@@ -122,10 +105,9 @@ public class MyTreeSet<E> implements Set<E> {
 
         int index = binarySearch(o);
         if (index < 0) {
-            return false; // элемент не найден
+            return false;
         }
 
-        // Сдвигаем элементы влево для заполнения пустоты
         for (int i = index; i < size - 1; i++) {
             elements[i] = elements[i + 1];
         }
@@ -157,8 +139,6 @@ public class MyTreeSet<E> implements Set<E> {
         sb.append("]");
         return sb.toString();
     }
-
-    // Операции с коллекциями (остаются без изменений)
 
     @Override
     public boolean containsAll(Collection<?> c) {
@@ -197,14 +177,12 @@ public class MyTreeSet<E> implements Set<E> {
         boolean modified = false;
         List<Object> toRemove = new ArrayList<>();
 
-        // Собираем элементы для удаления
         for (int i = 0; i < size; i++) {
             if (!c.contains(elements[i])) {
                 toRemove.add(elements[i]);
             }
         }
 
-        // Удаляем собранные элементы
         for (Object element : toRemove) {
             if (remove(element)) {
                 modified = true;
@@ -214,7 +192,6 @@ public class MyTreeSet<E> implements Set<E> {
         return modified;
     }
 
-    // Неподдерживаемые операции
     @Override
     public Iterator<E> iterator() {
         throw new UnsupportedOperationException();
