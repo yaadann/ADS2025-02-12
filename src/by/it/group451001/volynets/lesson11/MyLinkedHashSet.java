@@ -10,9 +10,9 @@ public class MyLinkedHashSet<E> implements Set<E> {
     private static class Node<E> {
         final int hash;
         final E key;
-        Node<E> next;      // в цепочке бакета
-        Node<E> before;    // в списке вставки
-        Node<E> after;     // в списке вставки
+        Node<E> next;
+        Node<E> before;
+        Node<E> after;
         Node(int hash, E key, Node<E> next) {
             this.hash = hash;
             this.key = key;
@@ -39,8 +39,6 @@ public class MyLinkedHashSet<E> implements Set<E> {
         head = tail = null;
     }
 
-    // Базовые служебные методы
-
     private int hash(Object key) {
         int h = (key == null) ? 0 : key.hashCode();
         return h ^ (h >>> 16);
@@ -54,7 +52,6 @@ public class MyLinkedHashSet<E> implements Set<E> {
         return a == b || (a != null && a.equals(b));
     }
 
-    // Методы Set
 
     @Override
     public int size() {
@@ -98,7 +95,7 @@ public class MyLinkedHashSet<E> implements Set<E> {
             }
         }
 
-        // Вставка в бакет (в голову цепочки)
+        // Вставка в голову цепочки
         Node<E> newNode = new Node<>(h, e, first);
         table[idx] = newNode;
 
@@ -118,10 +115,8 @@ public class MyLinkedHashSet<E> implements Set<E> {
         Node<E> cur = table[idx];
         while (cur != null) {
             if (cur.hash == h && keysEqual(cur.key, o)) {
-                // Удалить из цепочки бакета
                 if (prev == null) table[idx] = cur.next;
                 else prev.next = cur.next;
-                // Удалить из списка вставки
                 unlink(cur);
                 size--;
                 return true;
@@ -152,14 +147,11 @@ public class MyLinkedHashSet<E> implements Set<E> {
     @Override
     public boolean removeAll(Collection<?> c) {
         boolean changed = false;
-        // Идем по списку вставки, чтобы безопасно удалять
         Node<E> n = head;
         while (n != null) {
-            Node<E> nextInOrder = n.after; // сохраним следующий до возможного удаления
+            Node<E> nextInOrder = n.after;
             if (collectionContains(c, n.key)) {
-                // Удаляем из таблицы
                 deleteFromBucket(n);
-                // Удаляем из списка вставки
                 unlink(n);
                 size--;
                 changed = true;
@@ -185,8 +177,6 @@ public class MyLinkedHashSet<E> implements Set<E> {
         }
         return changed;
     }
-
-    // Поддержка списка вставки
 
     private void linkLast(Node<E> e) {
         Node<E> t = tail;
@@ -216,7 +206,6 @@ public class MyLinkedHashSet<E> implements Set<E> {
         e.before = e.after = null;
     }
 
-    // Удаление узла из хеш-цепочки по известному объекту узла
     private void deleteFromBucket(Node<E> node) {
         int idx = indexFor(node.hash, table.length);
         Node<E> prev = null;
@@ -232,7 +221,6 @@ public class MyLinkedHashSet<E> implements Set<E> {
         }
     }
 
-    // Ресайз таблицы с сохранением порядка вставки (список не меняем)
     @SuppressWarnings("unchecked")
     private void resize() {
         int oldCap = table.length;
@@ -244,8 +232,6 @@ public class MyLinkedHashSet<E> implements Set<E> {
         Node<E>[] oldTab = table;
         Node<E>[] newTab = (Node<E>[]) new Node[newCap];
 
-        // Переукладываем все узлы, проходя по бакетам, но можно и по списку вставки
-        // Лучше по бакетам с разнесением lo/hi (экономит пересчет индексов)
         for (int i = 0; i < oldCap; i++) {
             Node<E> e = oldTab[i];
             if (e == null) continue;
@@ -279,7 +265,6 @@ public class MyLinkedHashSet<E> implements Set<E> {
 
         table = newTab;
         threshold = (int) (newCap * LOAD_FACTOR);
-        // Внимание: список вставки (before/after) не меняем — порядок остается тем же.
     }
 
     private boolean collectionContains(Collection<?> c, Object key) {
@@ -289,7 +274,6 @@ public class MyLinkedHashSet<E> implements Set<E> {
         return false;
     }
 
-    // toString в порядке вставки
     @Override
     public String toString() {
         if (size == 0) return "[]";

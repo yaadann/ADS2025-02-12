@@ -48,7 +48,6 @@ public class MyHashSet<E> implements Set<E> {
         return size == 0;
     }
 
-    // Хеш как у HashMap: spread для лучшего распределения
     private int hash(Object key) {
         int h = (key == null) ? 0 : key.hashCode();
         return h ^ (h >>> 16);
@@ -101,7 +100,7 @@ public class MyHashSet<E> implements Set<E> {
         Node<E>[] oldTab = table;
         Node<E>[] newTab = (Node<E>[]) new Node[newCap];
 
-        // Перераспределение узлов без перерасчёта hash (используем биты)
+        // Перераспределение узлов без перерасчёта hash
         for (int i = 0; i < oldCap; i++) {
             Node<E> e = oldTab[i];
             if (e == null) continue;
@@ -190,21 +189,9 @@ public class MyHashSet<E> implements Set<E> {
 
     // Заглушки/минимальные реализации оставшихся методов Set
 
-    @Override
-    public Iterator<E> iterator() {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public Object[] toArray() {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public <T> T[] toArray(T[] a) {
-        throw new UnsupportedOperationException();
-    }
-
+    @Override public Iterator<E> iterator() { throw new UnsupportedOperationException();}
+    @Override public Object[] toArray() { throw new UnsupportedOperationException();}
+    @Override public <T> T[] toArray(T[] a) { throw new UnsupportedOperationException();}
     @Override
     public boolean containsAll(Collection<?> c) {
         for (Object o : c) {

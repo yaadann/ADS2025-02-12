@@ -95,16 +95,6 @@ public class MyPriorityQueue<E extends Comparable<? super E>> implements Queue<E
         return size == 0;
     }
 
-    // Дополнительный удобный метод (не из интерфейса Collection)
-    public boolean contains(E element) {
-        for (int i = 0; i < size; i++) {
-            if (eq(heap[i], element)) return true;
-        }
-        return false;
-    }
-
-    // Bulk operations
-
     @Override
     public boolean containsAll(Collection<?> c) {
         for (Object o : c) {
@@ -158,8 +148,6 @@ public class MyPriorityQueue<E extends Comparable<? super E>> implements Queue<E
         heapify();
         return changed;
     }
-
-    // Вспомогательные методы кучи
 
     private void siftUp(int i) {
         int idx = i;
@@ -219,8 +207,6 @@ public class MyPriorityQueue<E extends Comparable<? super E>> implements Queue<E
         }
         return false;
     }
-
-    // Реализации методов Collection, которые требуются тестами
 
     @Override
     public boolean contains(Object o) {

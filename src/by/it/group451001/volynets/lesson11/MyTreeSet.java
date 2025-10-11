@@ -34,7 +34,6 @@ public class MyTreeSet<E> implements Set<E> {
 
     @Override
     public void clear() {
-        // Затираем ссылки
         for (int i = 0; i < size; i++) elements[i] = null;
         size = 0;
     }
@@ -48,9 +47,7 @@ public class MyTreeSet<E> implements Set<E> {
         if (comparator != null) {
             return comparator.compare(a, b);
         }
-        // Без компаратора полагаемся на Comparable
         if (a == null || b == null) {
-            // Запрещаем null, чтобы не ломать порядок
             throw new NullPointerException("Null elements are not supported without explicit comparator");
         }
         @SuppressWarnings("unchecked")
@@ -58,8 +55,6 @@ public class MyTreeSet<E> implements Set<E> {
         return ca.compareTo(b);
     }
 
-    // Бинарный поиск: возвращает индекс элемента, если найден,
-    // иначе -(insertionPoint) - 1
     private int binarySearch(E key) {
         int lo = 0, hi = size - 1;
         while (lo <= hi) {
