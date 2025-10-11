@@ -22,11 +22,50 @@ public class FiboC {
     }
 
     long fasterC(long n, int m) {
-        //Интуитивно найти решение не всегда просто и
-        //возможно потребуется дополнительный поиск информации
-        return -1L;
+        // Находим период Пизано для модуля m
+        long period = findPisanoPeriod(m);
+
+        // Находим эквивалентный индекс в пределах периода
+        long equivalentIndex = n % period;
+
+        // Вычисляем число Фибоначчи по модулю m для эквивалентного индекса
+        return fibMod(equivalentIndex, m);
     }
 
+    // Метод для нахождения периода Пизано
+    private long findPisanoPeriod(int m) {
+        if (m == 1) return 1;
 
+        long a = 0, b = 1;
+        long period = 0;
+
+        // Период Пизано всегда начинается с 0, 1
+        for (long i = 0; i <= (long) m * m; i++) {
+            long current = (a + b) % m;
+            a = b;
+            b = current;
+            period++;
+
+            // Период найден, когда мы снова получаем 0, 1
+            if (a == 0 && b == 1) {
+                return period;
+            }
+        }
+        return period;
+    }
+
+    // Метод для вычисления n-го числа Фибоначчи по модулю m
+    private long fibMod(long n, int m) {
+        if (n <= 1) return n % m;
+
+        long a = 0, b = 1;
+
+        for (long i = 2; i <= n; i++) {
+            long current = (a + b) % m;
+            a = b;
+            b = current;
+        }
+
+        return b;
+    }
 }
-
