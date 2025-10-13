@@ -1,4 +1,4 @@
-//package by.it.a_khmelev.lesson09;//
+package by.it.a_khmelev.lesson09;
 
 
 import by.it.HomeWork;
@@ -206,9 +206,9 @@ public class Test_Part2_Lesson09Test extends HomeWork {
 
     private boolean notComparable(Method m) {
         return m.getReturnType() != Comparable.class &&
-               0 == Arrays.stream(m.getParameterTypes())
-                       .filter(p -> p == Comparable.class)
-                       .count();
+                0 == Arrays.stream(m.getParameterTypes())
+                        .filter(p -> p == Comparable.class)
+                        .count();
     }
 
     private String getSignature(Method method) {
