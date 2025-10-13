@@ -6,48 +6,60 @@ import java.util.Iterator;
 
 public class MyLinkedHashSet<E> implements Set<E> {
 
+    // Внутренний класс Node для представления элементов
     private static class Node<E> {
-        final E value;
-        Node<E> next;
-        Node<E> before, after;
-        Node(E value, Node<E> next) { this.value = value; this.next = next; }
+        final E value;          // Хранимое значение
+        Node<E> next;           // Ссылка на следующий узел в цепочке коллизий
+        Node<E> before, after;  // Ссылки для поддержания порядка добавления
+
+        Node(E value, Node<E> next) {
+            this.value = value;
+            this.next = next;
+        }
     }
 
-    private Node<E>[] table;
-    private Node<E> head, tail;
-    private int size;
-    private boolean hasNull;
-    private static final int DEFAULT_CAP = 16;
-    private static final float LOAD_FACTOR = 0.75f;
+    private Node<E>[] table;    // Массив бакетов (корзин) для хеш-таблицы
+    private Node<E> head, tail; // Указатели на начало и конец списка порядка добавления
+    private int size;           // Общее количество элементов
+    private boolean hasNull;    // Флаг наличия null элемента
+    private static final int DEFAULT_CAP = 16;    // Начальная емкость
+    private static final float LOAD_FACTOR = 0.75f; // Коэффициент загрузки
 
+    // Конструктор с указанием начальной емкости
     @SuppressWarnings("unchecked")
     public MyLinkedHashSet(int capacity) {
         if (capacity < 1) capacity = DEFAULT_CAP;
-        table = (Node<E>[]) new Node[capacity];
-        head = tail = null;
+        table = (Node<E>[]) new Node[capacity]; // Создание массива бакетов
+        head = tail = null;     // Инициализация двусвязного списка
         size = 0;
         hasNull = false;
     }
 
+    // Конструктор по умолчанию
     public MyLinkedHashSet() { this(DEFAULT_CAP); }
 
+    // Получение текущей емкости таблицы
     private int cap() { return table.length; }
 
+    // Вычисление индекса в таблице для объекта
     private int indexFor(Object o, int len) {
-        int h = (o == null) ? 0 : o.hashCode();
-        return (h & 0x7fffffff) % len;
+        int h = (o == null) ? 0 : o.hashCode(); // Для null используем 0
+        return (h & 0x7fffffff) % len; // Убираем знак и берем по модулю
     }
 
+    // Увеличение размера таблицы при переполнении
     @SuppressWarnings("unchecked")
     private void resize() {
-        int newCap = cap() << 1;
+        int newCap = cap() << 1; // Удваиваем емкость
         Node<E>[] newTable = (Node<E>[]) new Node[newCap];
+
+        // Перехеширование всех элементов (порядок в двусвязном списке сохраняется)
         for (int i = 0; i < cap(); i++) {
             Node<E> n = table[i];
             while (n != null) {
-                Node<E> next = n.next;
-                int idx = indexFor(n.value, newCap);
-                n.next = newTable[idx];
+                Node<E> next = n.next; // Сохраняем ссылку на следующий в цепочке
+                int idx = indexFor(n.value, newCap); // Новый индекс
+                n.next = newTable[idx]; // Вставляем в начало новой цепочки
                 newTable[idx] = n;
                 n = next;
             }
@@ -55,42 +67,61 @@ public class MyLinkedHashSet<E> implements Set<E> {
         table = newTable;
     }
 
+    /////////////////////////////////////////////////////////////////////////
+    //////               Обязательные к реализации методы             ///////
+    /////////////////////////////////////////////////////////////////////////
+
+    // Возвращает количество элементов
     @Override
     public int size() { return size; }
 
+    // Полная очистка множества
     @Override
     public void clear() {
-        for (int i = 0; i < cap(); i++) table[i] = null;
-        head = tail = null;
+        for (int i = 0; i < cap(); i++) table[i] = null; // Обнуляем все бакеты
+        head = tail = null;     // Очищаем двусвязный список
         size = 0;
         hasNull = false;
     }
 
+    // Проверка на пустоту
     @Override
     public boolean isEmpty() { return size == 0; }
 
+    // Добавление элемента в множество с сохранением порядка
     @Override
     public boolean add(E e) {
         if (e == null) {
-            if (hasNull) return false;
+            // Обработка null элемента отдельно
+            if (hasNull) return false; // Уже есть null
             hasNull = true;
-            linkNode(null);
+            linkNode(null); // Добавляем null в список порядка
             size++;
             return true;
         }
+
         int idx = indexFor(e, cap());
-        for (Node<E> n = table[idx]; n != null; n = n.next)
-            if (e.equals(n.value)) return false;
+
+        // Проверка на дубликат в цепочке
+        for (Node<E> n = table[idx]; n != null; n = n.next) {
+            if (e.equals(n.value)) return false; // Элемент уже существует
+        }
+
+        // Добавление нового элемента в начало цепочки коллизий
         Node<E> node = new Node<>(e, table[idx]);
         table[idx] = node;
-        linkNode(node);
+        linkNode(node); // Добавление в двусвязный список порядка
         size++;
+
+        // Проверка необходимости увеличения размера таблицы
         if (size > cap() * LOAD_FACTOR) resize();
         return true;
     }
 
+    // Добавление узла в конец двусвязного списка (для поддержания порядка)
     private void linkNode(Node<E> node) {
         if (node == null) {
+            // Специальная обработка для null - создаем фиктивный узел
             Node<E> fake = new Node<>(null, null);
             fake.before = tail;
             if (tail != null) tail.after = fake;
@@ -98,63 +129,87 @@ public class MyLinkedHashSet<E> implements Set<E> {
             if (head == null) head = fake;
             return;
         }
+
+        // Стандартное добавление узла в конец списка
         node.before = tail;
         if (tail != null) tail.after = node;
         tail = node;
         if (head == null) head = node;
     }
 
+    // Удаление узла из двусвязного списка
     private void unlinkNode(Node<E> node) {
+        // Обновление ссылок соседних узлов
         if (node.before != null) node.before.after = node.after;
-        else head = node.after;
+        else head = node.after; // Если удаляем голову
+
         if (node.after != null) node.after.before = node.before;
-        else tail = node.before;
+        else tail = node.before; // Если удаляем хвост
     }
 
+    // Удаление элемента из множества
     @Override
     public boolean remove(Object o) {
         if (o == null) {
+            // Удаление null элемента
             if (!hasNull) return false;
             hasNull = false;
+
+            // Поиск и удаление фиктивного узла null из списка порядка
             Node<E> cur = head;
             while (cur != null) {
-                if (cur.value == null) { unlinkNode(cur); break; }
+                if (cur.value == null) {
+                    unlinkNode(cur);
+                    break;
+                }
                 cur = cur.after;
             }
             size--;
             return true;
         }
+
         int idx = indexFor(o, cap());
         Node<E> prev = null;
         Node<E> cur = table[idx];
+
+        // Поиск элемента в цепочке коллизий
         while (cur != null) {
             if (o.equals(cur.value)) {
+                // Удаление из цепочки коллизий
                 if (prev == null) table[idx] = cur.next;
                 else prev.next = cur.next;
-                unlinkNode(cur);
+
+                unlinkNode(cur); // Удаление из списка порядка
                 size--;
                 return true;
             }
             prev = cur;
             cur = cur.next;
         }
-        return false;
+        return false; // Элемент не найден
     }
 
+    // Проверка наличия элемента в множестве
     @Override
     public boolean contains(Object o) {
-        if (o == null) return hasNull;
+        if (o == null) return hasNull; // Проверка null элемента
+
         int idx = indexFor(o, cap());
-        for (Node<E> n = table[idx]; n != null; n = n.next)
+        // Линейный поиск в цепочке коллизий
+        for (Node<E> n = table[idx]; n != null; n = n.next) {
             if (o.equals(n.value)) return true;
+        }
         return false;
     }
 
+    // Строковое представление множества в порядке добавления
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append('[');
         boolean first = true;
+
+        // Обход двусвязного списка в порядке добавления
         Node<E> cur = head;
         while (cur != null) {
             if (!first) sb.append(", ");
@@ -166,6 +221,11 @@ public class MyLinkedHashSet<E> implements Set<E> {
         return sb.toString();
     }
 
+    /////////////////////////////////////////////////////////////////////////
+    //////          Дополнительные реализованные методы              ///////
+    /////////////////////////////////////////////////////////////////////////
+
+    // Проверка наличия всех элементов коллекции
     @Override
     public boolean containsAll(Collection<?> c) {
         if (c == null) throw new NullPointerException();
@@ -173,6 +233,7 @@ public class MyLinkedHashSet<E> implements Set<E> {
         return true;
     }
 
+    // Добавление всех элементов коллекции
     @Override
     public boolean addAll(Collection<? extends E> c) {
         if (c == null) throw new NullPointerException();
@@ -181,6 +242,7 @@ public class MyLinkedHashSet<E> implements Set<E> {
         return mod;
     }
 
+    // Удаление всех элементов, присутствующих в коллекции
     @Override
     public boolean removeAll(Collection<?> c) {
         if (c == null) throw new NullPointerException();
@@ -189,13 +251,16 @@ public class MyLinkedHashSet<E> implements Set<E> {
         return mod;
     }
 
+    // Удаление всех элементов, кроме присутствующих в коллекции
     @Override
     public boolean retainAll(Collection<?> c) {
         if (c == null) throw new NullPointerException();
         boolean changed = false;
+
+        // Обход двусвязного списка в порядке добавления
         Node<E> cur = head;
         while (cur != null) {
-            Node<E> next = cur.after;
+            Node<E> next = cur.after; // Сохраняем ссылку перед возможным удалением
             if (!c.contains(cur.value)) {
                 remove(cur.value);
                 changed = true;
@@ -204,6 +269,10 @@ public class MyLinkedHashSet<E> implements Set<E> {
         }
         return changed;
     }
+
+    /////////////////////////////////////////////////////////////////////////
+    //////          Методы, которые не требуются для задания          ///////
+    /////////////////////////////////////////////////////////////////////////
 
     @Override public Iterator<E> iterator() { throw new UnsupportedOperationException(); }
     @Override public Object[] toArray() { throw new UnsupportedOperationException(); }
