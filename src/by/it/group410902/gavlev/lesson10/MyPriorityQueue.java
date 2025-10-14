@@ -56,7 +56,7 @@ public class MyPriorityQueue<E> implements Queue<E> {
     private void siftDown(int index) {
         while (true) {
             int left = index * 2 + 1;
-            if (left >= size) break; // нет детей
+            if (left >= size) break;
 
             int right = left + 1;
             int smallest = left;
@@ -106,13 +106,12 @@ public class MyPriorityQueue<E> implements Queue<E> {
         return val;
     }
 
-
-
     @Override
     public E poll() {
         try {
             return remove();
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             return null;
         }
     }

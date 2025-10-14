@@ -29,6 +29,10 @@ public class ListA<E> implements List<E> {
         data = newData;
     }
 
+    public int getCapacity() {
+        return data.length;
+    }
+
     @Override
     public String toString() {
         if (size == 0) return "[]";

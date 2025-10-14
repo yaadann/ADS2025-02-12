@@ -1,4 +1,4 @@
 package by.it.group410902.gavlev.lesson12;
 
-public class A_AvlMap {
+public class MyRbMap {
 }
