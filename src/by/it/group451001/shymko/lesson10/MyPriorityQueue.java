@@ -1,10 +1,10 @@
 package by.it.group451001.shymko.lesson10;
 
-import java.util.Collection;
-import java.util.Comparator;
-import java.util.Iterator;
+import java.util.*;
 //import java.util.PriorityQueue;
-import java.util.Queue;
+
+
+
 
 public class MyPriorityQueue<E> implements Queue<E> {
 
