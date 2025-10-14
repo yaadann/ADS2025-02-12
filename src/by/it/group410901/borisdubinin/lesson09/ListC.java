@@ -357,35 +357,23 @@ public class ListC<E> implements List<E> {
 
         boolean changed = false;
         Node current = head;
-        Node previous = null;
 
         while (current != null) {
             Node next = current.next;
 
             if (!c.contains(current.elem)) {
-                if (previous == null) {
-                    head = current.next;
-                    if (head != null) {
-                        head.prev = null;
-                    }
+                if (current == head) {
+                    head = head.next;
+                    if (head != null) head.prev = null;
+                } else if (current == tail) {
+                    tail = tail.prev;
+                    tail.next = null;
                 } else {
-                    previous.next = current.next;
-                    if (current.next != null) {
-                        current.next.prev = previous;
-                    }
+                    current.prev.next = current.next;
+                    current.next.prev = current.prev;
                 }
-
-                if (current == tail) {
-                    tail = previous;
-                }
-
-                current.prev = null;
-                current.next = null;
-
                 size--;
                 changed = true;
-            } else {
-                previous = current;
             }
 
             current = next;
