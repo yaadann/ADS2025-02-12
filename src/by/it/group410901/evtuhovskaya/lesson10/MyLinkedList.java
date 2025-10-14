@@ -11,7 +11,7 @@ public class MyLinkedList<E> implements Deque<E> {
                              //реализовать методы списка
     
     private static class Node<E> { //вложенный класс структуры узла
-        E item; //значение
+        E item; //значение узла
 
         //ссылки
         Node<E> next;

@@ -232,7 +232,7 @@ public class MyPriorityQueue<E extends Comparable<E>> implements Queue<E> {
     private boolean removeElement(Object o) { //удаляет элемент по значению
         for (int i = 0; i < size; i++) {
             if ((o == null && heap[i] == null) || (o != null && o.equals(heap[i]))) { //поиск совпадения
-                heap[i] = heap[--size];
+                heap[i] = heap[--size]; //уменьшить кучу
                 heap[size] = null;
                 siftDown(i);
                 return true;

@@ -364,7 +364,7 @@ public class MyArrayDeque<E> implements Deque<E> { //двусторонняя о
     }
 
     @Override
-    public void clear() { //полностью очищаем и уничтожаем список
+    public void clear() { //полностью очищаем и обнуляем список
         for (int i = 0; i < elements.length; i++) {
             elements[i] = null;
         }
