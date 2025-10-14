@@ -8,7 +8,7 @@ import java.util.NoSuchElementException;
 //двусвязный список
 
 public class MyLinkedList<E> implements Deque<E> {
-                                //реализовать методы списка
+                             //реализовать методы списка
     
     private static class Node<E> { //вложенный класс структуры узла
         E item; //значение
