@@ -79,7 +79,7 @@ public class MyPriorityQueue<E extends Comparable<E>> implements Queue<E> {
 
     @Override
     public boolean offer(E element) {
-        return add(element); // offer аналогичен add в этой реализации
+        return add(element); // offer аналогичен add
     }
 
     @Override
@@ -89,6 +89,7 @@ public class MyPriorityQueue<E extends Comparable<E>> implements Queue<E> {
     }
 
     @Override
+    //Извлекает и удаляет головной элемент очереди.
     public E poll() {
         if (isEmpty()) return null; // Если пусто, возвращаем null
         E result = heap[0]; // Сохраняем корень (минимальный элемент)
@@ -164,6 +165,7 @@ public class MyPriorityQueue<E extends Comparable<E>> implements Queue<E> {
     }
 
     @Override
+    //Пересечение множеств
     public boolean retainAll(Collection<?> c) {
         boolean modified = false;
         int newSize = 0;
@@ -183,7 +185,17 @@ public class MyPriorityQueue<E extends Comparable<E>> implements Queue<E> {
         return modified;
     }
 
-    //================= СЛУЖЕБНЫЕ ====================
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder("[");
+        for (int i = 0; i < size; i++) {
+            sb.append(heap[i]); // Добавляем элементы в строку
+            if (i < size - 1) sb.append(", ");
+        }
+        sb.append("]");
+        return sb.toString(); // Возвращаем строковое представление кучи
+    }
+
     @Override
     public Iterator<E> iterator() {
         throw new UnsupportedOperationException();
@@ -200,18 +212,7 @@ public class MyPriorityQueue<E extends Comparable<E>> implements Queue<E> {
     }
 
     @Override
-    public String toString() {
-        StringBuilder sb = new StringBuilder("[");
-        for (int i = 0; i < size; i++) {
-            sb.append(heap[i]); // Добавляем элементы в строку
-            if (i < size - 1) sb.append(", ");
-        }
-        sb.append("]");
-        return sb.toString(); // Возвращаем строковое представление кучи
-    }
-
-    @Override
     public boolean remove(Object o) {
-        return false; // Удаление конкретного объекта не реализовано (только poll удаляет минимум)
+        return false;
     }
 }

@@ -4,6 +4,7 @@ import java.util.Iterator;
 import java.util.NoSuchElementException;
 import java.util.Set;
 import java.util.Objects;
+
 @SuppressWarnings("unchecked")
 public class MyLinkedHashSet<E> implements Set<E> {
     private static final int DEFAULT_CAPACITY = 16; // Начальная емкость хэш-таблицы
@@ -41,7 +42,6 @@ public class MyLinkedHashSet<E> implements Set<E> {
     private void resizeIfNeeded() {
         if (size < threshold) return; // Нет нужды в расширении, если размер меньше порога
         int newCap = table.length * 2; // Удвоение емкости
-        @SuppressWarnings("unchecked")
         Node<E>[] newTable = (Node<E>[]) new Node[newCap]; // Новая пустая таблица
         for (Node<E> node : table) { // Перебор всех бакетов старой таблицы
             while (node != null) { // Перебор цепочки в бакете
@@ -190,63 +190,16 @@ public class MyLinkedHashSet<E> implements Set<E> {
 
     @Override
     public Iterator<E> iterator() {
-        return new Iterator<E>() { // Анонимный итератор в порядке вставки
-            private Node<E> current = headInsertion; // Текущий для hasNext/next
-            private Node<E> lastReturned = null; // Последний возвращенный для remove
-            @Override
-            public boolean hasNext() {
-                return current != null; // Есть следующий, если current не null
-            }
-            @Override
-            public E next() {
-                if (current == null) throw new NoSuchElementException(); // Нет элемента — исключение
-                lastReturned = current; // Запоминаем для remove
-                current = current.nextInsertion; // Сдвиг
-                return lastReturned.value; // Возвращаем значение
-            }
-            @Override
-            public void remove() {
-                if (lastReturned == null) throw new IllegalStateException(); // Не вызван next — ошибка
-                MyLinkedHashSet.this.remove(lastReturned.value); // Удаляем из сета
-                lastReturned = null; // Сбрасываем после удаления
-            }
-        };
+        return null;
     }
+
     @Override
     public Object[] toArray() {
-        Object[] arr = new Object[size]; // Новый массив размера сета
-        int i = 0;
-        for (Node<E> n = headInsertion; n != null; n = n.nextInsertion) arr[i++] = n.value; // Заполняем в порядке вставки
-        return arr;
+        return new Object[0];
     }
+
     @Override
     public <T> T[] toArray(T[] a) {
-        if (a.length < size) { // Если массив мал — создаем новый подходящего размера и типа
-            // создать новый массив того же типа
-            return (T[]) java.util.Arrays.copyOf(toArray(), size, a.getClass());
-        }
-        int i = 0;
-        Object[] arr = a; // Используем переданный
-        for (Node<E> n = headInsertion; n != null; n = n.nextInsertion) arr[i++] = n.value; // Копируем
-        if (a.length > size) a[size] = null; // Обнуляем остаток, если массив больше
-        return a;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (o == this) return true; // Тот же объект
-        if (!(o instanceof Set)) return false; // Не Set — false
-        Set<?> that = (Set<?>) o;
-        if (that.size() != this.size) return false; // Разные размеры
-        return this.containsAll(that); // Проверяем содержание всех элементов (порядок игнорируется в Set)
-    }
-
-    @Override
-    public int hashCode() {
-        int h = 0;
-        for (Node<E> n = headInsertion; n != null; n = n.nextInsertion) { // Суммируем хэши в порядке вставки (как в LinkedHashSet)
-            h += (n.value == null ? 0 : n.value.hashCode());
-        }
-        return h; // Общий хэш сета
+        return null;
     }
 }

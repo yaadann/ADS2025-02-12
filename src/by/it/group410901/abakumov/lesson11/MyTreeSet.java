@@ -7,7 +7,6 @@ import java.util.Set;
 
 @SuppressWarnings("unchecked")
 public class MyTreeSet<E extends Comparable<? super E>> implements Set<E> {
-
     private Object[] data; // Массив для хранения элементов множества (всегда отсортирован)
     private int size; // Количество элементов в множестве
     private static final int DEFAULT_CAPACITY = 10; // Начальный размер массива
@@ -28,7 +27,7 @@ public class MyTreeSet<E extends Comparable<? super E>> implements Set<E> {
         int hi = size - 1; // верхняя граница поиска
 
         while (lo <= hi) {
-            int mid = (lo + hi) >>> 1; // середина диапазона (быстрая версия деления на 2)
+            int mid = lo + (hi - lo) / 2; // середина диапазона
             E midVal = (E) data[mid]; // элемент из середины
             int c = key.compareTo(midVal); // сравнение искомого элемента и среднего
 
@@ -192,82 +191,18 @@ public class MyTreeSet<E extends Comparable<? super E>> implements Set<E> {
         return changed;
     }
 
-    // --- Реализация итератора (для перебора элементов множества) ---
     @Override
     public Iterator<E> iterator() {
-        return new Itr();
-    }
-
-    private class Itr implements Iterator<E> {
-        private int cursor = 0;   // текущая позиция в массиве
-        private int lastRet = -1; // индекс последнего возвращённого элемента
-
-        @Override
-        public boolean hasNext() {
-            return cursor < size; // есть ли следующий элемент
-        }
-
-        @Override
-        public E next() {
-            if (cursor >= size) throw new NoSuchElementException(); // если больше нет элементов
-            lastRet = cursor; // запоминаем текущий индекс
-            return (E) data[cursor++]; // возвращаем элемент и двигаем курсор вперёд
-        }
-
-        @Override
-        public void remove() {
-            if (lastRet < 0) throw new IllegalStateException(); // нельзя удалить до вызова next()
-            // удаляем элемент, на который указывал lastRet
-            for (int i = lastRet; i < size - 1; i++) data[i] = data[i + 1];
-            data[size - 1] = null; // освобождаем последний элемент
-            size--; // уменьшаем размер множества
-            cursor = lastRet; // возвращаем курсор на место удалённого
-            lastRet = -1; // сбрасываем флаг последнего элемента
-        }
+        return null;
     }
 
     @Override
     public Object[] toArray() {
-        // создаем новый массив и копируем в него элементы
-        Object[] arr = new Object[size];
-        for (int i = 0; i < size; i++) arr[i] = data[i];
-        return arr;
+        return new Object[0];
     }
 
     @Override
     public <T> T[] toArray(T[] a) {
-        // если входной массив меньше — создаём новый того же типа
-        if (a.length < size) {
-            T[] newArr = (T[]) java.lang.reflect.Array.newInstance(
-                    a.getClass().getComponentType(), size);
-            for (int i = 0; i < size; i++) newArr[i] = (T) data[i];
-            return newArr;
-        } else {
-            // копируем элементы в существующий массив
-            for (int i = 0; i < size; i++) a[i] = (T) data[i];
-            if (a.length > size) a[size] = null; // если осталось место — ставим null
-            return a;
-        }
-    }
-
-    // Подсчёт хэш-кода множества (суммируем хэши всех элементов)
-    @Override
-    public int hashCode() {
-        int h = 0;
-        for (int i = 0; i < size; i++) {
-            Object o = data[i];
-            h += (o == null ? 0 : o.hashCode());
-        }
-        return h;
-    }
-
-    // Сравнение множеств на равенство
-    @Override
-    public boolean equals(Object o) {
-        if (o == this) return true; // одно и то же множество
-        if (!(o instanceof Set)) return false; // если другой объект — не Set
-        Set<?> s = (Set<?>) o;
-        if (s.size() != size) return false; // если размеры разные — не равны
-        return containsAll(s); // проверяем, содержатся ли все элементы
+        return null;
     }
 }

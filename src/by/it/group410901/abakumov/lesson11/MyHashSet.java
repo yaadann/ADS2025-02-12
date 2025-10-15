@@ -56,7 +56,7 @@ public class MyHashSet<E> implements Set<E> {
     private int indexFor(Object o, int length) {
         if (o == null) return 0;
         int h = o.hashCode();
-        return (h & 0x7fffffff) % length; // Маскируем знак и берем modulo
+        return (h & 0x7fffffff) % length; // Берем модуль хэша и находим индекс
     }
 
     // Проверяет, нужно ли расширять таблицу, и делает если да
@@ -85,7 +85,7 @@ public class MyHashSet<E> implements Set<E> {
     }
 
     /////////////////////////////
-    // Обязательные методы
+    /// Обязательные методы
     /////////////////////////////
 
     // Возвращает количество элементов
@@ -160,7 +160,7 @@ public class MyHashSet<E> implements Set<E> {
     }
 
     /////////////////////////////
-    // Вспомогательные / дополнительные
+    /// Вспомогательные / дополнительные
     /////////////////////////////
 
     // Строковое представление: [elem1, elem2, ...]
@@ -182,133 +182,39 @@ public class MyHashSet<E> implements Set<E> {
         return sb.toString();
     }
 
-    /////////////////////////////
-    // Методы интерфейса Set/Collection, упрощённые реализации
-    /////////////////////////////
-
-    // Возвращает итератор по элементам
     @Override
     public Iterator<E> iterator() {
-        return new MyIterator();
+        return null;
     }
 
-    // Внутренний итератор
-    private class MyIterator implements Iterator<E> {
-        int bucketIndex = 0; // Текущий индекс бакета
-        Node<E> current = null; // Текущий узел
-        Node<E> lastReturned = null; // Последний возвращенный для remove
-        // Конструктор: переходит к первому элементу
-        MyIterator() {
-            advanceToNext();
-        }
-        // Переходит к следующему непустому узлу или бакету
-        private void advanceToNext() {
-            if (current != null && current.next != null) {
-                current = current.next; // Следующий в той же цепочке
-                return;
-            }
-            current = null;
-            while (bucketIndex < table.length) {
-                if (table[bucketIndex] != null) {
-                    current = table[bucketIndex++]; // Берем первый в бакете
-                    return;
-                }
-                bucketIndex++; // Пропускаем пустой
-            }
-        }
-        // Есть ли следующий элемент
-        @Override
-        public boolean hasNext() {
-            return current != null;
-        }
-        // Возвращает следующий и продвигается
-        @Override
-        public E next() {
-            if (current == null) throw new NoSuchElementException(); // Нет элементов
-            lastReturned = current;
-            E val = current.value;
-            advanceToNext();
-            return val;
-        }
-        // Удаляет последний возвращенный элемент
-        @Override
-        public void remove() {
-            if (lastReturned == null) throw new IllegalStateException(); // Не был next
-            MyHashSet.this.remove(lastReturned.value); // Удаляем через метод сета
-            lastReturned = null;
-        }
-    }
-
-    // Возвращает массив всех элементов
     @Override
     public Object[] toArray() {
-        Object[] arr = new Object[size];
-        int i = 0;
-        for (int b = 0; b < table.length; b++) {
-            Node<E> n = table[b];
-            while (n != null) {
-                arr[i++] = n.value;
-                n = n.next;
-            }
-        }
-        return arr;
+        return new Object[0];
     }
 
-    // Возвращает массив в переданный (или новый если мал)
     @Override
     public <T> T[] toArray(T[] a) {
-        if (a.length < size) {
-            // create new array of runtime type
-            return (T[]) java.util.Arrays.copyOf(toArray(), size, a.getClass()); // Копируем в новый
-        }
-        Object[] arr = a;
-        int i = 0;
-        for (int b = 0; b < table.length; b++) {
-            Node<E> n = table[b];
-            while (n != null) {
-                arr[i++] = n.value;
-                n = n.next;
-            }
-        }
-        if (a.length > size) a[size] = null; // Обнуляем остаток
-        return a;
+        return null;
     }
 
-    // Содержит ли все элементы из коллекции
     @Override
     public boolean containsAll(Collection<?> c) {
-        for (Object o : c) if (!contains(o)) return false;
-        return true;
+        return false;
     }
 
-    // Добавляет все элементы из коллекции (если новых)
     @Override
     public boolean addAll(Collection<? extends E> c) {
-        boolean changed = false;
-        for (E e : c) if (add(e)) changed = true;
-        return changed;
+        return false;
     }
 
-    // Оставляет только элементы, присутствующие в c
     @Override
     public boolean retainAll(Collection<?> c) {
-        boolean changed = false;
-        Iterator<E> it = iterator();
-        while (it.hasNext()) {
-            E e = it.next();
-            if (!c.contains(e)) {
-                it.remove(); // Удаляем через итератор
-                changed = true;
-            }
-        }
-        return changed;
+        return false;
     }
 
-    // Удаляет все элементы из c
     @Override
     public boolean removeAll(Collection<?> c) {
-        boolean changed = false;
-        for (Object o : c) if (remove(o)) changed = true;
-        return changed;
+        return false;
     }
+
 }
