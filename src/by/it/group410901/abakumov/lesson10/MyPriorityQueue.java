@@ -186,19 +186,17 @@ public class MyPriorityQueue<E extends Comparable<E>> implements Queue<E> {
     //================= СЛУЖЕБНЫЕ ====================
     @Override
     public Iterator<E> iterator() {
-        throw new UnsupportedOperationException(); // Итератор не поддерживается в этой реализации
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public Object[] toArray() {
-        Object[] arr = new Object[size]; // Создаем массив нужного размера
-        for (int i = 0; i < size; i++) arr[i] = heap[i]; // Копируем элементы (в порядке кучи, не отсортированном)
-        return arr;
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public <T> T[] toArray(T[] a) {
-        throw new UnsupportedOperationException(); // Не поддерживается
+        throw new UnsupportedOperationException();
     }
 
     @Override

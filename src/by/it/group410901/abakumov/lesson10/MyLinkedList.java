@@ -118,7 +118,7 @@ public class MyLinkedList<E> implements Deque<E> {
     }
 
     @Override
-    // Удаление первого элемента (возвращает null если пуст): делегирует pollFirst
+    // Как pollFirst
     public E poll() {
         return pollFirst();
     }

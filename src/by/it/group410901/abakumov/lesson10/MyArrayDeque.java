@@ -122,7 +122,7 @@ public class MyArrayDeque<E> implements Deque<E> {
     }
 
     // Удаляет и возвращает первый элемент, возвращает null если пуст
-    // Обнуляем ячейку для GC, сдвигаем голову вперед по модулю
+    // Обнуляем ячейку, сдвигаем голову вперед по модулю
     @Override
     public E pollFirst() {
         if (size == 0) return null;
