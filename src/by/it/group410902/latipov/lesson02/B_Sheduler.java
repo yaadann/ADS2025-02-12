@@ -1,13 +1,9 @@
 package by.it.group410902.latipov.lesson02;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
-/*
-Даны интервальные события events
-реализуйте метод calcStartTimes, так, чтобы число принятых к выполнению
-непересекающихся событий было максимально.
-Алгоритм жадный. Для реализации обдумайте надежный шаг.
-*/
 
 public class B_Sheduler {
     public static void main(String[] args) {
@@ -20,24 +16,49 @@ public class B_Sheduler {
                 new Event(8, 9), new Event(4, 6), new Event(8, 10), new Event(7, 10)
         };
 
-        List<Event> starts = instance.calcStartTimes(events, 0, 10);  //рассчитаем оптимальное заполнение аудитории
-        System.out.println(starts);                                 //покажем рассчитанный график занятий
+        List<Event> starts = instance.calcStartTimes(events, 0, 10);
+        System.out.println(starts);
     }
 
     List<Event> calcStartTimes(Event[] events, int from, int to) {
-        //Events - события которые нужно распределить в аудитории
-        //в период [from, int] (включительно).
-        //оптимизация проводится по наибольшему числу непересекающихся событий.
-        //Начало и конец событий могут совпадать.
-        List<Event> result;
-        result = new ArrayList<>();
-        //ваше решение.
+        List<Event> result = new ArrayList<>();
 
+        // Filter events that are within the [from, to] range
+        List<Event> filteredEvents = new ArrayList<>();
+        for (Event event : events) {
+            if (event.start >= from && event.stop <= to) {
+                filteredEvents.add(event);
+            }
+        }
 
-        return result;          //вернем итог
+        // If no valid events, return empty list
+        if (filteredEvents.isEmpty()) {
+            return result;
+        }
+
+        // Convert to array for sorting
+        Event[] eventsArray = filteredEvents.toArray(new Event[0]);
+
+        // Sort events by end time (stop)
+        Arrays.sort(eventsArray, new Comparator<Event>() {
+            @Override
+            public int compare(Event e1, Event e2) {
+                return Integer.compare(e1.stop, e2.stop);
+            }
+        });
+
+        // Greedy selection
+        int lastEndTime = -1;
+        for (Event event : eventsArray) {
+            if (event.start >= lastEndTime) {
+                result.add(event);
+                lastEndTime = event.stop;
+            }
+        }
+
+        return result;
     }
 
-    //событие у аудитории(два поля: начало и конец)
     static class Event {
         int start;
         int stop;
