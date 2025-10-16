@@ -279,7 +279,7 @@ public class MyHashSet<E> implements Set<E> {
     }
 
     @Override
-    public Iterator<E> iterator() { return null; }
+    public Iterator<E> iterator() { return null; } // пока не реализован
 
     @Override
     public Object[] toArray() { return new Object[0]; }
