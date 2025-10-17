@@ -49,7 +49,7 @@ public class Test_Part2_Lesson10Test extends HomeWork {
                 pollFirst()
                 pollLast()
                 """.split("\\s+");
-        eObject = new MyArrayDeque<>();
+        eObject = new ArrayDeque<>();
         randomCheck("MyArrayDeque", methods);
     }
 
