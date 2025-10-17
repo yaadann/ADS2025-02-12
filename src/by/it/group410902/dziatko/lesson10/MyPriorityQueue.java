@@ -90,6 +90,11 @@ public class MyPriorityQueue<E extends Comparable<E>> implements Queue<E> {
     }
 
     @Override
+    public boolean remove(Object o) {
+        return false;
+    }
+
+    @Override
     public boolean addAll(Collection<? extends E> c) {
         if(c.isEmpty()) return false;
         int new_si = c.size(), size = this.size();
@@ -179,6 +184,7 @@ public class MyPriorityQueue<E extends Comparable<E>> implements Queue<E> {
         return false;
     }
 
+
     @Override
     public boolean containsAll(Collection<?> c) {
         if(c.isEmpty()) return true;
@@ -253,20 +259,10 @@ public class MyPriorityQueue<E extends Comparable<E>> implements Queue<E> {
     }
 
     private boolean isLess(Object f, Object s){
-        /*if(f == null && s != null){
-            return false;
-        } else if (f !=null && s == null) {
-            return true;
-        }*/
         E fir = (E) f;
         E sec = (E) s;
         return fir.compareTo(sec) < 0;
     }
-
-
-
-
-
 
 
 
@@ -286,11 +282,4 @@ public class MyPriorityQueue<E extends Comparable<E>> implements Queue<E> {
     public <T> T[] toArray(T[] a) {
         return null;
     }
-
-    @Override
-    public boolean remove(Object o) {
-        return false;
-    }
-
-
 }

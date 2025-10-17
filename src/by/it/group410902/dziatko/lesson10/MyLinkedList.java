@@ -3,6 +3,7 @@ package by.it.group410902.dziatko.lesson10;
 import java.util.Collection;
 import java.util.Deque;
 import java.util.Iterator;
+import java.util.NoSuchElementException;
 
 public class MyLinkedList<E> implements Deque<E>{
 
@@ -15,9 +16,8 @@ public class MyLinkedList<E> implements Deque<E>{
     }
 
     public String toString(){
-        String ret_val = "";
         if(this.head != null){
-            ret_val+="[";
+            String ret_val = "[";
             Linked_list_Note<E> temp = this.head;
             int size = this.size();
             for (int i = 0; i < size-1; i++){
@@ -27,12 +27,13 @@ public class MyLinkedList<E> implements Deque<E>{
             }
             ret_val+=this.tail.value.toString() + "]";
         }
-        return ret_val;
+        return "[]";
     }
 
 
     @Override
     public boolean add(E e) {
+        if(e == null) return false;
         if(this.head == null){
             this.head = new Linked_list_Note<>(e);
             this.tail = this.head;
@@ -166,7 +167,11 @@ public class MyLinkedList<E> implements Deque<E>{
     @Override
     public boolean remove(Object o) {
         if(this.head != null){
-            if(o.equals(this.head.value)){
+            if(this.head == this.tail && o.equals(this.head.value)){
+                this.clear();
+                return true;
+            }
+            else if(o.equals(this.head.value)){
                 this.head.next.behind = null;
                 this.head = this.head.next;
                 return true;
@@ -176,10 +181,10 @@ public class MyLinkedList<E> implements Deque<E>{
                 return true;
             }
             Linked_list_Note<E> temp = this.head.next;
-            while(temp.next.next != null && !o.equals(temp.value)){
+            while(temp != null && !o.equals(temp.value)){
                 temp = temp.next;
             }
-            if(!temp.value.equals(o)){
+            if(temp == null || !temp.value.equals(o)){
                 return false;
             }
             temp.next.behind = temp.behind;
@@ -206,6 +211,32 @@ public class MyLinkedList<E> implements Deque<E>{
         return 0;
     }
 
+    public String to_string_for_internal_storage(){
+        if(!this.isEmpty()) {
+            String ret_val = "";
+            Linked_list_Note<E> temp = this.head;
+            int size = this.size();
+            for (int i = 0; i < size-1; i++){
+                ret_val += temp.value.toString();
+                ret_val += ", ";
+                temp = temp.next;
+            }
+            ret_val+=this.tail.value.toString();
+            return ret_val;
+        }
+        return "";
+    }
+
+    @Override
+    public boolean contains(Object o) {
+        Linked_list_Note<E> temp = this.head;
+        while(temp != null){
+            if(o.equals(temp.value)) return true;
+            temp = temp.next;
+        }
+        return false;
+    }
+
 
 
 
@@ -218,7 +249,7 @@ public class MyLinkedList<E> implements Deque<E>{
     }
     @Override
     public boolean isEmpty() {
-        return false;
+        return this.head == null;
     }
 
     @Override
@@ -227,8 +258,22 @@ public class MyLinkedList<E> implements Deque<E>{
     }
 
     @Override
+    public Iterator<E> descendingIterator() {
+        return null;
+    }
+
+    @Override
     public Object[] toArray() {
-        return new Object[0];
+        if(this.isEmpty()) throw new NullPointerException();
+        Linked_list_Note<E> temp = this.head;
+        Object[] return_array = new Object[this.size()];
+        int i = 0;
+        while(temp != null){
+            return_array[i] = temp.value;
+            i++;
+            temp = temp.next;
+        }
+        return return_array;
     }
 
     @Override
@@ -236,10 +281,6 @@ public class MyLinkedList<E> implements Deque<E>{
         return null;
     }
 
-    @Override
-    public Iterator<E> descendingIterator() {
-        return null;
-    }
 
     @Override
     public E peek() {
@@ -263,7 +304,8 @@ public class MyLinkedList<E> implements Deque<E>{
 
     @Override
     public void clear() {
-
+        this.head = null;
+        this.tail = null;
     }
 
     @Override
@@ -278,11 +320,6 @@ public class MyLinkedList<E> implements Deque<E>{
 
     @Override
     public boolean containsAll(Collection<?> c) {
-        return false;
-    }
-
-    @Override
-    public boolean contains(Object o) {
         return false;
     }
 
