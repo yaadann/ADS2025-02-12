@@ -182,6 +182,8 @@ public class MyPriorityQueue<E extends Comparable<E>> implements Queue<E> {
 
     @Override
     public boolean addAll(Collection<? extends E> c) {
+        if (c.isEmpty())
+            return false;
         for (var i : c)
             offer(i);
         return true;
