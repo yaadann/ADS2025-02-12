@@ -23,7 +23,6 @@ public class MyAvlMap implements Map<Integer, String> {
     private Node root;
     private int size = 0;
 
-    // ---------- AVL helpers ----------
     private int height(Node n) {
         return n == null ? 0 : n.height;
     }
@@ -83,7 +82,6 @@ public class MyAvlMap implements Map<Integer, String> {
         return node;
     }
 
-    // ---------- required Map methods ----------
 
     @Override
     public String put(Integer key, String value) {
@@ -200,7 +198,6 @@ public class MyAvlMap implements Map<Integer, String> {
         return size == 0;
     }
 
-    // toString — in-order traversal: {k1=v1, k2=v2, ...}
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
@@ -223,9 +220,6 @@ public class MyAvlMap implements Map<Integer, String> {
         st.first = false;
         inorderToString(node.right, sb, st);
     }
-
-    // ---------- ALL OTHER Map METHODS ARE NOT IMPLEMENTED ----------
-    // They explicitly throw UnsupportedOperationException as requested.
 
     @Override
     public boolean containsValue(Object value) {
