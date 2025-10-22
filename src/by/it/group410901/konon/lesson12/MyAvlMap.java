@@ -116,9 +116,9 @@ public class MyAvlMap implements Map<Integer, String> {
 
     @Override
     public String get(Object keyObj) {
-        if (!(keyObj instanceof Integer)) return null;
-        int key = (Integer) keyObj;
-        Node cur = root;
+        if (!(keyObj instanceof Integer)) return null; //instanceof возвращает true,
+        int key = (Integer) keyObj;                    // если объект является экземпляром указанного типа,
+        Node cur = root;                               // и false в противном случае
         while (cur != null) {
             if (key < cur.key) cur = cur.left;
             else if (key > cur.key) cur = cur.right;
