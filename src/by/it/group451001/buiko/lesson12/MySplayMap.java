@@ -5,10 +5,14 @@ import java.util.*;
 public class MySplayMap implements NavigableMap<Integer, String> {
 
     // Внутренний класс для узла дерева
+    // Splay-дерево - самокорректирующееся бинарное дерево поиска
+    // где часто используемые элементы автоматически перемещаются ближе к корню для ускорения последующих обращений.
     private class Node {
-        Integer key;
-        String value;
-        Node left, right, parent;
+        Integer key;      // Ключ - целое число
+        String value;     // Значение - строка
+        Node left;        // Левый потомок (меньшие ключи)
+        Node right;       // Правый потомок (большие ключи)
+        Node parent;      // Родительский узел (нужен для splay операций)
 
         Node(Integer key, String value) {
             this.key = key;
@@ -16,83 +20,104 @@ public class MySplayMap implements NavigableMap<Integer, String> {
         }
     }
 
-    private Node root;
-    private int size = 0;
+    private Node root;    // Корень дерева
+    private int size = 0; // Количество элементов в дереве
 
-    // Вспомогательные методы для балансировки дерева
-
+    /*Я реализовала механизм самокорректировки через операцию splay(), которая при каждом доступе к узлу
+     \перемещает его в корень дерева с помощью серии поворотов (zig, zig-zig, zig-zag),
+     что обеспечивает амортизированную логарифмическую сложность операций.
+     */
     private void rotateLeft(Node x) {
-        Node y = x.right;
+        Node y = x.right;   // y становится правым потомком x
         if (y != null) {
-            x.right = y.left;
+            x.right = y.left; // Левое поддерево y становится правым поддеревом x
             if (y.left != null) {
-                y.left.parent = x;
+                y.left.parent = x; // Обновляем родителя для левого поддерева y
             }
-            y.parent = x.parent;
+            y.parent = x.parent; // Переносим родителя от x к y
         }
+
+/*При вставке новых элементов метод put() выполняет поиск позиции и сразу перемещает новый узел в корень,
+    а при удалении метод remove() сначала перемещает удаляемый узел в корень, а затем корректно объединяет его поддеревья.
+     */
         if (x.parent == null) {
-            root = y;
+            root = y;           // x был корнем
         } else if (x == x.parent.left) {
-            x.parent.left = y;
+            x.parent.left = y;  // x был левым потомком
         } else {
-            x.parent.right = y;
+            x.parent.right = y; // x был правым потомком
         }
+
+        /*Для навигации по ключам реализованы методы lowerKey(), floorKey(), ceilingKey() и higherKey(),
+    которые находят соседние ключи относительно заданного и также выполняют splay-операцию для оптимизации последующих запросов.
+     */
         if (y != null) {
-            y.left = x;
+            y.left = x;    // x становится левым потомком y
         }
-        x.parent = y;
+        x.parent = y;      // y становится родителем x
     }
 
+    // Правый поворот вокруг узла x (симметрично левому)
     private void rotateRight(Node x) {
-        Node y = x.left;
+        Node y = x.left;    // y становится левым потомком x
         if (y != null) {
-            x.left = y.right;
+            x.left = y.right; // Правое поддерево y становится левым поддеревом x
             if (y.right != null) {
-                y.right.parent = x;
+                y.right.parent = x; // Обновляем родителя для правого поддерева y
             }
-            y.parent = x.parent;
+            y.parent = x.parent; // Переносим родителя от x к y
         }
+
+        // Обновляем ссылку родителя на новый узел
         if (x.parent == null) {
-            root = y;
+            root = y;           // x был корнем
         } else if (x == x.parent.right) {
-            x.parent.right = y;
+            x.parent.right = y; // x был правым потомком
         } else {
-            x.parent.left = y;
+            x.parent.left = y;  // x был левым потомком
         }
+
         if (y != null) {
-            y.right = x;
+            y.right = x;   // x становится правым потомком y
         }
-        x.parent = y;
+        x.parent = y;      // y становится родителем x
     }
 
-    // Splay операция - перемещает узел в корень
+    // Splay операция - перемещает узел в корень дерева
+    // Основная операция splay-дерева, обеспечивающая самокорректировку
     private void splay(Node x) {
         while (x.parent != null) {
             if (x.parent.parent == null) {
+                // Случай 1: zig - родитель является корнем
                 if (x.parent.left == x) {
-                    rotateRight(x.parent);
+                    rotateRight(x.parent); // Правый поворот если x - левый потомок
                 } else {
-                    rotateLeft(x.parent);
+                    rotateLeft(x.parent);  // Левый поворот если x - правый потомок
                 }
             } else {
                 Node parent = x.parent;
                 Node grandParent = parent.parent;
+
                 if (grandParent.left == parent && parent.left == x) {
+                    // Случай 2: zig-zig - x, родитель и дед образуют левую цепочку
                     rotateRight(grandParent);
                     rotateRight(parent);
                 } else if (grandParent.right == parent && parent.right == x) {
+                    // Случай 3: zig-zig - x, родитель и дед образуют правую цепочку
                     rotateLeft(grandParent);
                     rotateLeft(parent);
                 } else if (grandParent.left == parent && parent.right == x) {
+                    // Случай 4: zig-zag - x правый потомок, родитель левый потомок
                     rotateLeft(parent);
                     rotateRight(grandParent);
                 } else {
+                    // Случай 5: zig-zag - x левый потомок, родитель правый потомок
                     rotateRight(parent);
                     rotateLeft(grandParent);
                 }
             }
         }
-        root = x;
+        root = x; // x становится корнем
     }
 
     // Находит узел с заданным ключом (без splay)
@@ -101,17 +126,18 @@ public class MySplayMap implements NavigableMap<Integer, String> {
         while (current != null) {
             int cmp = key.compareTo(current.key);
             if (cmp == 0) {
-                return current;
+                return current; // Узел найден
             } else if (cmp < 0) {
-                current = current.left;
+                current = current.left; // Идем влево
             } else {
-                current = current.right;
+                current = current.right; // Идем вправо
             }
         }
-        return null;
+        return null; // Узел не найден
     }
 
     // Находит узел или последний посещенный узел (для splay)
+    // Используется когда узел не найден - делаем splay для последнего посещенного узла
     private Node findNodeForSplay(Integer key) {
         Node current = root;
         Node lastVisited = null;
@@ -119,22 +145,22 @@ public class MySplayMap implements NavigableMap<Integer, String> {
             lastVisited = current;
             int cmp = key.compareTo(current.key);
             if (cmp == 0) {
-                return current;
+                return current; // Узел найден
             } else if (cmp < 0) {
-                current = current.left;
+                current = current.left; // Идем влево
             } else {
-                current = current.right;
+                current = current.right; // Идем вправо
             }
         }
-        return lastVisited;
+        return lastVisited; // Возвращаем последний посещенный узел
     }
 
-    // Обход дерева in-order
+    // Обход дерева in-order для сбора элементов
     private void inOrderTraversal(Node node, List<Map.Entry<Integer, String>> list) {
         if (node != null) {
-            inOrderTraversal(node.left, list);
-            list.add(new AbstractMap.SimpleEntry<>(node.key, node.value));
-            inOrderTraversal(node.right, list);
+            inOrderTraversal(node.left, list);  // Левое поддерево
+            list.add(new AbstractMap.SimpleEntry<>(node.key, node.value)); // Текущий узел
+            inOrderTraversal(node.right, list); // Правое поддерево
         }
     }
 
@@ -143,6 +169,7 @@ public class MySplayMap implements NavigableMap<Integer, String> {
     @Override
     public String put(Integer key, String value) {
         if (root == null) {
+            // Дерево пустое - создаем корень
             root = new Node(key, value);
             size++;
             return null;
@@ -151,19 +178,23 @@ public class MySplayMap implements NavigableMap<Integer, String> {
         Node node = findNodeForSplay(key);
         int cmp = key.compareTo(node.key);
         if (cmp == 0) {
+            // Ключ уже существует - обновляем значение
             String oldValue = node.value;
             node.value = value;
-            splay(node);
+            splay(node); // Перемещаем узел в корень
             return oldValue;
         } else {
+            // Создаем новый узел
             Node newNode = new Node(key, value);
             newNode.parent = node;
+
             if (cmp < 0) {
-                node.left = newNode;
+                node.left = newNode; // Вставляем как левого потомка
             } else {
-                node.right = newNode;
+                node.right = newNode; // Вставляем как правого потомка
             }
-            splay(newNode);
+
+            splay(newNode); // Перемещаем новый узел в корень
             size++;
             return null;
         }
@@ -176,7 +207,7 @@ public class MySplayMap implements NavigableMap<Integer, String> {
 
         Node node = findNode(k);
         if (node == null) {
-            // Если узел не найден, делаем splay для последнего посещенного узла
+            // Узел не найден - делаем splay для последнего посещенного узла
             Node lastVisited = findNodeForSplay(k);
             if (lastVisited != null) {
                 splay(lastVisited);
@@ -184,23 +215,26 @@ public class MySplayMap implements NavigableMap<Integer, String> {
             return null;
         }
 
-        splay(node);
+        splay(node); // Перемещаем удаляемый узел в корень
         String removedValue = node.value;
 
-        // Удаление узла
+        // Удаление узла из корня
         if (node.left == null) {
+            // Нет левого поддерева - правый потомок становится корнем
             root = node.right;
             if (root != null) root.parent = null;
         } else if (node.right == null) {
+            // Нет правого поддерева - левый потомок становится корнем
             root = node.left;
             if (root != null) root.parent = null;
         } else {
+            // Есть оба поддерева
             Node minRight = node.right;
             while (minRight.left != null) {
-                minRight = minRight.left;
+                minRight = minRight.left; // Находим минимальный в правом поддереве
             }
-            splay(minRight);
-            minRight.left = node.left;
+            splay(minRight); // Перемещаем преемника в корень
+            minRight.left = node.left; // Присоединяем левое поддерево удаляемого узла
             node.left.parent = minRight;
         }
         size--;
@@ -214,10 +248,10 @@ public class MySplayMap implements NavigableMap<Integer, String> {
 
         Node node = findNode(k);
         if (node != null) {
-            splay(node);
+            splay(node); // Найденный узел перемещаем в корень
             return node.value;
         }
-        // Splay для последнего посещенного узла, если ключ не найден
+        // Узел не найден - делаем splay для последнего посещенного узла
         Node lastVisited = findNodeForSplay(k);
         if (lastVisited != null) {
             splay(lastVisited);
@@ -232,10 +266,10 @@ public class MySplayMap implements NavigableMap<Integer, String> {
 
         Node node = findNode(k);
         if (node != null) {
-            splay(node);
+            splay(node); // Найденный узел перемещаем в корень
             return true;
         }
-        // Splay для последнего посещенного узла
+        // Узел не найден - делаем splay для последнего посещенного узла
         Node lastVisited = findNodeForSplay(k);
         if (lastVisited != null) {
             splay(lastVisited);
@@ -248,6 +282,7 @@ public class MySplayMap implements NavigableMap<Integer, String> {
         return containsValueRecursive(root, value);
     }
 
+    // Рекурсивный поиск значения в дереве
     private boolean containsValueRecursive(Node node, Object value) {
         if (node == null) return false;
         if (Objects.equals(value, node.value)) return true;
@@ -280,6 +315,7 @@ public class MySplayMap implements NavigableMap<Integer, String> {
         return subMap;
     }
 
+    // Рекурсивное построение headMap (ключи < toKey)
     private void headMapRecursive(Node node, Integer toKey, MySplayMap subMap) {
         if (node != null) {
             headMapRecursive(node.left, toKey, subMap);
@@ -297,6 +333,7 @@ public class MySplayMap implements NavigableMap<Integer, String> {
         return subMap;
     }
 
+    // Рекурсивное построение tailMap (ключи >= fromKey)
     private void tailMapRecursive(Node node, Integer fromKey, MySplayMap subMap) {
         if (node != null) {
             tailMapRecursive(node.left, fromKey, subMap);
@@ -312,9 +349,9 @@ public class MySplayMap implements NavigableMap<Integer, String> {
         if (root == null) throw new NoSuchElementException();
         Node current = root;
         while (current.left != null) {
-            current = current.left;
+            current = current.left; // Самый левый узел
         }
-        splay(current);
+        splay(current); // Перемещаем минимальный узел в корень
         return current.key;
     }
 
@@ -323,9 +360,9 @@ public class MySplayMap implements NavigableMap<Integer, String> {
         if (root == null) throw new NoSuchElementException();
         Node current = root;
         while (current.right != null) {
-            current = current.right;
+            current = current.right; // Самый правый узел
         }
-        splay(current);
+        splay(current); // Перемещаем максимальный узел в корень
         return current.key;
     }
 
@@ -333,6 +370,7 @@ public class MySplayMap implements NavigableMap<Integer, String> {
 
     @Override
     public Integer lowerKey(Integer key) {
+        // Наибольший ключ, меньший заданного
         Node node = findNodeForSplay(key);
         splay(node);
         if (node.key < key) {
@@ -341,7 +379,7 @@ public class MySplayMap implements NavigableMap<Integer, String> {
             if (node.left == null) return null;
             Node current = node.left;
             while (current.right != null) {
-                current = current.right;
+                current = current.right; // Максимальный в левом поддереве
             }
             splay(current);
             return current.key;
@@ -350,6 +388,7 @@ public class MySplayMap implements NavigableMap<Integer, String> {
 
     @Override
     public Integer floorKey(Integer key) {
+        // Наибольший ключ, меньший или равный заданному
         Node node = findNodeForSplay(key);
         splay(node);
         if (node.key <= key) {
@@ -358,7 +397,7 @@ public class MySplayMap implements NavigableMap<Integer, String> {
             if (node.left == null) return null;
             Node current = node.left;
             while (current.right != null) {
-                current = current.right;
+                current = current.right; // Максимальный в левом поддереве
             }
             splay(current);
             return current.key;
@@ -367,6 +406,7 @@ public class MySplayMap implements NavigableMap<Integer, String> {
 
     @Override
     public Integer ceilingKey(Integer key) {
+        // Наименьший ключ, больший или равный заданному
         Node node = findNodeForSplay(key);
         splay(node);
         if (node.key >= key) {
@@ -375,7 +415,7 @@ public class MySplayMap implements NavigableMap<Integer, String> {
             if (node.right == null) return null;
             Node current = node.right;
             while (current.left != null) {
-                current = current.left;
+                current = current.left; // Минимальный в правом поддереве
             }
             splay(current);
             return current.key;
@@ -384,6 +424,7 @@ public class MySplayMap implements NavigableMap<Integer, String> {
 
     @Override
     public Integer higherKey(Integer key) {
+        // Наименьший ключ, больший заданного
         Node node = findNodeForSplay(key);
         splay(node);
         if (node.key > key) {
@@ -392,7 +433,7 @@ public class MySplayMap implements NavigableMap<Integer, String> {
             if (node.right == null) return null;
             Node current = node.right;
             while (current.left != null) {
-                current = current.left;
+                current = current.left; // Минимальный в правом поддереве
             }
             splay(current);
             return current.key;
@@ -496,7 +537,7 @@ public class MySplayMap implements NavigableMap<Integer, String> {
 
     @Override
     public Comparator<? super Integer> comparator() {
-        return null;
+        return null; // Естественный порядок
     }
 
     @Override
@@ -519,3 +560,54 @@ public class MySplayMap implements NavigableMap<Integer, String> {
         throw new UnsupportedOperationException();
     }
 }
+/*
+* Основные принципы Splay-дерева:
+1. Самокорректирующаяся структура
+Принцип локальности: часто используемые элементы перемещаются ближе к корню
+
+Splay операция: при любом доступе к узлу он перемещается в корень
+
+Амортизированная сложность: O(log n) для операций в среднем
+
+2. Типы splay-операций
+Zig (одиночный поворот):
+
+Когда родитель является корнем
+
+Один поворот для перемещения узла в корень
+
+Zig-Zig (двойной поворот):
+
+Когда узел, родитель и дед образуют прямую цепочку
+
+Два поворота в одном направлении
+
+Zig-Zag (зигзагообразный поворот):
+
+Когда узел, родитель и дед образуют зигзаг
+
+Повороты в разных направлениях
+
+3. Преимущества splay-деревьев
+Локальность доступа: часто используемые элементы быстро доступны
+
+Простота реализации: нет хранения дополнительной информации (цвета, высоты)
+
+Амортизированная эффективность: O(log n) для последовательности операций
+
+Адаптивность: автоматически подстраивается под шаблон доступа
+
+4. Особенности реализации
+Splay при поиске: даже если элемент не найден, делаем splay для последнего узла
+
+Splay при вставке: новый узел сразу перемещается в корень
+
+Splay при удалении: родитель удаляемого узла перемещается в корень
+
+5. Сравнение с другими деревьями
+Против АВЛ: проще реализация, но нет гарантии строгой балансировки
+
+Против красно-черных: лучше производительность для часто используемых элементов
+
+Идеально для: кэширования, когда есть локальность обращений
+* */
