@@ -78,7 +78,7 @@ public class GraphC {
     }
 
     private static Map<String, List<String>> transposeGraph(Map<String, List<String>> graph) {
-        Map<String, List<String>> transposed = new HashMap<>();
+        Map<String, List<String> > transposed = new HashMap<>();
         for (String vertex : graph.keySet()) {
             transposed.computeIfAbsent(vertex, k -> new ArrayList<>());
             for (String neighbor : graph.get(vertex)) {
