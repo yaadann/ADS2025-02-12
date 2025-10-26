@@ -12,7 +12,7 @@ public class MyPriorityQueue<E extends Comparable<? super E>> implements Queue<E
     @SuppressWarnings("unchecked")
     public MyPriorityQueue(int capacity) {
         if (capacity < 1) capacity = DEFAULT_CAP;
-        heap = (E[]) new Comparable[capacity];
+        heap = (E[]) new Comparable[capacity];//
         size = 0;
     }
 

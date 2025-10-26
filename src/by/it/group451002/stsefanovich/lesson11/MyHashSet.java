@@ -11,7 +11,7 @@ public class MyHashSet<E> implements Set<E> {
         final E value;
         Node<E> next;
         Node(E value, Node<E> next) { this.value = value; this.next = next; }
-    }
+    }//
 
     private Node<E>[] table;
     private int nonNullCount;

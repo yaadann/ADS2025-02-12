@@ -12,7 +12,7 @@ public class MyLinkedHashSet<E> implements Set<E> {
 
     private Entry<E> head;//узлы для сохранения порядка добавления нодов
     private Entry<E> tail;
-
+//
     private static class Node<E> {
         E value;
         Node<E> next;

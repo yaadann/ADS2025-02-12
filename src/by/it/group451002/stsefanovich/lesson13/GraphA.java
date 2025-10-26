@@ -10,7 +10,7 @@ public class GraphA {
         List<String> result = topologicalSort(graph);
         System.out.println(String.join(" ", result));
         scanner.close();
-    }
+    }//
 
     private static Map<String, List<String>> parseGraph(String input) {
         Map<String, List<String>> graph = new HashMap<>();

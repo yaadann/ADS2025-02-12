@@ -113,7 +113,7 @@ public class MyArrayDeque<E> implements Deque<E> {
     public E poll() {
         return pollFirst();
     }
-
+//
     @Override
     public E pollFirst() {
         if (size == 0) return null;

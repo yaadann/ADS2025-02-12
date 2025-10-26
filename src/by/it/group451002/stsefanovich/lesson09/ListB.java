@@ -9,7 +9,7 @@ public class ListB<E> implements List<E> {
     @SuppressWarnings("unchecked")
     public ListB() {
         elements = (E[]) new Object[10];
-        size = 0;
+        size = 0;//
     }
 
     @Override

@@ -74,7 +74,7 @@ public class GraphC {
             if (!visited.contains(neighbor)) {
                 dfsSecond(neighbor, graph, visited, scc);
             }
-        }
+        }//
     }
 
     private static Map<String, List<String>> transposeGraph(Map<String, List<String>> graph) {

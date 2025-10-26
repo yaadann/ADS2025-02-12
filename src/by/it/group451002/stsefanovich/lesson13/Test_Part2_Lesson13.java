@@ -2,7 +2,7 @@ package by.it.group451002.stsefanovich.lesson13;
 
 import by.it.HomeWork;
 import org.junit.Test;
-
+//
 @SuppressWarnings("NewClassNamingConvention")
 public class  Test_Part2_Lesson13 extends HomeWork {
 

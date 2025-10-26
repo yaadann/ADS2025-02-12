@@ -10,7 +10,7 @@ public class ListC<E> implements List<E> {
     public ListC() {
         elements = (E[]) new Object[10];
         size = 0;
-    }
+    }//
 
     @Override
     public String toString() {

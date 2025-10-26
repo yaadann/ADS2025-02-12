@@ -21,7 +21,7 @@ public class ListA<E> implements List<E> {
         }
         sb.append("]");
         return sb.toString();
-    }
+    }//
 
     @Override
     public boolean add(E e) {
