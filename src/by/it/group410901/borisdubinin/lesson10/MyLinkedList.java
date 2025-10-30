@@ -1,10 +1,8 @@
 package by.it.group410901.borisdubinin.lesson10;
 
-import by.it.group410901.borisdubinin.lesson09.ListC;
-
 import java.util.*;
 
-public class MyLinkedList<E> implements Deque<E> {
+public class MyLinkedList<E>{
 
     private int size;
     private Node head;
@@ -50,7 +48,7 @@ public class MyLinkedList<E> implements Deque<E> {
     /// /////////////////////////////////////////////////////////////////////////////////////
     /// /////////////////////////////////////////////////////////////////////////////////////
     
-    @Override
+    //@Override
     public String toString(){
         StringBuilder sb = new StringBuilder(size * 16);
         sb.append("[");
@@ -64,17 +62,17 @@ public class MyLinkedList<E> implements Deque<E> {
 
         return sb.toString();
     }
-    @Override
+    //@Override
     public int size(){
         return size;
     }
 
-    @Override
+    //@Override
     public boolean add(E element){
         addLast(element);
         return true;
     }
-    @Override
+    //@Override
     public void addFirst(E element){
         if(size == 0){
             head = new Node(element, null, null);
@@ -86,7 +84,7 @@ public class MyLinkedList<E> implements Deque<E> {
         }
         size++;
     }
-    @Override
+    //@Override
     public void addLast(E element){
         if (size == 0){
             head = new Node(element, null, null);
@@ -127,7 +125,7 @@ public class MyLinkedList<E> implements Deque<E> {
         size--;
         return ptr.elem;
     }
-    @Override
+    //@Override
     public boolean remove(Object o){
         Node ptr = head;
 
@@ -154,26 +152,26 @@ public class MyLinkedList<E> implements Deque<E> {
         return false;
     }
 
-    @Override
+    //@Override
     public E element() {
         if(size == 0)
             return null;
         return getFirst();
     }
-    @Override
+   // @Override
     public E getFirst() {
         return head.elem;
     }
-    @Override
+    //@Override
     public E getLast() {
         return tail.elem;
     }
 
-    @Override
+    //@Override
     public E poll() {
         return pollFirst();
     }
-    @Override
+    //@Override
     public E pollFirst() {
         if(size == 0)
             throw new NoSuchElementException("Коллекция пуста");
@@ -182,7 +180,7 @@ public class MyLinkedList<E> implements Deque<E> {
         remove(0);
         return first;
     }
-    @Override
+    //@Override
     public E pollLast() {
         if(size == 0)
             throw new NoSuchElementException("Коллекция пуста");
@@ -234,19 +232,38 @@ public class MyLinkedList<E> implements Deque<E> {
         return false;
     }
 
-    @Override
+    //@Override
     public boolean removeAll(Collection<?> c) {
         return false;
     }
 
-    @Override
+    //@Override
     public boolean retainAll(Collection<?> c) {
         return false;
     }
 
-    @Override
+    //@Override
     public void clear() {
+        if(isEmpty())
+            return;
 
+        Node ptr1 = head;
+        Node ptr2 = head.next;
+        while(ptr2 != null){
+            ptr1.prev = null;
+            ptr1.next = null;
+            ptr1 = ptr2;
+            ptr2 = ptr2.next;
+        }
+        ptr1.next = null;
+        ptr1.prev = null;
+        head = null;
+        tail = null;
+        size = 0;
+    }
+
+    public E get(int index){
+        return getNode(index).elem;
     }
 
     public void push(E e){
@@ -256,27 +273,87 @@ public class MyLinkedList<E> implements Deque<E> {
         return null;
     }
     public boolean contains(Object o){
+        Node ptr = head;
+        while(ptr != null){
+            if(Objects.equals(o, ptr.elem))
+                return true;
+            ptr = ptr.next;
+        }
         return false;
     }
+
     public Iterator<E> iterator(){
-        return null;
+        return new MyIterator();
     }
+    private class MyIterator implements Iterator<E>{
+        private Node next;
+        private Node lastReturned;
+        public MyIterator(){
+            next = head;
+            lastReturned = null;
+        }
+
+        @Override
+        public boolean hasNext() {
+            return next != null;
+        }
+
+        @Override
+        public E next() {
+            lastReturned = next;
+            next = next.next;
+            return lastReturned.elem;
+        }
+
+        @Override
+        public void remove(){
+            if (lastReturned == null) {
+                throw new IllegalStateException("next() has not been called, or remove() has already been called after the last next()");
+            }
+
+            if (lastReturned == head) {
+                head = head.next;
+                if (head != null) {
+                    head.prev = null;
+                } else {
+                    // Если список стал пустым
+                    tail = null;
+                }
+            }
+            // Если удаляем хвост
+            else if (lastReturned == tail) {
+                tail = tail.prev;
+                tail.next = null;
+            }
+            // Если удаляем элемент в середине
+            else {
+                lastReturned.prev.next = lastReturned.next;
+                lastReturned.next.prev = lastReturned.prev;
+            }
+
+            size--;
+            lastReturned = null; // Запрещаем повторный вызов remove()
+        }
+    }
+
     public Iterator<E> descendingIterator(){
         return null;
     }
+
     public boolean isEmpty(){
-        return false;
+        return size < 1;
     }
+
     public E[] toArray(){
         return null;
     }
 
-    @Override
+    //@Override
     public <T> T[] toArray(T[] a) {
         return null;
     }
 
-    @Override
+    //@Override
     public boolean containsAll(Collection<?> c) {
         return false;
     }
