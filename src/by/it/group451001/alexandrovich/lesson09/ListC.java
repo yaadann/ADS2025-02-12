@@ -145,7 +145,7 @@ public class ListC<E> implements List<E> {
         for (E e : c) {
             add(e);
         }
-        return true;
+        return !c.isEmpty();
     }
 
     @Override
@@ -154,22 +154,24 @@ public class ListC<E> implements List<E> {
             add(index,e);
             index++;
         }
-        return true;
+        return !c.isEmpty();
     }
 
     @Override
     public boolean removeAll(Collection<?> c) {
         int i = 0;
         int j = 0;
+        boolean res = false;
         while (i < size) {
             if (!c.contains(Arr[i])) {
                 Arr[j] = Arr[i];
                 j++;
             }
+            else res = true;
             i++;
         }
         size-=i-j;
-        return true;
+        return res;
     }
 
     @Override
