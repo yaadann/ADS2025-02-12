@@ -60,8 +60,7 @@ public class GraphB {
         return false;
     }
 
-    private static boolean dfsHasCycle(Integer node, Map<Integer, List<Integer>> graph,
-                                       Set<Integer> visited, Set<Integer> recursionStack) {
+    private static boolean dfsHasCycle(Integer node, Map<Integer, List<Integer>> graph, Set<Integer> visited, Set<Integer> recursionStack) {
 
         visited.add(node);
         recursionStack.add(node);
