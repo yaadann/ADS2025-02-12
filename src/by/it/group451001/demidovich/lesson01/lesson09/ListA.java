@@ -10,7 +10,7 @@ public class ListA<E> implements List<E> {
 
     //Создайте аналог списка БЕЗ использования других классов СТАНДАРТНОЙ БИБЛИОТЕКИ
 
-    static class Node<E> {
+    static class Node<E> {//список
         E value;
         Node<E> next;
         Node(E val) { value = val; }
@@ -24,7 +24,7 @@ public class ListA<E> implements List<E> {
     /////////////////////////////////////////////////////////////////////////
     /////////////////////////////////////////////////////////////////////////
     @Override
-    public String toString() {
+    public String toString() {//Формирует строковое представление списка в формате
         StringBuilder sb = new StringBuilder();
         sb.append('[');
         Node<E> cur = head;
@@ -39,14 +39,14 @@ public class ListA<E> implements List<E> {
 
     @Override
     public boolean add(E e) {
-        Node<E> node = new Node<>(e);
-        if (head == null) {
-            head = tail = node;
+        Node<E> node = new Node<>(e);//Создать новый узел
+        if (head == null) { //Если список пуст
+            head = tail = node; //указывают на новый узел
         } else {
-            tail.next = node;
-            tail = node;
+            tail.next = node;//Присоединить новый узел к tail.next
+            tail = node;//Обновить tail на новый узел
         }
-        size++;
+        size++;//Увеличить size
         return true;
     }
 
@@ -55,28 +55,28 @@ public class ListA<E> implements List<E> {
     }
 
     @Override
-    public E remove(int index) {
+    public E remove(int index) {//Проверить корректность индекса
         checkIndex(index);
         Node<E> cur = head;
         Node<E> prev = null;
-        for (int i = 0; i < index; i++) {
+        for (int i = 0; i < index; i++) {//Найти удаляемый узел и предыдущий узел
             prev = cur;
             cur = cur.next;
         }
         E val = cur.value;
-        if (prev == null) {
+        if (prev == null) {//Удаление головы (prev == null): обновить head
             head = cur.next;
-            if (head == null) tail = null;
+            if (head == null) tail = null;//Удаление хвоста: обновить tail
         } else {
-            prev.next = cur.next;
+            prev.next = cur.next;//Удалить узел, перенаправив ссылки
             if (prev.next == null) tail = prev;
         }
-        size--;
+        size--;//Уменьшить size
         return val;
     }
 
     @Override
-    public int size() {
+    public int size() {//Просто возвращает значение поля size
         return size;
     }
 
@@ -95,14 +95,14 @@ public class ListA<E> implements List<E> {
     public void add(int index, E element) {
         checkIndexForAdd(index);
         Node<E> newNode = new Node<>(element);
-        if (index == 0) {
+        if (index == 0) {//index = 0: вставка в начало
             newNode.next = head;
             head = newNode;
             if (tail == null) tail = newNode;
-        } else if (index == size) {
+        } else if (index == size) {//index = size: вставка в конец (вызов add(e))
             add(element);
             return;
-        } else {
+        } else {//0 < index < size: вставка в середину
             Node<E> cur = head;
             for (int i = 0; i < index - 1; i++) cur = cur.next;
             newNode.next = cur.next;
@@ -114,9 +114,9 @@ public class ListA<E> implements List<E> {
     @Override
     public boolean remove(Object o) {
 
-        Node<E> cur = head;
-        Node<E> prev = null;
-        while (cur != null) {
+        Node<E> cur = head;//Поиск первого вхождения элемента
+        Node<E> prev = null;//Удаление аналогично remove(int index)
+        while (cur != null) {//Возвращает true если элемент был найден и удален
             if (o == null ? cur.value == null : o.equals(cur.value)) {
                 if (prev == null) {
                     head = cur.next;
@@ -135,9 +135,9 @@ public class ListA<E> implements List<E> {
     }
 
     @Override
-    public E set(int index, E element) {
-        checkIndex(index);
-        Node<E> cur = head;
+    public E set(int index, E element) {//Найти узел по индексу
+        checkIndex(index);//Заменить значение
+        Node<E> cur = head;//Вернуть старое значение
         for (int i = 0; i < index; i++) cur = cur.next;
         E old = cur.value;
         cur.value = element;
@@ -146,20 +146,20 @@ public class ListA<E> implements List<E> {
 
 
     @Override
-    public boolean isEmpty() {
+    public boolean isEmpty() {//проверка пустоты списка
 
         return size == 0;
     }
 
 
     @Override
-    public void clear() {
+    public void clear() {//очистка списка
         head = tail = null;
         size = 0;
     }
 
     @Override
-    public int indexOf(Object o) {
+    public int indexOf(Object o) {//поиск первого вхождения
 
         Node<E> cur = head;
         int idx = 0;
@@ -172,7 +172,7 @@ public class ListA<E> implements List<E> {
     }
 
     @Override
-    public E get(int index) {
+    public E get(int index) {//получение элемента по индексу
 
         checkIndex(index);
         Node<E> cur = head;
@@ -181,13 +181,13 @@ public class ListA<E> implements List<E> {
     }
 
     @Override
-    public boolean contains(Object o) {
+    public boolean contains(Object o) {// проверка наличия элемента
 
         return indexOf(o) != -1;
     }
 
     @Override
-    public int lastIndexOf(Object o) {
+    public int lastIndexOf(Object o) {//Проходит весь список, запоминая последнее найденное вхождение.
         Node<E> cur = head;
         int idx = 0;
         int last = -1;
@@ -200,7 +200,7 @@ public class ListA<E> implements List<E> {
     }
 
     @Override
-    public boolean containsAll(Collection<?> c) {
+    public boolean containsAll(Collection<?> c) {//Проверяет, что все элементы коллекции c содержатся в списке.
         for (Object item : c) {
             if (!contains(item)) return false;
         }
@@ -208,7 +208,7 @@ public class ListA<E> implements List<E> {
     }
 
     @Override
-    public boolean addAll(Collection<? extends E> c) {
+    public boolean addAll(Collection<? extends E> c) {//Добавляет все элементы коллекции в конец списка.
         boolean changed = false;
         for (E e : c) {
             add(e);
@@ -218,9 +218,9 @@ public class ListA<E> implements List<E> {
     }
 
     @Override
-    public boolean addAll(int index, Collection<? extends E> c) {
-        checkIndexForAdd(index);
-        if (c.isEmpty()) return false;
+    public boolean addAll(int index, Collection<? extends E> c) {//Создать цепочку новых узлов из коллекции
+        checkIndexForAdd(index);//Вставить цепочку в нужную позицию
+        if (c.isEmpty()) return false;//Обновить ссылки head и tail при необходимости
         Node<E> cur = head;
         Node<E> prev = null;
         for (int i = 0; i < index; i++) {
@@ -251,7 +251,7 @@ public class ListA<E> implements List<E> {
     }
 
     @Override
-    public boolean removeAll(Collection<?> c) {
+    public boolean removeAll(Collection<?> c) {//Удаляет все элементы, которые содержатся в коллекции c.
         boolean changed = false;
         Node<E> cur = head;
         Node<E> prev = null;
@@ -277,7 +277,7 @@ public class ListA<E> implements List<E> {
     }
 
     @Override
-    public boolean retainAll(Collection<?> c) {
+    public boolean retainAll(Collection<?> c) {//Удаляет все элементы, которые НЕ содержатся в коллекции c (сохраняет только пересечение).
         boolean changed = false;
         Node<E> cur = head;
         Node<E> prev = null;
@@ -304,7 +304,7 @@ public class ListA<E> implements List<E> {
 
 
     @Override
-    public List<E> subList(int fromIndex, int toIndex) {
+    public List<E> subList(int fromIndex, int toIndex) {//Создает новый список, содержащий элементы с fromIndex до toIndex-1.
         if (fromIndex < 0 || toIndex > size || fromIndex > toIndex)
             throw new IndexOutOfBoundsException("fromIndex: " + fromIndex + ", toIndex: " + toIndex + ", Size: " + size);
         ListA<E> sub = new ListA<>();
@@ -325,7 +325,7 @@ public class ListA<E> implements List<E> {
     }
 
     @Override
-    public <T> T[] toArray(T[] a) {
+    public <T> T[] toArray(T[] a) {//Создает массив Object[] и заполняет его элементами списка
         @SuppressWarnings("unchecked")
         T[] arr = (T[]) (a.length >= size
                 ? a

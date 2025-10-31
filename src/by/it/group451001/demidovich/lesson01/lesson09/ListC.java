@@ -43,7 +43,7 @@ public class ListC<E> implements List<E> {
     }
 
     @Override
-    public boolean add(E e) {
+    public boolean add(E e) {//добавление в конец
         ListA.Node<E> node = new ListA.Node<>(e);
         if (head == null) {
             head = tail = node;
@@ -56,7 +56,7 @@ public class ListC<E> implements List<E> {
     }
 
     @Override
-    public E remove(int index) {
+    public E remove(int index) {// удаление по индексу
         checkIndex(index);
         ListA.Node<E> cur = head;
         ListA.Node<E> prev = null;
@@ -86,7 +86,7 @@ public class ListC<E> implements List<E> {
     }
 
     @Override
-    public void add(int index, E element) {
+    public void add(int index, E element) {//вставка по индексу
         checkIndexForAdd(index);
         ListA.Node<E> newNode = new ListA.Node<>(element);
         if (index == 0) {
@@ -153,7 +153,7 @@ public class ListC<E> implements List<E> {
     }
 
     @Override
-    public int indexOf(Object o) {
+    public int indexOf(Object o) {//Линейный поиск от head до tail.
 
         ListA.Node<E> cur = head;
         int idx = 0;
@@ -179,7 +179,7 @@ public class ListC<E> implements List<E> {
     }
 
     @Override
-    public int lastIndexOf(Object o) {
+    public int lastIndexOf(Object o) {//поиск последнего вхождения
         ListA.Node<E> cur = head;
         int idx = 0;
         int last = -1;
@@ -192,7 +192,7 @@ public class ListC<E> implements List<E> {
     }
 
     @Override
-    public boolean containsAll(Collection<?> c) {
+    public boolean containsAll(Collection<?> c) {//Проверяет наличие всех элементов коллекции в списке.
         for (Object item : c) {
             if (!contains(item)) return false;
         }
@@ -200,7 +200,7 @@ public class ListC<E> implements List<E> {
     }
 
     @Override
-    public boolean addAll(Collection<? extends E> c) {
+    public boolean addAll(Collection<? extends E> c) {//Последовательно добавляет элементы через add(e).
         boolean changed = false;
         for (E e : c) {
             add(e);
@@ -243,7 +243,7 @@ public class ListC<E> implements List<E> {
     }
 
     @Override
-    public boolean removeAll(Collection<?> c) {
+    public boolean removeAll(Collection<?> c) {//Удаляет ВСЕ элементы, содержащиеся в коллекции c.
         boolean changed = false;
         ListA.Node<E> cur = head;
         ListA.Node<E> prev = null;
@@ -269,7 +269,7 @@ public class ListC<E> implements List<E> {
     }
 
     @Override
-    public boolean retainAll(Collection<?> c) {
+    public boolean retainAll(Collection<?> c) {//Удаляет ВСЕ элементы, НЕ содержащиеся в коллекции c (оставляет пересечение).
         boolean changed = false;
         ListA.Node<E> cur = head;
         ListA.Node<E> prev = null;
@@ -302,7 +302,7 @@ public class ListC<E> implements List<E> {
     /////////////////////////////////////////////////////////////////////////
 
     @Override
-    public List<E> subList(int fromIndex, int toIndex) {
+    public List<E> subList(int fromIndex, int toIndex) {//Создает новый ListA<E> (не ListC<E>) с элементами из диапазона.
         if (fromIndex < 0 || toIndex > size || fromIndex > toIndex)
             throw new IndexOutOfBoundsException("fromIndex: " + fromIndex + ", toIndex: " + toIndex + ", Size: " + size);
         ListA<E> sub = new ListA<>();

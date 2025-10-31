@@ -41,7 +41,7 @@ public class ListB<E> implements List<E> {
     }
 
     @Override
-    public boolean add(E e) {
+    public boolean add(E e) {//добавление в конец
         ListA.Node<E> node = new ListA.Node<>(e);
         if (head == null) {
             head = tail = node;
@@ -54,7 +54,7 @@ public class ListB<E> implements List<E> {
     }
 
     @Override
-    public E remove(int index) {
+    public E remove(int index) {//удаление по индексу
         checkIndex(index);
         ListA.Node<E> cur = head;
         ListA.Node<E> prev = null;
@@ -84,17 +84,17 @@ public class ListB<E> implements List<E> {
     }
 
     @Override
-    public void add(int index, E element) {
+    public void add(int index, E element) {//вставка по индексу
         checkIndexForAdd(index);
         ListA.Node<E> newNode = new ListA.Node<>(element);
-        if (index == 0) {
+        if (index == 0) {//вставка в начало
             newNode.next = head;
             head = newNode;
             if (tail == null) tail = newNode;
-        } else if (index == size) {
+        } else if (index == size) {//вставка в конец
             add(element);
             return;
-        } else {
+        } else {//вставка в середину
             ListA.Node<E> cur = head;
             for (int i = 0; i < index - 1; i++) cur = cur.next;
             newNode.next = cur.next;
@@ -151,7 +151,7 @@ public class ListB<E> implements List<E> {
     }
 
     @Override
-    public int indexOf(Object o) {
+    public int indexOf(Object o) {//Линейный поиск от головы к хвосту.
 
         ListA.Node<E> cur = head;
         int idx = 0;
@@ -177,7 +177,7 @@ public class ListB<E> implements List<E> {
     }
 
     @Override
-    public int lastIndexOf(Object o) {
+    public int lastIndexOf(Object o) {//Проходит весь список, запоминая последнее совпадение.
         ListA.Node<E> cur = head;
         int idx = 0;
         int last = -1;
@@ -198,7 +198,7 @@ public class ListB<E> implements List<E> {
 
 
     @Override
-    public boolean containsAll(Collection<?> c) {
+    public boolean containsAll(Collection<?> c) {//Проверяет, что все элементы коллекции c содержатся в списке.
         for (Object item : c) {
             if (!contains(item)) return false;
         }
@@ -206,7 +206,7 @@ public class ListB<E> implements List<E> {
     }
 
     @Override
-    public boolean addAll(Collection<? extends E> c) {
+    public boolean addAll(Collection<? extends E> c) {//Последовательно добавляет все элементы коллекции в конец.
         boolean changed = false;
         for (E e : c) {
             add(e);
@@ -249,7 +249,7 @@ public class ListB<E> implements List<E> {
     }
 
     @Override
-    public boolean removeAll(Collection<?> c) {
+    public boolean removeAll(Collection<?> c) {//Удаляет все элементы, содержащиеся в коллекции c
         boolean changed = false;
         ListA.Node<E> cur = head;
         ListA.Node<E> prev = null;
@@ -275,7 +275,7 @@ public class ListB<E> implements List<E> {
     }
 
     @Override
-    public boolean retainAll(Collection<?> c) {
+    public boolean retainAll(Collection<?> c) {//Удаляет все элементы, НЕ содержащиеся в коллекции c (оставляет только пересечение).
         boolean changed = false;
         ListA.Node<E> cur = head;
         ListA.Node<E> prev = null;
@@ -302,7 +302,7 @@ public class ListB<E> implements List<E> {
 
 
     @Override
-    public List<E> subList(int fromIndex, int toIndex) {
+    public List<E> subList(int fromIndex, int toIndex) {//Создает новый ListA<E> (не ListB<E>) с элементами из заданного диапазона.
         if (fromIndex < 0 || toIndex > size || fromIndex > toIndex)
             throw new IndexOutOfBoundsException("fromIndex: " + fromIndex + ", toIndex: " + toIndex + ", Size: " + size);
         ListA<E> sub = new ListA<>();
@@ -323,7 +323,7 @@ public class ListB<E> implements List<E> {
     }
 
     @Override
-    public <T> T[] toArray(T[] a) {
+    public <T> T[] toArray(T[] a) {//Стандартная реализация преобразования списка в массив.
         @SuppressWarnings("unchecked")
         T[] arr = (T[]) (a.length >= size
                 ? a
