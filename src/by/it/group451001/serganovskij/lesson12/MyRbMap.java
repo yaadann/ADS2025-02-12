@@ -2,16 +2,25 @@ package by.it.group451001.serganovskij.lesson12;
 
 import java.util.*;
 
+/**
+ * Реализация SortedMap на основе красно-чёрного дерева
+ * Красно-чёрное дерево - это самобалансирующееся бинарное дерево поиска,
+ * которое гарантирует логарифмическое время выполнения операций
+ */
 public class MyRbMap implements SortedMap<Integer, String> {
 
+    // Константы для цветов узлов
     private static final boolean RED = true;
     private static final boolean BLACK = false;
 
+    /**
+     * Внутренний класс узла красно-чёрного дерева
+     */
     private class Node {
-        Integer key;
-        String info;
-        Node left, right;
-        boolean color;
+        Integer key;        // Ключ узла
+        String info;        // Значение узла
+        Node left, right;   // Левый и правый потомки
+        boolean color;      // Цвет узла (RED или BLACK)
 
         Node(Integer key, String info, boolean color) {
             this.key = key;
@@ -20,24 +29,30 @@ public class MyRbMap implements SortedMap<Integer, String> {
         }
     }
 
-    private Node root;
-    private int size;
+    private Node root;  // Корень дерева
+    private int size;   // Количество элементов
 
     public MyRbMap() {
         size = 0;
     }
 
+    /**
+     * Строковое представление в формате {key1=value1, key2=value2}
+     */
     @Override
     public String toString() {
         StringBuilder resultStr = new StringBuilder("{");
         inorderTraversal(root, resultStr);
         if (resultStr.length() > 1) {
-            resultStr.setLength(resultStr.length() - 2); // Убираем последнюю запятую
+            resultStr.setLength(resultStr.length() - 2);
         }
         resultStr.append("}");
         return resultStr.toString();
     }
 
+    /**
+     * Центрированный обход для построения строки
+     */
     private void inorderTraversal(Node node, StringBuilder sb) {
         if (node != null) {
             inorderTraversal(node.left, sb);
@@ -46,19 +61,25 @@ public class MyRbMap implements SortedMap<Integer, String> {
         }
     }
 
+    /**
+     * Добавление или обновление элемента
+     */
     @Override
     public String put(Integer key, String value) {
         if (key == null) throw new NullPointerException("Key cannot be null");
         String oldInfo = get(key);
         root = put(root, key, value);
-        root.color = BLACK;
+        root.color = BLACK; // Корень всегда черный
         return oldInfo;
     }
 
+    /**
+     * Рекурсивное добавление с поддержанием свойств красно-чёрного дерева
+     */
     private Node put(Node node, Integer key, String info) {
         if (node == null) {
             size++;
-            return new Node(key, info, RED);
+            return new Node(key, info, RED); // Новые узлы всегда красные
         }
 
         int res = key.compareTo(node.key);
@@ -67,9 +88,10 @@ public class MyRbMap implements SortedMap<Integer, String> {
         } else if (res > 0) {
             node.right = put(node.right, key, info);
         } else {
-            node.info = info;
+            node.info = info; // Обновление значения
         }
 
+        // Балансировка для поддержания свойств красно-чёрного дерева
         if (isRed(node.right) && !isRed(node.left)) node = rotateLeft(node);
         if (isRed(node.left) && isRed(node.left.left)) node = rotateRight(node);
         if (isRed(node.left) && isRed(node.right)) flipColors(node);
@@ -85,6 +107,9 @@ public class MyRbMap implements SortedMap<Integer, String> {
         }
     }
 
+    /**
+     * Удаление элемента по ключу
+     */
     @Override
     public String remove(Object key) {
         if (key == null) throw new NullPointerException("Key cannot be null");
@@ -97,6 +122,9 @@ public class MyRbMap implements SortedMap<Integer, String> {
         return oldValue;
     }
 
+    /**
+     * Рекурсивное удаление с поддержанием балансировки
+     */
     private Node remove(Node node, Integer key) {
         if (key.compareTo(node.key) < 0) {
             if (!isRed(node.left) && !isRed(node.left.left)) node = moveRedLeft(node);
@@ -121,6 +149,9 @@ public class MyRbMap implements SortedMap<Integer, String> {
         return balance(node);
     }
 
+    /**
+     * Получение значения по ключу (итеративный поиск)
+     */
     @Override
     public String get(Object obj) {
         if (obj == null) throw new NullPointerException("Key cannot be null");
@@ -150,6 +181,9 @@ public class MyRbMap implements SortedMap<Integer, String> {
         return containsValue(root, obj.toString());
     }
 
+    /**
+     * Рекурсивный поиск значения в дереве
+     */
     private boolean containsValue(Node node, String info) {
         if (node == null) return false;
         if (info.equals(node.info)) return true;
@@ -172,6 +206,9 @@ public class MyRbMap implements SortedMap<Integer, String> {
         return size == 0;
     }
 
+    /**
+     * Возвращает представление для ключей меньше toKey
+     */
     @Override
     public SortedMap<Integer, String> headMap(Integer toKey) {
         MyRbMap headMap = new MyRbMap();
@@ -188,6 +225,9 @@ public class MyRbMap implements SortedMap<Integer, String> {
         headMapHelper(node.left, toKey, headMap);
     }
 
+    /**
+     * Возвращает представление для ключей больше или равных fromKey
+     */
     @Override
     public SortedMap<Integer, String> tailMap(Integer fromKey) {
         MyRbMap tailMap = new MyRbMap();
@@ -207,6 +247,9 @@ public class MyRbMap implements SortedMap<Integer, String> {
         }
     }
 
+    /**
+     * Возвращает первый (наименьший) ключ
+     */
     @Override
     public Integer firstKey() {
         if (root == null) throw new NoSuchElementException();
@@ -215,6 +258,9 @@ public class MyRbMap implements SortedMap<Integer, String> {
         return node.key;
     }
 
+    /**
+     * Возвращает последний (наибольший) ключ
+     */
     @Override
     public Integer lastKey() {
         if (root == null) throw new NoSuchElementException();
@@ -225,7 +271,7 @@ public class MyRbMap implements SortedMap<Integer, String> {
 
     @Override
     public Comparator<? super Integer> comparator() {
-        return null;
+        return null; // Естественный порядок сортировки
     }
 
     @Override
@@ -273,6 +319,9 @@ public class MyRbMap implements SortedMap<Integer, String> {
         }
     }
 
+    /**
+     * Возвращает представление для ключей в диапазоне [fromKey, toKey)
+     */
     @Override
     public SortedMap<Integer, String> subMap(Integer fromKey, Integer toKey) {
         MyRbMap subMap = new MyRbMap();
@@ -293,11 +342,19 @@ public class MyRbMap implements SortedMap<Integer, String> {
         }
     }
 
+    // === ОСНОВНЫЕ ОПЕРАЦИИ КРАСНО-ЧЕРНОГО ДЕРЕВА ===
+
+    /**
+     * Проверка, является ли узел красным
+     */
     private boolean isRed(Node node) {
         if (node == null) return false;
         return node.color == RED;
     }
 
+    /**
+     * Левое вращение
+     */
     private Node rotateLeft(Node h) {
         Node x = h.right;
         h.right = x.left;
@@ -307,6 +364,9 @@ public class MyRbMap implements SortedMap<Integer, String> {
         return x;
     }
 
+    /**
+     * Правое вращение
+     */
     private Node rotateRight(Node h) {
         Node x = h.left;
         h.left = x.right;
@@ -316,12 +376,18 @@ public class MyRbMap implements SortedMap<Integer, String> {
         return x;
     }
 
+    /**
+     * Смена цветов (перекрашивание)
+     */
     private void flipColors(Node h) {
         h.color = !h.color;
         h.left.color = !h.left.color;
         h.right.color = !h.right.color;
     }
 
+    /**
+     * Перемещение красной ссылки влево (для удаления)
+     */
     private Node moveRedLeft(Node h) {
         flipColors(h);
         if (isRed(h.right.left)) {
@@ -332,6 +398,9 @@ public class MyRbMap implements SortedMap<Integer, String> {
         return h;
     }
 
+    /**
+     * Перемещение красной ссылки вправо (для удаления)
+     */
     private Node moveRedRight(Node h) {
         flipColors(h);
         if (isRed(h.left.left)) {
@@ -341,6 +410,9 @@ public class MyRbMap implements SortedMap<Integer, String> {
         return h;
     }
 
+    /**
+     * Балансировка узла
+     */
     private Node balance(Node h) {
         if (isRed(h.right)) h = rotateLeft(h);
         if (isRed(h.left) && isRed(h.left.left)) h = rotateRight(h);
@@ -348,11 +420,17 @@ public class MyRbMap implements SortedMap<Integer, String> {
         return h;
     }
 
+    /**
+     * Поиск узла с минимальным ключом
+     */
     private Node min(Node node) {
         while (node.left != null) node = node.left;
         return node;
     }
 
+    /**
+     * Удаление минимального узла
+     */
     private Node deleteMin(Node node) {
         if (node.left == null) return null;
         if (!isRed(node.left) && !isRed(node.left.left)) node = moveRedLeft(node);

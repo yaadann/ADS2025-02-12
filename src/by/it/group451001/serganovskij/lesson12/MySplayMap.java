@@ -11,6 +11,7 @@ import java.util.ArrayList;
 
 public class MySplayMap implements NavigableMap<Integer, String> {
 
+    // Узел дерева Splay
     private static class Node {
         Integer key;
         String info;
@@ -22,12 +23,12 @@ public class MySplayMap implements NavigableMap<Integer, String> {
         }
     }
 
-    private Node root;
-    private int currentSize = 0;
+    private Node root; // корень дерева
+    private int currentSize = 0; // количество элементов
 
     @Override
     public Comparator<? super Integer> comparator() {
-        return null; // Используем естественный порядок для Integer
+        return null; // используем естественный порядок (Integer)
     }
 
     @Override
@@ -51,6 +52,7 @@ public class MySplayMap implements NavigableMap<Integer, String> {
         }
     }
 
+    // Обход дерева (ключи)
     private void inOrderTraversal(Node node, Set<Integer> keys) {
         if (node != null) {
             inOrderTraversal(node.left, keys);
@@ -59,6 +61,7 @@ public class MySplayMap implements NavigableMap<Integer, String> {
         }
     }
 
+    // Обход дерева (значения)
     private void inOrderTraversalValues(Node node, Collection<String> values) {
         if (node != null) {
             inOrderTraversalValues(node.left, values);
@@ -69,31 +72,28 @@ public class MySplayMap implements NavigableMap<Integer, String> {
 
     @Override
     public boolean containsValue(Object obj) {
-        return containsValue(root, obj); // Убрано приведение к String
+        return containsValue(root, obj);
     }
 
+    // Проверка наличия значения
     private boolean containsValue(Node node, Object obj) {
-        if (node == null) {
-            return false;
-        }
-        if (obj.equals(node.info)) { // Сравнение как Object
-            return true;
-        }
+        if (node == null) return false;
+        if (obj.equals(node.info)) return true;
         return containsValue(node.left, obj) || containsValue(node.right, obj);
     }
 
+    // Операция "всплытия" (splay)
     private void splay(Node node) {
         while (node.parent != null) {
             Node parent = node.parent;
             Node grandparent = parent.parent;
 
             if (grandparent == null) {
-                if (node == parent.left) {
-                    rotateRight(parent);
-                } else {
-                    rotateLeft(parent);
-                }
+                // Один поворот (Zig)
+                if (node == parent.left) rotateRight(parent);
+                else rotateLeft(parent);
             } else {
+                // Двойные повороты (Zig-Zig / Zig-Zag)
                 if (node == parent.left && parent == grandparent.left) {
                     rotateRight(grandparent);
                     rotateRight(parent);
@@ -112,38 +112,28 @@ public class MySplayMap implements NavigableMap<Integer, String> {
         root = node;
     }
 
+    // Левый поворот
     private void rotateLeft(Node node) {
         Node rightChild = node.right;
         node.right = rightChild.left;
-        if (rightChild.left != null) {
-            rightChild.left.parent = node;
-        }
+        if (rightChild.left != null) rightChild.left.parent = node;
         rightChild.parent = node.parent;
-        if (node.parent == null) {
-            root = rightChild;
-        } else if (node == node.parent.left) {
-            node.parent.left = rightChild;
-        } else {
-            node.parent.right = rightChild;
-        }
+        if (node.parent == null) root = rightChild;
+        else if (node == node.parent.left) node.parent.left = rightChild;
+        else node.parent.right = rightChild;
         rightChild.left = node;
         node.parent = rightChild;
     }
 
+    // Правый поворот
     private void rotateRight(Node node) {
         Node leftChild = node.left;
         node.left = leftChild.right;
-        if (leftChild.right != null) {
-            leftChild.right.parent = node;
-        }
+        if (leftChild.right != null) leftChild.right.parent = node;
         leftChild.parent = node.parent;
-        if (node.parent == null) {
-            root = leftChild;
-        } else if (node == node.parent.right) {
-            node.parent.right = leftChild;
-        } else {
-            node.parent.left = leftChild;
-        }
+        if (node.parent == null) root = leftChild;
+        else if (node == node.parent.right) node.parent.right = leftChild;
+        else node.parent.left = leftChild;
         leftChild.right = node;
         node.parent = leftChild;
     }
@@ -156,15 +146,15 @@ public class MySplayMap implements NavigableMap<Integer, String> {
             return null;
         }
 
+        // Поиск места вставки
         Node node = root;
         Node parent = null;
         while (node != null) {
             parent = node;
-            if (key.compareTo(node.key) < 0) {
-                node = node.left;
-            } else if (key.compareTo(node.key) > 0) {
-                node = node.right;
-            } else {
+            if (key.compareTo(node.key) < 0) node = node.left;
+            else if (key.compareTo(node.key) > 0) node = node.right;
+            else {
+                // Обновление значения при совпадении ключа
                 String oldValue = node.info;
                 node.info = info;
                 splay(node);
@@ -172,13 +162,11 @@ public class MySplayMap implements NavigableMap<Integer, String> {
             }
         }
 
+        // Вставка нового узла
         Node newNode = new Node(key, info);
         newNode.parent = parent;
-        if (key.compareTo(parent.key) < 0) {
-            parent.left = newNode;
-        } else {
-            parent.right = newNode;
-        }
+        if (key.compareTo(parent.key) < 0) parent.left = newNode;
+        else parent.right = newNode;
         splay(newNode);
         currentSize++;
         return null;
@@ -187,17 +175,13 @@ public class MySplayMap implements NavigableMap<Integer, String> {
     @Override
     public String remove(Object obj) {
         Node node = findNode((Integer) obj);
-        if (node == null) {
-            return null;
-        }
-
+        if (node == null) return null;
         splay(node);
 
+        // Удаление и перестройка дерева
         if (node.left == null) {
             root = node.right;
-            if (root != null) {
-                root.parent = null;
-            }
+            if (root != null) root.parent = null;
         } else {
             Node rightSubtree = node.right;
             root = node.left;
@@ -205,33 +189,26 @@ public class MySplayMap implements NavigableMap<Integer, String> {
             Node maxLeft = findMax(root);
             splay(maxLeft);
             maxLeft.right = rightSubtree;
-            if (rightSubtree != null) {
-                rightSubtree.parent = maxLeft;
-            }
+            if (rightSubtree != null) rightSubtree.parent = maxLeft;
         }
 
         currentSize--;
         return node.info;
     }
 
+    // Поиск узла по ключу
     private Node findNode(Integer key) {
         Node current = root;
         while (current != null) {
-            if (key.compareTo(current.key) < 0) {
-                current = current.left;
-            } else if (key.compareTo(current.key) > 0) {
-                current = current.right;
-            } else {
-                return current;
-            }
+            if (key.compareTo(current.key) < 0) current = current.left;
+            else if (key.compareTo(current.key) > 0) current = current.right;
+            else return current;
         }
         return null;
     }
 
     private Node findMax(Node node) {
-        while (node.right != null) {
-            node = node.right;
-        }
+        while (node.right != null) node = node.right;
         return node;
     }
 
@@ -266,6 +243,7 @@ public class MySplayMap implements NavigableMap<Integer, String> {
         return currentSize == 0;
     }
 
+    // headMap — элементы меньше toKey
     @Override
     public NavigableMap<Integer, String> headMap(Integer toKey) {
         return headMap(toKey, false);
@@ -279,9 +257,7 @@ public class MySplayMap implements NavigableMap<Integer, String> {
     }
 
     private void headMap(Node node, Integer toKey, boolean inclusive, MySplayMap result) {
-        if (node == null) {
-            return;
-        }
+        if (node == null) return;
         if (node.key.compareTo(toKey) < 0 || (inclusive && node.key.equals(toKey))) {
             result.put(node.key, node.info);
             headMap(node.right, toKey, inclusive, result);
@@ -289,6 +265,7 @@ public class MySplayMap implements NavigableMap<Integer, String> {
         headMap(node.left, toKey, inclusive, result);
     }
 
+    // tailMap — элементы больше fromKey
     @Override
     public NavigableMap<Integer, String> tailMap(Integer fromKey) {
         return tailMap(fromKey, true);
@@ -302,9 +279,7 @@ public class MySplayMap implements NavigableMap<Integer, String> {
     }
 
     private void tailMap(Node node, Integer fromKey, boolean inclusive, MySplayMap result) {
-        if (node == null) {
-            return;
-        }
+        if (node == null) return;
         if (node.key.compareTo(fromKey) > 0 || (inclusive && node.key.equals(fromKey))) {
             result.put(node.key, node.info);
             tailMap(node.left, fromKey, inclusive, result);
@@ -314,9 +289,7 @@ public class MySplayMap implements NavigableMap<Integer, String> {
 
     @Override
     public Integer firstKey() {
-        if (root == null) {
-            throw new NoSuchElementException();
-        }
+        if (root == null) throw new NoSuchElementException();
         Node node = findMin(root);
         splay(node);
         return node.key;
@@ -324,21 +297,18 @@ public class MySplayMap implements NavigableMap<Integer, String> {
 
     @Override
     public Integer lastKey() {
-        if (root == null) {
-            throw new NoSuchElementException();
-        }
+        if (root == null) throw new NoSuchElementException();
         Node node = findMax(root);
         splay(node);
         return node.key;
     }
 
     private Node findMin(Node node) {
-        while (node.left != null) {
-            node = node.left;
-        }
+        while (node.left != null) node = node.left;
         return node;
     }
 
+    // Методы поиска соседних ключей (lower, floor, ceiling, higher)
     @Override
     public Integer lowerKey(Integer key) {
         Node node = lowerNode(root, key);
@@ -350,15 +320,10 @@ public class MySplayMap implements NavigableMap<Integer, String> {
     }
 
     private Node lowerNode(Node node, Integer key) {
-        if (node == null) {
-            return null;
-        }
-        if (node.key.compareTo(key) >= 0) {
-            return lowerNode(node.left, key);
-        } else {
-            Node right = lowerNode(node.right, key);
-            return right != null ? right : node;
-        }
+        if (node == null) return null;
+        if (node.key.compareTo(key) >= 0) return lowerNode(node.left, key);
+        Node right = lowerNode(node.right, key);
+        return right != null ? right : node;
     }
 
     @Override
@@ -372,18 +337,11 @@ public class MySplayMap implements NavigableMap<Integer, String> {
     }
 
     private Node floorNode(Node node, Integer key) {
-        if (node == null) {
-            return null;
-        }
-        if (node.key.compareTo(key) == 0) {
-            return node;
-        }
-        if (node.key.compareTo(key) > 0) {
-            return floorNode(node.left, key);
-        } else {
-            Node right = floorNode(node.right, key);
-            return right != null ? right : node;
-        }
+        if (node == null) return null;
+        if (node.key.equals(key)) return node;
+        if (node.key.compareTo(key) > 0) return floorNode(node.left, key);
+        Node right = floorNode(node.right, key);
+        return right != null ? right : node;
     }
 
     @Override
@@ -397,18 +355,11 @@ public class MySplayMap implements NavigableMap<Integer, String> {
     }
 
     private Node ceilingNode(Node node, Integer key) {
-        if (node == null) {
-            return null;
-        }
-        if (node.key.compareTo(key) == 0) {
-            return node;
-        }
-        if (node.key.compareTo(key) < 0) {
-            return ceilingNode(node.right, key);
-        } else {
-            Node left = ceilingNode(node.left, key);
-            return left != null ? left : node;
-        }
+        if (node == null) return null;
+        if (node.key.equals(key)) return node;
+        if (node.key.compareTo(key) < 0) return ceilingNode(node.right, key);
+        Node left = ceilingNode(node.left, key);
+        return left != null ? left : node;
     }
 
     @Override
@@ -422,17 +373,13 @@ public class MySplayMap implements NavigableMap<Integer, String> {
     }
 
     private Node higherNode(Node node, Integer key) {
-        if (node == null) {
-            return null;
-        }
-        if (node.key.compareTo(key) <= 0) {
-            return higherNode(node.right, key);
-        } else {
-            Node left = higherNode(node.left, key);
-            return left != null ? left : node;
-        }
+        if (node == null) return null;
+        if (node.key.compareTo(key) <= 0) return higherNode(node.right, key);
+        Node left = higherNode(node.left, key);
+        return left != null ? left : node;
     }
 
+    // subMap — диапазон ключей [fromKey, toKey)
     @Override
     public NavigableMap<Integer, String> subMap(Integer fromKey, Integer toKey) {
         return subMap(fromKey, true, toKey, false);
@@ -446,29 +393,23 @@ public class MySplayMap implements NavigableMap<Integer, String> {
     }
 
     private void subMap(Node node, Integer fromKey, boolean fromInclusive, Integer toKey, boolean toInclusive, MySplayMap result) {
-        if (node == null) {
-            return;
-        }
-        if (node.key.compareTo(fromKey) > 0 || (fromInclusive && node.key.equals(fromKey))) {
+        if (node == null) return;
+        if (node.key.compareTo(fromKey) > 0 || (fromInclusive && node.key.equals(fromKey)))
             subMap(node.left, fromKey, fromInclusive, toKey, toInclusive, result);
-        }
         if ((node.key.compareTo(fromKey) > 0 || (fromInclusive && node.key.equals(fromKey))) &&
-                (node.key.compareTo(toKey) < 0 || (toInclusive && node.key.equals(toKey)))) {
+                (node.key.compareTo(toKey) < 0 || (toInclusive && node.key.equals(toKey))))
             result.put(node.key, node.info);
-        }
-        if (node.key.compareTo(toKey) < 0 || (toInclusive && node.key.equals(toKey))) {
+        if (node.key.compareTo(toKey) < 0 || (toInclusive && node.key.equals(toKey)))
             subMap(node.right, fromKey, fromInclusive, toKey, toInclusive, result);
-        }
     }
 
+    // Форматированный вывод дерева (in-order)
     @Override
     public String toString() {
         StringBuilder resultStr = new StringBuilder();
         resultStr.append("{");
         toString(root, resultStr);
-        if (resultStr.length() > 1) {
-            resultStr.setLength(resultStr.length() - 2);
-        }
+        if (resultStr.length() > 1) resultStr.setLength(resultStr.length() - 2);
         resultStr.append("}");
         return resultStr.toString();
     }
@@ -481,64 +422,17 @@ public class MySplayMap implements NavigableMap<Integer, String> {
         }
     }
 
-    // Остальные методы интерфейса NavigableMap не реализованы для краткости
-    @Override
-    public java.util.Map.Entry<Integer, String> lowerEntry(Integer key) {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public java.util.Map.Entry<Integer, String> floorEntry(Integer key) {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public java.util.Map.Entry<Integer, String> ceilingEntry(Integer key) {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public java.util.Map.Entry<Integer, String> higherEntry(Integer key) {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public java.util.Map.Entry<Integer, String> firstEntry() {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public java.util.Map.Entry<Integer, String> lastEntry() {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public java.util.Map.Entry<Integer, String> pollFirstEntry() {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public java.util.Map.Entry<Integer, String> pollLastEntry() {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public NavigableMap<Integer, String> descendingMap() {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public java.util.NavigableSet<Integer> navigableKeySet() {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public java.util.NavigableSet<Integer> descendingKeySet() {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public java.util.Set<java.util.Map.Entry<Integer, String>> entrySet() {
-        throw new UnsupportedOperationException();
-    }
+    // Методы NavigableMap, не реализованные
+    @Override public java.util.Map.Entry<Integer, String> lowerEntry(Integer key) { throw new UnsupportedOperationException(); }
+    @Override public java.util.Map.Entry<Integer, String> floorEntry(Integer key) { throw new UnsupportedOperationException(); }
+    @Override public java.util.Map.Entry<Integer, String> ceilingEntry(Integer key) { throw new UnsupportedOperationException(); }
+    @Override public java.util.Map.Entry<Integer, String> higherEntry(Integer key) { throw new UnsupportedOperationException(); }
+    @Override public java.util.Map.Entry<Integer, String> firstEntry() { throw new UnsupportedOperationException(); }
+    @Override public java.util.Map.Entry<Integer, String> lastEntry() { throw new UnsupportedOperationException(); }
+    @Override public java.util.Map.Entry<Integer, String> pollFirstEntry() { throw new UnsupportedOperationException(); }
+    @Override public java.util.Map.Entry<Integer, String> pollLastEntry() { throw new UnsupportedOperationException(); }
+    @Override public NavigableMap<Integer, String> descendingMap() { throw new UnsupportedOperationException(); }
+    @Override public java.util.NavigableSet<Integer> navigableKeySet() { throw new UnsupportedOperationException(); }
+    @Override public java.util.NavigableSet<Integer> descendingKeySet() { throw new UnsupportedOperationException(); }
+    @Override public java.util.Set<java.util.Map.Entry<Integer, String>> entrySet() { throw new UnsupportedOperationException(); }
 }
