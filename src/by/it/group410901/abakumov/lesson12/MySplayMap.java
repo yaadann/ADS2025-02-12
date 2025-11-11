@@ -1,267 +1,305 @@
 package by.it.group410901.abakumov.lesson12;
 
+// Реализация Splay-дерева — дерева, которое само себя балансирует
+// Часто используемые элементы поднимаются ближе к корню
 class MySplayMap implements java.util.NavigableMap<Integer, String> {
-    // Узел дерева
-    private static class Node {
-        Integer key;
-        String value;
-        Node left, right, parent;
 
+    // Класс для узла дерева
+    private static class Node {
+        Integer key;      // ключ узла
+        String value;     // значение по ключу
+        Node left;        // левый ребёнок
+        Node right;       // правый ребёнок
+        Node parent;      // родитель узла (нужен для поворотов)
+
+        // Создаём узел с ключом и значением
         Node(Integer key, String value) {
-            this.key = key;
-            this.value = value;
-            this.left = null;
-            this.right = null;
-            this.parent = null;
+            this.key = key;       // сохраняем ключ
+            this.value = value;   // сохраняем значение
+            this.left = null;     // левое поддерево пустое
+            this.right = null;    // правое поддерево пустое
+            this.parent = null;   // родителя пока нет
         }
     }
 
-    private Node root;
-    private int size;
+    private Node root;  // корень дерева
+    private int size;   // сколько элементов в дереве
 
-    // Конструктор
+    // Создаём пустое дерево
     public MySplayMap() {
-        root = null;
-        size = 0;
+        root = null;    // корня нет
+        size = 0;       // элементов нет
     }
 
-    // Вспомогательный метод для splay-операции
+    // Поднимаем узел x к корню дерева
     private void splay(Node x) {
-        // // Почему используется цикл while? Потому что нужно поднимать узел x до корня через серию поворотов
-        while (x.parent != null) {
-            Node parent = x.parent;
-            Node grandparent = parent.parent;
+        // Повторяем, пока x не станет корнем (у корня нет родителя)
+        while (x.parent != null) {                    // пока у x есть родитель
 
+            Node parent = x.parent;                   // это родитель x
+            Node grandparent = parent.parent;         // это дедушка (может быть null)
+
+            // Родитель x — это корень (дедушки нет)
             if (grandparent == null) {
-                // Zig: один поворот, если родитель - корень
-                if (x == parent.left) {
-                    rotateRight(parent);
-                } else {
-                    rotateLeft(parent);
+                if (x == parent.left) {               // x — левый ребёнок родителя
+                    rotateRight(parent);              // делаем поворот вправо
+                } else {                              // x — правый ребёнок
+                    rotateLeft(parent);               // делаем поворот влево
                 }
-            } else {
+                // После этого x поднялся на 1 уровень выше
+            }
+            // Есть и родитель, и дедушка
+            else {
+                // x — слева от родителя
                 if (x == parent.left) {
-                    if (parent == grandparent.left) {
-                        // Zig-Zig: два правых поворота
-                        rotateRight(grandparent);
-                        rotateRight(parent);
-                    } else {
-                        // Zig-Zag: правый, затем левый поворот
-                        rotateRight(parent);
-                        rotateLeft(grandparent);
+                    if (parent == grandparent.left) { // родитель тоже слева от дедушки
+                        rotateRight(grandparent);     // поворот вправо вокруг дедушки
+                        rotateRight(parent);          // ещё один поворот вправо
+                        // x поднялся на 2 уровня сразу!
+                    } else {                          // родитель справа от дедушки
+                        rotateRight(parent);          // поворот вправо вокруг родителя
+                        rotateLeft(grandparent);      // потом влево вокруг дедушки
+                        // x "перепрыгнул" через родителя и дедушку
                     }
-                } else {
-                    if (parent == grandparent.right) {
-                        // Zig-Zig: два левых поворота
-                        rotateLeft(grandparent);
-                        rotateLeft(parent);
-                    } else {
-                        // Zig-Zag: левый, затем правый поворот
-                        rotateLeft(parent);
-                        rotateRight(grandparent);
+                }
+                // x — справа от родителя
+                else {
+                    if (parent == grandparent.right) { // родитель справа от дедушки
+                        rotateLeft(grandparent);       // поворот влево вокруг дедушки
+                        rotateLeft(parent);            // ещё один влево
+                    } else {                           // родитель слева от дедушки
+                        rotateLeft(parent);            // влево вокруг родителя
+                        rotateRight(grandparent);      // потом вправо вокруг дедушки
                     }
                 }
             }
         }
-        root = x;
+
+        // x стал корнем
+        root = x;                                     // обновляем корень дерева
     }
 
-    // Поворот вправо
+    // Поворот вправо вокруг узла x
     private void rotateRight(Node x) {
-        // // Зачем нужен поворот? Для изменения структуры дерева, чтобы поднять левый дочерний узел
-        Node y = x.left;
+        Node y = x.left;                              // y — левый ребёнок x
+
         x.left = y.right;
-        if (y.right != null) {
-            y.right.parent = x;
+        if (y.right != null) {                        // если у y был правый ребёнок
+            y.right.parent = x;                       // его родитель теперь x
         }
-        y.parent = x.parent;
+
+        y.parent = x.parent;                          // y занимает место x
+
+        // Если x был корнем — y становится новым корнем
         if (x.parent == null) {
-            root = y;
-        } else if (x == x.parent.right) {
-            x.parent.right = y;
-        } else {
-            x.parent.left = y;
+            root = y;                                 // y — новый корень
         }
-        y.right = x;
-        x.parent = y;
+        // x был правым ребёнком своего родителя
+        else if (x == x.parent.right) {
+            x.parent.right = y;                       // y на место x
+        }
+        // x был левым ребёнком
+        else {
+            x.parent.left = y;                        // y на место x
+        }
+
+        y.right = x;                                  // x становится правым ребёнком y
+        x.parent = y;                                 // родитель x теперь y
     }
 
-    // Поворот влево
+    // Поворот влево вокруг узла x
     private void rotateLeft(Node x) {
-        Node y = x.right;
+        Node y = x.right;                             // y — правый ребёнок x
+
         x.right = y.left;
-        if (y.left != null) {
-            y.left.parent = x;
+        if (y.left != null) {                         // если у y был левый ребёнок
+            y.left.parent = x;                        // его родитель теперь x
         }
-        y.parent = x.parent;
+
+        y.parent = x.parent;                          // y занимает место x
+
+        // Если x был корнем — y становится новым корнем
         if (x.parent == null) {
-            root = y;
-        } else if (x == x.parent.left) {
-            x.parent.left = y;
-        } else {
-            x.parent.right = y;
+            root = y;                                 // y — новый корень
         }
-        y.left = x;
-        x.parent = y;
+        // x был левым ребёнком
+        else if (x == x.parent.left) {
+            x.parent.left = y;                        // y на место x
+        }
+        // x был правым ребёнком
+        else {
+            x.parent.right = y;                       // y на место x
+        }
+
+        y.left = x;                                   // x становится левым ребёнком y
+        x.parent = y;                                 // родитель x теперь y
     }
 
-    // Вставка элемента
+    // Вставка ключа и значения
     @Override
     public String put(Integer key, String value) {
-        if (key == null) throw new NullPointerException();
-        // // Почему создается новый узел, если дерево пустое? Потому что это первый элемент
+        if (key == null) throw new NullPointerException(); // ключ не может быть null
+
+        // Дерево пустое — создаём первый узел
         if (root == null) {
-            root = new Node(key, value);
-            size++;
-            return null;
+            root = new Node(key, value);              // создаём корень
+            size++;                                   // увеличиваем размер
+            return null;                              // раньше значения не было
         }
 
-        Node current = root;
-        Node parent = null;
-        // Поиск места для вставки
+        Node current = root;                          // начинаем с корня
+        Node parent = null;                           // родитель текущего узла
+
+        // Ищем место для вставки
         while (current != null) {
-            parent = current;
-            int cmp = key.compareTo(current.key);
-            if (cmp < 0) {
-                current = current.left;
-            } else if (cmp > 0) {
-                current = current.right;
-            } else {
-                // Ключ уже существует, обновляем значение
-                String oldValue = current.value;
-                current.value = value;
-                splay(current);
-                return oldValue;
+            parent = current;                         // запоминаем родителя
+            int cmp = key.compareTo(current.key);     // сравниваем ключи
+            if (cmp < 0) {                            // ключ меньше
+                current = current.left;               // идём влево
+            } else if (cmp > 0) {                     // ключ больше
+                current = current.right;              // идём вправо
+            } else {                                  // ключ уже есть
+                String old = current.value;           // старое значение
+                current.value = value;                // обновляем
+                splay(current);                       // поднимаем узел к корню
+                return old;                           // возвращаем старое
             }
         }
 
-        // Создаем новый узел
-        Node newNode = new Node(key, value);
-        newNode.parent = parent;
-        if (key.compareTo(parent.key) < 0) {
+        // Создаём новый узел
+        Node newNode = new Node(key, value);          // новый узел
+        newNode.parent = parent;                      // его родитель — последний узел
+
+        // Вставляем как в обычное дерево поиска
+        if (key.compareTo(parent.key) < 0) {          // слева
             parent.left = newNode;
-        } else {
+        } else {                                      // справа
             parent.right = newNode;
         }
-        size++;
-        splay(newNode); // // Зачем splay после вставки? Чтобы новый узел стал корнем для ускорения последующих операций
-        return null;
+
+        size++;                                       // увеличиваем размер
+        splay(newNode);                               // поднимаем новый узел к корню
+        return null;                                  // раньше не было
     }
 
-    // Получение значения по ключу
+    // Получить значение по ключу
     @Override
     public String get(Object key) {
         if (key == null) throw new NullPointerException();
-        Node node = findNode((Integer) key);
-        return node != null ? node.value : null;
+        Node node = findNode((Integer) key);          // ищем узел
+        return node != null ? node.value : null;      // возвращаем значение или null
     }
 
     // Поиск узла по ключу
     private Node findNode(Integer key) {
-        Node current = root;
-        while (current != null) {
+        Node current = root;                          // начинаем с корня
+        while (current != null) {                     // пока не дошли до конца
             int cmp = key.compareTo(current.key);
-            if (cmp < 0) {
+            if (cmp < 0) {                            // ключ меньше
                 current = current.left;
-            } else if (cmp > 0) {
+            } else if (cmp > 0) {                     // ключ больше
                 current = current.right;
-            } else {
-                splay(current); // // Зачем splay здесь? Чтобы поднять найденный узел к корню
-                return current;
+            } else {                                  // нашли
+                splay(current);                       // поднимаем к корню
+                return current;                       // возвращаем узел
             }
         }
-        return null;
+        return null;                                  // не нашли
     }
 
-    // Удаление узла
+    // Удаление по ключу
     @Override
     public String remove(Object key) {
         if (key == null) throw new NullPointerException();
-        Node node = findNode((Integer) key);
-        if (node == null) return null;
 
-        String value = node.value;
-        // // Как происходит удаление? Находим узел, поднимаем его в корень, затем соединяем поддеревья
+        Node node = findNode((Integer) key);          // ищем и поднимаем
+        if (node == null) return null;                // не нашли
+
+        String value = node.value;                    // сохраняем значение
+        size--;                                       // уменьшаем размер
+
+        // Нет левого поддерева
         if (node.left == null) {
-            root = node.right;
-            if (root != null) root.parent = null;
-        } else {
-            Node maxLeft = node.left;
+            root = node.right;                        // правое поддерево становится деревом
+            if (root != null) root.parent = null;     // обнуляем родителя
+        }
+        // Есть левое поддерево
+        else {
+            Node maxLeft = node.left;                 // ищем максимум в левом поддереве
             while (maxLeft.right != null) {
                 maxLeft = maxLeft.right;
             }
-            splay(maxLeft); // Поднимаем максимальный узел левого поддерева
-            maxLeft.right = node.right;
-            if (node.right != null) node.right.parent = maxLeft;
-            root = maxLeft;
+            splay(maxLeft);                           // поднимаем максимум к корню
+            maxLeft.right = node.right;               // присоединяем правое поддерево
+            if (node.right != null) {
+                node.right.parent = maxLeft;
+            }
+            root = maxLeft;                           // новый корень
+            root.parent = null;
         }
-        size--;
-        return value;
+        return value;                                 // возвращаем удалённое значение
     }
 
-    // Проверка наличия ключа
+    // Есть ли ключ
     @Override
     public boolean containsKey(Object key) {
         if (key == null) throw new NullPointerException();
-        return findNode((Integer) key) != null;
+        return findNode((Integer) key) != null;       // ищем — если нашли, то есть
     }
 
+    // Есть ли значение
     @Override
     public boolean containsValue(Object value) {
-        // Проверяем, что value не null и является String
-        if (!(value instanceof String)) {
-            return false;
-        }
-        return containsValue(root, (String) value);
+        if (!(value instanceof String)) return false; // не строка
+        return containsValue(root, (String) value);   // ищем в дереве
     }
 
+    // Поиск значения в поддереве
     private boolean containsValue(Node node, String value) {
-        if (node == null) return false;
-        if (node.value.equals(value)) return true;
-        return containsValue(node.left, value) || containsValue(node.right, value);
+        if (node == null) return false;               // дошли до конца
+        if (node.value.equals(value)) return true;    // нашли
+        return containsValue(node.left, value) ||     // ищем слева
+                containsValue(node.right, value);      // или справа
     }
 
-    // Размер карты
+    // Размер дерева
     @Override
-    public int size() {
-        return size;
-    }
+    public int size() { return size; }
 
-    // Проверка на пустоту
+    // Пустое ли дерево
     @Override
-    public boolean isEmpty() {
-        return size == 0;
-    }
+    public boolean isEmpty() { return size == 0; }
 
-    // Очистка карты
+    // Очистить дерево
     @Override
     public void clear() {
-        root = null;
-        size = 0;
+        root = null;                                  // убираем корень
+        size = 0;                                     // обнуляем размер
     }
 
-    // Получение подкарты до указанного ключа
+    // Все элементы с ключом < toKey
     @Override
     public java.util.NavigableMap<Integer, String> headMap(Integer toKey, boolean inclusive) {
         if (toKey == null) throw new NullPointerException();
-        MySplayMap result = new MySplayMap();
-        headMap(root, toKey, inclusive, result);
+        MySplayMap result = new MySplayMap();         // новое дерево
+        headMap(root, toKey, inclusive, result);      // заполняем
         return result;
     }
 
+    // Обход для headMap
     private void headMap(Node node, Integer toKey, boolean inclusive, MySplayMap result) {
-        if (node == null) return;
-        int cmp = node.key.compareTo(toKey);
-        if (cmp < 0 || (inclusive && cmp == 0)) {
-            headMap(node.left, toKey, inclusive, result);
-            result.put(node.key, node.value);
-            headMap(node.right, toKey, inclusive, result);
-        } else {
-            headMap(node.left, toKey, inclusive, result);
+        if (node == null) return;                     // конец ветки
+        int cmp = node.key.compareTo(toKey);          // сравниваем
+        if (cmp < 0 || (inclusive && cmp == 0)) {     // подходит
+            headMap(node.left, toKey, inclusive, result);  // левое
+            result.put(node.key, node.value);              // добавляем
+            headMap(node.right, toKey, inclusive, result); // правое
+        } else {                                      // не подходит
+            headMap(node.left, toKey, inclusive, result);  // только левое
         }
     }
 
-    // Получение подкарты от указанного ключа
+    // Все элементы с ключом >= fromKey
     @Override
     public java.util.NavigableMap<Integer, String> tailMap(Integer fromKey, boolean inclusive) {
         if (fromKey == null) throw new NullPointerException();
@@ -270,6 +308,7 @@ class MySplayMap implements java.util.NavigableMap<Integer, String> {
         return result;
     }
 
+    // Обход для tailMap
     private void tailMap(Node node, Integer fromKey, boolean inclusive, MySplayMap result) {
         if (node == null) return;
         int cmp = node.key.compareTo(fromKey);
@@ -282,31 +321,27 @@ class MySplayMap implements java.util.NavigableMap<Integer, String> {
         }
     }
 
-    // Первый ключ
+    // Минимальный ключ
     @Override
     public Integer firstKey() {
         if (root == null) throw new java.util.NoSuchElementException();
         Node current = root;
-        while (current.left != null) {
-            current = current.left;
-        }
-        splay(current); // // Зачем splay? Чтобы оптимизировать доступ к минимальному ключу
-        return current.key;
+        while (current.left != null) current = current.left; // идём влево
+        splay(current);                                      // поднимаем к корню
+        return current.key;                                  // возвращаем ключ
     }
 
-    // Последний ключ
+    // Максимальный ключ
     @Override
     public Integer lastKey() {
         if (root == null) throw new java.util.NoSuchElementException();
         Node current = root;
-        while (current.right != null) {
-            current = current.right;
-        }
+        while (current.right != null) current = current.right; // идём вправо
         splay(current);
         return current.key;
     }
 
-    // Ключ строго меньше указанного
+    // Ключ строго меньше заданного
     @Override
     public Integer lowerKey(Integer key) {
         if (key == null) throw new NullPointerException();
@@ -314,9 +349,9 @@ class MySplayMap implements java.util.NavigableMap<Integer, String> {
         Node result = null;
         while (current != null) {
             int cmp = current.key.compareTo(key);
-            if (cmp < 0) {
-                result = current;
-                current = current.right;
+            if (cmp < 0) {                               // меньше
+                result = current;                        // запоминаем
+                current = current.right;                 // ищем больше
             } else {
                 current = current.left;
             }
@@ -325,7 +360,7 @@ class MySplayMap implements java.util.NavigableMap<Integer, String> {
         return result != null ? result.key : null;
     }
 
-    // Ключ меньше или равен указанному
+    // Ключ <= заданного
     @Override
     public Integer floorKey(Integer key) {
         if (key == null) throw new NullPointerException();
@@ -344,7 +379,7 @@ class MySplayMap implements java.util.NavigableMap<Integer, String> {
         return result != null ? result.key : null;
     }
 
-    // Ключ больше или равен указанному
+    // Ключ >= заданного
     @Override
     public Integer ceilingKey(Integer key) {
         if (key == null) throw new NullPointerException();
@@ -363,7 +398,7 @@ class MySplayMap implements java.util.NavigableMap<Integer, String> {
         return result != null ? result.key : null;
     }
 
-    // Ключ строго больше указанного
+    // Ключ строго больше заданного
     @Override
     public Integer higherKey(Integer key) {
         if (key == null) throw new NullPointerException();
@@ -382,35 +417,30 @@ class MySplayMap implements java.util.NavigableMap<Integer, String> {
         return result != null ? result.key : null;
     }
 
-    // Формирование строки в формате {key1=value1, key2=value2}
+    // Строковое представление
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append("{");
-        toString(root, sb);
-        if (sb.length() > 1) sb.setLength(sb.length() - 2); // Удаляем последнюю запятую
+        toString(root, sb);                           // заполняем
+        if (sb.length() > 1) sb.setLength(sb.length() - 2); // убираем ", "
         sb.append("}");
         return sb.toString();
     }
 
+    // Обход в порядке возрастания ключей
     private void toString(Node node, StringBuilder sb) {
         if (node == null) return;
-        toString(node.left, sb); // // Почему рекурсия по левому поддереву? Для вывода ключей в порядке возрастания
+        toString(node.left, sb);                      // левое
         sb.append(node.key).append("=").append(node.value).append(", ");
-        toString(node.right, sb);
+        toString(node.right, sb);                     // правое
     }
 
-    @Override
-    public java.util.SortedMap<Integer, String> headMap(Integer toKey) {
-        return headMap(toKey, false);
-    }
+    // Перегрузки для SortedMap
+    @Override public java.util.SortedMap<Integer, String> headMap(Integer toKey) { return headMap(toKey, false); }
+    @Override public java.util.SortedMap<Integer, String> tailMap(Integer fromKey) { return tailMap(fromKey, true); }
 
-    @Override
-    public java.util.SortedMap<Integer, String> tailMap(Integer fromKey) {
-        return tailMap(fromKey, true);
-    }
-
-    // Остальные методы интерфейса пока не реализованы
+    // Не реализованные методы
     @Override public Entry<Integer, String> floorEntry(Integer key) { return null; }
     @Override public Entry<Integer, String> ceilingEntry(Integer key) { return null; }
     @Override public Entry<Integer, String> higherEntry(Integer key) { return null; }
@@ -430,4 +460,3 @@ class MySplayMap implements java.util.NavigableMap<Integer, String> {
     @Override public java.util.Collection<String> values() { return null; }
     @Override public void putAll(java.util.Map<? extends Integer, ? extends String> m) {}
 }
-
