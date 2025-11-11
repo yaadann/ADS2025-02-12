@@ -47,16 +47,15 @@ public class StatesHanoiTowerC {
             }
         }
 
-        //находит представителя множества для элемента i с эвристикой сжатия пути
         public int find(int i) {
             if (parent[i] == i) {
                 return i;
             }
-            // Сжатие пути: напрямую связываем элемент с корнем
+            //напрямую связываем элемент с корнем
             return parent[i] = find(parent[i]);
         }
 
-        //объединяет два множества, в которых находятся i и j, с эвристикой по размеру
+        //объединяет два множества, в которых находятся i и j
         public void union(int i, int j) {
             int rootI = find(i);
             int rootJ = find(j);
@@ -90,7 +89,6 @@ public class StatesHanoiTowerC {
         //переместить самый большой диск (n) с исходного на целевой
         destination.push(source.pop());
 
-        //записать максимальную высоту башен после этого хода
         int hA = towerA.size();
         int hB = towerB.size();
         int hC = towerC.size();
@@ -124,10 +122,8 @@ public class StatesHanoiTowerC {
         //заполнение массива maxHeights
         solveHanoi(n, towerA, towerB, towerC);
 
-        //создание DSU для группировки шагов
         DSU dsu = new DSU(totalMoves);
 
-        //массив для хранения первого встреченного шага для каждой высоты
         int[] representatives = new int[n + 1];
         Arrays.fill(representatives, -1);
 
@@ -154,7 +150,6 @@ public class StatesHanoiTowerC {
             }
         }
 
-        //финальный массив
         int[] finalSizes = new int[uniqueSetsCount];
         for (int i = 0; i < uniqueSetsCount; i++) {
             finalSizes[i] = tempSizes[i];

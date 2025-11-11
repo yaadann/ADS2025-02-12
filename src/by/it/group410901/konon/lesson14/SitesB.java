@@ -9,16 +9,27 @@ public class SitesB {
         DSU(int n) {
             parent = new int[n];
             size = new int[n];
-            for (int i = 0; i < n; i++) { parent[i] = i; size[i] = 1; }
+            for (int i = 0; i < n; i++) {
+                parent[i] = i;
+                size[i] = 1;
+            }
         }
         int find(int x) {
             if (parent[x] != x) parent[x] = find(parent[x]);
             return parent[x];
         }
         void union(int a, int b) {
-            a = find(a); b = find(b);
+            a = find(a);
+            b = find(b);
+
             if (a == b) return;
-            if (size[a] < size[b]) { int t = a; a = b; b = t; }
+
+            if (size[a] < size[b]) {
+                int t = a;
+                a = b;
+                b = t;
+
+            }
             parent[b] = a;
             size[a] += size[b];
         }
