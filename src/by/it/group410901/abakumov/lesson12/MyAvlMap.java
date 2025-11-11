@@ -3,15 +3,19 @@ import java.util.Map;
 import java.util.Set;
 import java.util.Collection;
 
+// Реализация АВЛ-дерева — дерева, которое само себя балансирует
+// Всегда остаётся почти ровным, чтобы поиск был быстрым
 public class MyAvlMap implements Map<Integer, String> {
-    // Внутренний класс — узел АВЛ-дерева.
-    // Хранит ключ, значение, ссылки на левого/правого потомков и высоту.
-    private static final class Node {
-        Integer key;
-        String value;
-        Node left, right;
-        int height;
 
+    // Узел дерева — хранит ключ, значение и связи
+    private static final class Node {
+        Integer key;       // ключ (для поиска)
+        String value;      // значение по ключу
+        Node left;         // левый ребёнок (ключи меньше)
+        Node right;        // правый ребёнок (ключи больше)
+        int height;        // высота поддерева с этим узлом
+
+        // Создаём узел
         Node(Integer key, String value) {
             this.key = key;
             this.value = value;
@@ -19,238 +23,254 @@ public class MyAvlMap implements Map<Integer, String> {
         }
     }
 
-    private Node root; // корень дерева
-    private int size = 0; // количество элементов в карте
+    private Node root;  // корень дерева
+    private int size = 0; // сколько элементов в карте
 
-    // ---------------------- Вспомогательные методы АВЛ ----------------------
-
-    // Возвращает высоту узла (0, если узел null)
+    // Возвращает высоту узла (0, если узла нет)
     private int height(Node n) {
         return n == null ? 0 : n.height;
     }
 
     // Пересчитывает высоту узла
     private void updateHeight(Node n) {
+        // Высота = 1 + максимум из высот левого и правого ребёнка
         n.height = 1 + Math.max(height(n.left), height(n.right));
     }
 
-    // Баланс-фактор (разница высот левого и правого поддерева)
+    // Разница высот левого и правого поддерева
     private int balanceFactor(Node n) {
         return n == null ? 0 : height(n.left) - height(n.right);
     }
 
-    // Правый поворот
+    // Поворот вправо (чтобы сбалансировать)
     private Node rotateRight(Node y) {
-        Node x = y.left;
-        Node T2 = x.right;
-        x.right = y;
-        y.left = T2;
-        updateHeight(y);
-        updateHeight(x);
-        return x;
+        Node x = y.left;           // x — левый ребёнок y
+        Node T2 = x.right;         // T2 — правое поддерево x
+
+        x.right = y;               // y становится правым ребёнком x
+        y.left = T2;               // T2 становится левым ребёнком y
+
+        updateHeight(y);           // обновляем высоту y
+        updateHeight(x);           // обновляем высоту x
+
+        return x;                  // x — новый корень поддерева
     }
 
-    // Левый поворот
+    // Поворот влево (зеркально)
     private Node rotateLeft(Node x) {
-        Node y = x.right;
-        Node T2 = y.left;
-        y.left = x;
-        x.right = T2;
-        updateHeight(x);
-        updateHeight(y);
-        return y;
+        Node y = x.right;          // y — правый ребёнок x
+        Node T2 = y.left;          // T2 — левое поддерево y
+
+        y.left = x;                // x становится левым ребёнком y
+        x.right = T2;              // T2 становится правым ребёнком x
+
+        updateHeight(x);           // обновляем высоту x
+        updateHeight(y);           // обновляем высоту y
+
+        return y;                  // y — новый корень поддерева
     }
 
-    // Балансировка узла после вставки/удаления
+    // Балансируем узел после вставки или удаления
     private Node balance(Node node) {
-        updateHeight(node);
-        int bf = balanceFactor(node);
-        if (bf > 1) { // левое поддерево выше правого
+        updateHeight(node);        // сначала обновляем высоту
+        int bf = balanceFactor(node); // считаем разницу высот
+
+        // Левое поддерево слишком высокое
+        if (bf > 1) {
+            // Если левое поддерево "перекошено" вправо
             if (balanceFactor(node.left) < 0) {
-                node.left = rotateLeft(node.left); // большой левый поворот
+                node.left = rotateLeft(node.left); // сначала поворот влево
             }
-            return rotateRight(node);
+            return rotateRight(node);  // потом поворот вправо
         }
-        if (bf < -1) { // правое поддерево выше левого
+
+        // Правое поддерево слишком высокое
+        if (bf < -1) {
+            // Если правое поддерево "перекошено" влево
             if (balanceFactor(node.right) > 0) {
-                node.right = rotateRight(node.right); // большой правый поворот
+                node.right = rotateRight(node.right); // сначала вправо
             }
-            return rotateLeft(node);
+            return rotateLeft(node);   // потом влево
         }
-        return node;
+
+        return node;               // дерево уже сбалансировано
     }
 
-    // ---------------------- Основные методы Map ----------------------
-
-    // Добавляет пару (key, value) в дерево.
-    // Возвращает предыдущее значение, если ключ уже был в дереве.
+    // Добавляем пару (ключ, значение)
     @Override
     public String put(Integer key, String value) {
-        if (key == null) throw new NullPointerException("null keys not supported");
-        Holder prev = new Holder();
-        root = insert(root, key, value, prev);
-        if (prev.found == null) size++; // если ключ новый — увеличиваем размер
-        return prev.found;
+        if (key == null) throw new NullPointerException("ключ не может быть null");
+
+        Holder prev = new Holder();        // хранит старое значение
+        root = insert(root, key, value, prev); // вставляем
+
+        if (prev.found == null) size++;    // если ключ был новый — увеличиваем размер
+        return prev.found;                 // возвращаем старое значение
     }
 
-    // Класс для передачи предыдущего значения при рекурсии
+    // Класс для передачи старого значения
     private static final class Holder {
-        String found = null; // хранит старое значение, если найдено
+        String found = null;               // сюда запишем старое значение
     }
 
-    // Рекурсивная вставка с балансировкой
+    // Рекурсивная вставка
     private Node insert(Node node, Integer key, String value, Holder prev) {
         if (node == null) {
-            return new Node(key, value);
+            return new Node(key, value);   // создаём новый узел
         }
-        int cmp = key.compareTo(node.key);
-        if (cmp == 0) { // ключ уже существует
-            prev.found = node.value;
-            node.value = value;
+
+        int cmp = key.compareTo(node.key); // сравниваем ключи
+
+        if (cmp == 0) {                    // ключ уже есть
+            prev.found = node.value;       // запоминаем старое значение
+            node.value = value;            // обновляем
             return node;
-        } else if (cmp < 0) {
-            node.left = insert(node.left, key, value, prev);
-        } else {
-            node.right = insert(node.right, key, value, prev);
+        } else if (cmp < 0) {              // ключ меньше
+            node.left = insert(node.left, key, value, prev); // идём влево
+        } else {                           // ключ больше
+            node.right = insert(node.right, key, value, prev); // идём вправо
         }
-        return balance(node);
+
+        return balance(node);              // балансируем и возвращаем узел
     }
 
-    // Удаляет элемент по ключу.
-    // Возвращает старое значение или null, если ключ отсутствует.
+    // Удаляем по ключу
     @Override
     public String remove(Object keyObj) {
-        if (!(keyObj instanceof Integer)) return null;
+        if (!(keyObj instanceof Integer)) return null; // не тот тип
         Integer key = (Integer) keyObj;
+
         Holder prev = new Holder();
-        root = remove(root, key, prev);
-        if (prev.found != null) size--; // уменьшить размер, если удалён элемент
-        return prev.found;
+        root = remove(root, key, prev);    // удаляем
+
+        if (prev.found != null) size--;    // если что-то удалили — уменьшаем размер
+        return prev.found;                 // возвращаем старое значение
     }
 
-    // Рекурсивное удаление с балансировкой
+    // Рекурсивное удаление
     private Node remove(Node node, Integer key, Holder prev) {
-        if (node == null) return null;
+        if (node == null) return null;     // не нашли
+
         int cmp = key.compareTo(node.key);
-        if (cmp < 0) {
-            node.left = remove(node.left, key, prev);
-        } else if (cmp > 0) {
-            node.right = remove(node.right, key, prev);
-        } else {
-            // найден нужный узел
-            prev.found = node.value;
+
+        if (cmp < 0) {                     // ключ меньше
+            node.left = remove(node.left, key, prev); // ищем слева
+        } else if (cmp > 0) {              // ключ больше
+            node.right = remove(node.right, key, prev); // ищем справа
+        } else {                           // нашли!
+            prev.found = node.value;       // сохраняем значение
+
+            // Один или ноль детей
             if (node.left == null || node.right == null) {
-                // один или ноль потомков — просто заменить потомком
                 Node tmp = (node.left != null) ? node.left : node.right;
-                node = tmp;
+                return tmp;                // заменяем узел его ребёнком
             } else {
-                // два потомка — ищем минимальный в правом поддереве
+                // Два ребёнка — ищем минимальный в правом поддереве
                 Node min = minNode(node.right);
-                node.key = min.key;
-                node.value = min.value;
-                node.right = remove(node.right, min.key, new Holder());
+                node.key = min.key;        // копируем ключ
+                node.value = min.value;    // копируем значение
+                node.right = remove(node.right, min.key, new Holder()); // удаляем минимум
             }
         }
-        if (node != null) node = balance(node);
+
+        if (node != null) node = balance(node); // балансируем
         return node;
     }
 
-    // Возвращает узел с минимальным ключом
+    // Находим узел с минимальным ключом
     private Node minNode(Node n) {
         Node cur = n;
-        while (cur.left != null) cur = cur.left;
+        while (cur.left != null) cur = cur.left; // идём влево до конца
         return cur;
     }
 
-    // Возвращает значение по ключу или null, если ключ отсутствует
+    // Получаем значение по ключу
     @Override
     public String get(Object keyObj) {
         if (!(keyObj instanceof Integer)) return null;
         Integer key = (Integer) keyObj;
+
         Node cur = root;
         while (cur != null) {
             int cmp = key.compareTo(cur.key);
-            if (cmp == 0) return cur.value;
-            cur = cmp < 0 ? cur.left : cur.right;
+            if (cmp == 0) return cur.value;     // нашли
+            cur = cmp < 0 ? cur.left : cur.right; // идём в нужную сторону
         }
-        return null;
+        return null;                            // не нашли
     }
 
-    // Проверяет наличие ключа
+    // Есть ли ключ
     @Override
     public boolean containsKey(Object keyObj) {
-        return get(keyObj) != null;
+        return get(keyObj) != null;             // просто проверяем get
     }
 
-    // Возвращает количество элементов
+    // Сколько элементов
     @Override
     public int size() {
         return size;
     }
 
-    // Удаляет все элементы
+    // Очистить всё
     @Override
     public void clear() {
-        root = null;
-        size = 0;
+        root = null;                            // убираем корень
+        size = 0;                               // обнуляем счётчик
     }
 
-    // Проверяет, пусто ли дерево
+    // Пусто ли дерево
     @Override
     public boolean isEmpty() {
         return size == 0;
     }
 
-    // Возвращает строковое представление карты.
-    // Формат: {k1=v1, k2=v2, ...} — порядок по возрастанию ключей.
+    // Строковое представление: {1=один, 2=два}
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append('{');
-        InOrderPrinter p = new InOrderPrinter(sb);
+        InOrderPrinter p = new InOrderPrinter(sb); // печатаем в порядке ключей
         p.print(root);
         sb.append('}');
         return sb.toString();
     }
 
-    // Вспомогательный класс для симметричного обхода дерева
+    // Печать в порядке возрастания ключей
     private static final class InOrderPrinter {
         private final StringBuilder sb;
-        private boolean first = true;
+        private boolean first = true;           // первый элемент без запятой
 
         InOrderPrinter(StringBuilder sb) { this.sb = sb; }
 
         void print(Node n) {
             if (n == null) return;
-            print(n.left);
-            if (!first) sb.append(", "); // разделитель
+            print(n.left);                      // левое поддерево
+            if (!first) sb.append(", ");        // запятая между элементами
             first = false;
-            sb.append(n.key).append("=").append(n.value);
-            print(n.right);
+            sb.append(n.key).append("=").append(n.value); // ключ=значение
+            print(n.right);                     // правое поддерево
         }
     }
 
-    // ---------------------- Дополнительные методы ----------------------
-
-    // Проверяет, содержится ли указанное значение
+    // Есть ли значение
     @Override
     public boolean containsValue(Object value) {
-        return containsValueIn(root, value);
+        return containsValueIn(root, value);    // ищем в дереве
     }
 
     // Рекурсивный поиск значения
     private boolean containsValueIn(Node n, Object value) {
-        if (n == null) return false;
+        if (n == null) return false;            // дошли до конца
         if (value == null) {
-            if (n.value == null) return true;
+            if (n.value == null) return true;   // ищем null
         } else if (value.equals(n.value)) {
-            return true;
+            return true;                        // нашли
         }
-        return containsValueIn(n.left, value) || containsValueIn(n.right, value);
+        return containsValueIn(n.left, value) || // ищем слева
+                containsValueIn(n.right, value);  // или справа
     }
 
-    // Методы ниже не требуются по заданию — не реализованы.
-
+    // Не реализованы (не нужны по заданию)
     @Override
     public void putAll(Map<? extends Integer, ? extends String> m) {
         throw new UnsupportedOperationException("putAll не поддерживается");
@@ -270,5 +290,4 @@ public class MyAvlMap implements Map<Integer, String> {
     public Collection<String> values() {
         throw new UnsupportedOperationException("values не поддерживается");
     }
-
 }
