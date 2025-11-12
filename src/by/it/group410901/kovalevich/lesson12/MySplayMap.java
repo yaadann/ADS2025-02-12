@@ -323,3 +323,18 @@ public class MySplayMap implements NavigableMap<Integer, String> {
     }
 }
 
+    @Override public Map.Entry<Integer,String> firstEntry(){ throw new UnsupportedOperationException(); }
+    @Override public Map.Entry<Integer,String> lastEntry(){ throw new UnsupportedOperationException(); }
+    @Override public Map.Entry<Integer,String> lowerEntry(Integer key){ throw new UnsupportedOperationException(); }
+    @Override public Map.Entry<Integer,String> floorEntry(Integer key){ throw new UnsupportedOperationException(); }
+    @Override public Map.Entry<Integer,String> ceilingEntry(Integer key){ throw new UnsupportedOperationException(); }
+    @Override public Map.Entry<Integer,String> higherEntry(Integer key){ throw new UnsupportedOperationException(); }
+    @Override public Map.Entry<Integer,String> pollFirstEntry(){ throw new UnsupportedOperationException(); }
+    @Override public Map.Entry<Integer,String> pollLastEntry(){ throw new UnsupportedOperationException(); }
+    @Override public NavigableSet<Integer> navigableKeySet(){ throw new UnsupportedOperationException(); }
+    @Override public NavigableSet<Integer> descendingKeySet(){ throw new UnsupportedOperationException(); }
+    @Override public NavigableMap<Integer,String> descendingMap(){ throw new UnsupportedOperationException(); }
+    @Override public Set<Entry<Integer,String>> entrySet(){ throw new UnsupportedOperationException(); }
+    @Override public Set<Integer> keySet(){ throw new UnsupportedOperationException(); }
+    @Override public Collection<String> values(){ throw new UnsupportedOperationException(); }
+}
