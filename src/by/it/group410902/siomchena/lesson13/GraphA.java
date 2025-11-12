@@ -52,7 +52,7 @@ public class GraphA {
         }
 
         while (!queue.isEmpty()) {
-            String current = queue.poll(); //берем вершину из начала очереди - наименьшую
+            String current = queue.poll(); //берем вершину из начала очереди
             result.add(current); //добавляем ее в окончательныц список
 
             if (graph.containsKey(current)) { //уменьшаем счечик соседей у кот. в списке есть эта вершина
