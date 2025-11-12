@@ -1,60 +1,81 @@
 package by.it.group410901.abakumov.lesson13;
+
 import java.util.*;
 
 public class GraphB {
     public static void main(String[] args) {
-        Scanner sc = new Scanner(System.in); // Создаём объект для чтения ввода
+        Scanner sc = new Scanner(System.in);
+        // Считываем строку, описывающую структуру ориентированного графа.
+        String input = sc.nextLine().trim();
+        sc.close();
 
-        String input = sc.nextLine().trim(); // Считываем строку графа и убираем лишние пробелы
-        sc.close(); // Закрываем Scanner, он больше не нужен
+        // TreeMap используется для автоматической сортировки ключей по алфавиту
+        Map<String, List<String>> graph = new TreeMap<>();
 
-        Map<String, List<String>> graph = new TreeMap<>(); // Карта: вершина -> список вершин, куда ведут рёбра (лекс. порядок)
-        Map<String, Integer> indegree = new TreeMap<>(); // Карта: вершина -> количество входящих рёбер
+        // Храним количество входящих рёбер для каждой вершины
+        Map<String, Integer> indegree = new TreeMap<>();
 
-        String[] relations = input.split(","); // Разделяем строку на отдельные рёбра по запятой
+        // Разделяем входную строку по запятым, чтобы получить отдельные связи
+        String[] relations = input.split(",");
 
-        for (String rel : relations) { // Перебираем каждое ребро
-            String[] parts = rel.trim().split("->"); // Разделяем "a -> b" на левую и правую часть
-            String from = parts[0].trim(); // Левая часть — вершина-источник
-            String to = parts[1].trim(); // Правая часть — вершина-приёмник
+        for (String rel : relations) {
+            // Разделяем по "->", слева — from, справа — to
+            String[] parts = rel.trim().split("->");
 
-            graph.putIfAbsent(from, new ArrayList<>()); // Если вершины from нет в графе — добавляем
-            graph.putIfAbsent(to, new ArrayList<>()); // Если вершины to нет в графе — добавляем
+            String from = parts[0].trim(); // начальная вершина
+            String to = parts[1].trim();   // конечная вершина
 
-            graph.get(from).add(to); // Добавляем ребро: from -> to
+            // Добавляем вершины в структуру графа, если их ещё не было
+            graph.putIfAbsent(from, new ArrayList<>());
+            graph.putIfAbsent(to, new ArrayList<>());
 
-            indegree.put(to, indegree.getOrDefault(to, 0) + 1); // Увеличиваем входящую степень вершины to
-            indegree.putIfAbsent(from, indegree.getOrDefault(from, 0)); // Убеждаемся, что вершина from тоже есть в карте
+            // Добавляем направленное ребро: from -> to
+            graph.get(from).add(to);
+
+            // Обновляем количество входящих рёбер для to
+            indegree.put(to, indegree.getOrDefault(to, 0) + 1);
+            // Убедимся, что вершина from тоже есть в таблице входящих степеней
+            indegree.putIfAbsent(from, indegree.getOrDefault(from, 0));
         }
 
-        Queue<String> queue = new PriorityQueue<>(); // Очередь для вершин с нулём входящих рёбер (сортируется по алфавиту)
+        // Очередь для вершин с нулём входящих рёбер (можно ставить в результат)
+        // PriorityQueue обеспечивает лексикографический порядок (не обязателен для задачи, но оставлен для единообразия)
+        Queue<String> queue = new PriorityQueue<>();
 
-        for (String v : indegree.keySet()) { // Проходим по всем вершинам
-            if (indegree.get(v) == 0) { // Если у вершины нет входящих рёбер
-                queue.add(v); // Добавляем её в очередь
+        // Добавляем в очередь все вершины, у которых входящих рёбер нет
+        for (String vertex : indegree.keySet()) {
+            if (indegree.get(vertex) == 0) {
+                queue.add(vertex);
             }
         }
 
-        int count = 0; // Счётчик обработанных вершин
+        // Счётчик обработанных вершин (для проверки на наличие цикла)
+        int processedCount = 0;
 
-        while (!queue.isEmpty()) { // Пока есть вершины, которые можно обработать
-            String v = queue.poll(); // Берём вершину с наименьшим алфавитным значением
-            count++; // Увеличиваем счётчик обработанных вершин
+        // Пока есть вершины, доступные к добавлению
+        while (!queue.isEmpty()) {
+            // Извлекаем вершину с минимальным лексикографическим значением
+            String v = queue.poll();
+            processedCount++; // Увеличиваем счётчик обработанных вершин
 
-            for (String neigh : graph.get(v)) { // Перебираем соседей текущей вершины
-                indegree.put(neigh, indegree.get(neigh) - 1); // Уменьшаем их количество входящих рёбер
-                if (indegree.get(neigh) == 0) { // Если входящих рёбер больше нет
-                    queue.add(neigh); // Добавляем соседа в очередь
+            // Проходим по всем вершинам, в которые из неё есть ребро
+            for (String neighbor : graph.get(v)) {
+                // Уменьшаем входящую степень этой вершины
+                indegree.put(neighbor, indegree.get(neighbor) - 1);
+
+                // Если входящих рёбер больше не осталось — добавляем в очередь
+                if (indegree.get(neighbor) == 0) {
+                    queue.add(neighbor);
                 }
             }
         }
 
-        boolean hasCycle = (count < indegree.size()); // Если обработано меньше вершин, чем всего — есть цикл
-
-        if (hasCycle) { // Если цикл найден
-            System.out.println("yes"); // Выводим "yes"
-        } else { // Если цикла нет
-            System.out.println("no"); // Выводим "no"
+        // Проверяем, все ли вершины были обработаны
+        // Если не все — значит, есть цикл
+        if (processedCount < indegree.size()) {
+            System.out.println("yes"); // Цикл есть
+        } else {
+            System.out.println("no");  // Цикла нет
         }
     }
 }
