@@ -10,8 +10,8 @@ public class MyLinkedHashSet<E> implements Set<E> {
 
     private LinkedHashSet_Node<E>[] Internal_list;
     private int Size_of_array = 16, Number_of_elements = 0;//base length of an hashset
-    private  double Load_factor = 0.75;//base load factor in hashset
-    LinkedHashSet_Node<E> first = null, last = null;
+    private double Load_factor = 0.75;//base load factor in hashset
+    private LinkedHashSet_Node<E> first = null, last = null;
 
     public MyLinkedHashSet(){
         this.Internal_list = new LinkedHashSet_Node[this.Size_of_array];

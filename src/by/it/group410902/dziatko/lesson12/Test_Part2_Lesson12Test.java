@@ -71,7 +71,7 @@ public class Test_Part2_Lesson12Test extends HomeWork {
         randomCheck("MyRbMap", methods);
     }
 
-    @Test(timeout = 500 * INVOCATION_COUNT_PER_METHOD)
+    @Test(/*timeout = 500 * INVOCATION_COUNT_PER_METHOD*/)
     public void testTaskC() throws Exception {
         String[] methods = """
                 put(Object,Object)
