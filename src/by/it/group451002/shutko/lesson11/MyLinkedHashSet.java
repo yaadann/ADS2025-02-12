@@ -24,6 +24,7 @@ import java.util.Set;
 
 public class MyLinkedHashSet<E> implements Set<E> {
 
+
     // Узел, хранящий данные, ссылку на следующий узел (next) и
     // позицию вставки (pose) для отслеживания порядка.
     protected static class LNode<E> {

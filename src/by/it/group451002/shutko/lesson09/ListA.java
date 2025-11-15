@@ -5,6 +5,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 
+
 public class ListA<E> implements List<E> {
     private Object[] array;  // array - массив, где фактически хранятся элементы списка
     private int size;  // size - отслеживает текущее количество элементов

@@ -2,6 +2,7 @@ package by.it.group451002.shutko.lesson09;
 
 import java.util.*;
 
+
 public class ListB<E> implements List<E> {
     private Object[] array;
     private int size;

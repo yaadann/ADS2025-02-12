@@ -23,6 +23,7 @@ import java.util.Set;
 
 public class MyTreeSet<E> implements Set<E> {
 
+
     private Object[] mas = new Object[0];  // Массив для хранения элементов
     private int actSize = 0;  // Текущий размер множества (количество элементов)
 

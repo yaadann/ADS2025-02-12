@@ -4,6 +4,7 @@ import java.util.Collection;
 import java.util.Deque;
 import java.util.Iterator;
 
+
 // Создать собственную реализацию двусторонней очереди (Deque) на основе двусвязного
 // списка без использования стандартных библиотек Java.
 public class MyLinkedList<E> implements Deque<E> {

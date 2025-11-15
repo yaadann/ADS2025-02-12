@@ -2,6 +2,7 @@ package by.it.group451002.shutko.lesson10;
 
 import java.util.*;
 
+
 // Создать собственную реализацию двусторонней очереди (Deque) на базе
 // массива без использования стандартных библиотек Java.
 public class MyArrayDeque<E> implements Deque<E> {

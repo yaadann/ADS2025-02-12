@@ -29,6 +29,7 @@ Sample Input 2:
 15 3
 2 8 16
 Sample Output 2:
+
 14
 
 */
