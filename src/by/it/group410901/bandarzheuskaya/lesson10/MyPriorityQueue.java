@@ -4,9 +4,9 @@ import java.util.*;
 
 public class MyPriorityQueue<E> implements Queue<E> {
     private static final int DEFAULT_CAPACITY = 10;
-    private E[] heap; // массив для хранения элементов в виде двоичной кучи
+    private E[] heap;
     private int size;
-    private final Comparator<? super E> comparator; // компаратор для сравнения элементов
+    private final Comparator<? super E> comparator;
 
     // Конструкторы
     @SuppressWarnings("unchecked")
@@ -49,20 +49,20 @@ public class MyPriorityQueue<E> implements Queue<E> {
 
     private void heapifyUp(int index) {
         while (index > 0) {
-            int parent = (index - 1) / 2; // индекс родительского узла
+            int parent = (index - 1) / 2;
             if (compare(heap[index], heap[parent]) >= 0) {
-                break; // свойство кучи не нарушено
+                break;
             }
-            swap(index, parent); // меняем местами с родителем
-            index = parent; // продолжаем проверку с новой позиции
+            swap(index, parent);
+            index = parent;
         }
     }
 
     private void heapifyDown(int index) {
         while (true) {
-            int left = 2 * index + 1; // индекс левого потомка
-            int right = 2 * index + 2; // индекс правого потомка
-            int smallest = index; // предполагаем, что текущий узел наименьший
+            int left = 2 * index + 1;
+            int right = 2 * index + 2;
+            int smallest = index;
 
             if (left < size && compare(heap[left], heap[smallest]) < 0) {
                 smallest = left;
@@ -71,10 +71,10 @@ public class MyPriorityQueue<E> implements Queue<E> {
                 smallest = right;
             }
             if (smallest == index) {
-                break; // свойство кучи восстановлено
+                break;
             }
-            swap(index, smallest); // меняем местами с наименьшим потомком
-            index = smallest; // продолжаем проверку с новой позиции
+            swap(index, smallest);
+            index = smallest;
         }
     }
 
@@ -104,6 +104,7 @@ public class MyPriorityQueue<E> implements Queue<E> {
     @Override
     public void clear() {
         for (int i = 0; i < size; i++) {
+            heap[i] = null;
         }
         size = 0;
     }
@@ -128,9 +129,9 @@ public class MyPriorityQueue<E> implements Queue<E> {
     @Override
     public boolean offer(E element) {
         if (element == null) throw new NullPointerException();
-        ensureCapacity(); // проверяем емкость
-        heap[size] = element; // добавляем в конец
-        heapifyUp(size); // восстанавливаем свойства кучи
+        ensureCapacity();
+        heap[size] = element;
+        heapifyUp(size);
         size++;
         return true;
     }
@@ -138,7 +139,7 @@ public class MyPriorityQueue<E> implements Queue<E> {
     @Override
     public E poll() {
         if (size == 0) return null;
-        return removeAt(0); // удаляем корневой элемент
+        return removeAt(0);
     }
 
     @Override
@@ -154,14 +155,13 @@ public class MyPriorityQueue<E> implements Queue<E> {
     public boolean isEmpty() { return size == 0; }
 
     private E removeAt(int index) {
-        E removed = heap[index]; // сохраняем удаляемый элемент
-        heap[index] = heap[size - 1]; // заменяем последним элементом
-        heap[size - 1] = null; // очищаем последнюю позицию
+        E removed = heap[index];
+        heap[index] = heap[size - 1];
+        heap[size - 1] = null;
         size--;
 
         if (index < size) {
-            heapifyDown(index); // просеиваем вниз
-            // Если элемент стал меньше родителя, просеиваем вверх
+            heapifyDown(index);
             if (index > 0 && compare(heap[index], heap[(index - 1) / 2]) < 0) {
                 heapifyUp(index);
             }
@@ -190,6 +190,7 @@ public class MyPriorityQueue<E> implements Queue<E> {
         return false;
     }
 
+    // Оптимизированные методы bulk operations за O(n)
     @Override
     public boolean containsAll(Collection<?> c) {
         for (Object element : c) {
@@ -270,8 +271,8 @@ public class MyPriorityQueue<E> implements Queue<E> {
     }
 
     private class PriorityQueueIterator implements Iterator<E> {
-        private int currentIndex = 0; // текущая позиция итератора
-        private int lastReturned = -1; // индекс последнего возвращенного элемента
+        private int currentIndex = 0;
+        private int lastReturned = -1;
 
         @Override
         public boolean hasNext() { return currentIndex < size; }

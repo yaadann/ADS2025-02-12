@@ -18,8 +18,8 @@ public class MyLinkedList<E> implements Deque<E> {
         }
     }
 
-    private Node<E> head; // первый узел в списке
-    private Node<E> tail; // последний узел в списке
+    private Node<E> head;
+    private Node<E> tail;
     private int size;
 
     public MyLinkedList() {
@@ -188,6 +188,7 @@ public class MyLinkedList<E> implements Deque<E> {
     @Override
     public E pollFirst() {
         if (size == 0) {
+            return null;
         }
 
         E data = head.data;
@@ -321,6 +322,7 @@ public class MyLinkedList<E> implements Deque<E> {
         return removeFirst();
     }
 
+    // Методы, которые не поддерживаются в этой упрощенной реализации
 
     @Override
     public boolean contains(Object o) {

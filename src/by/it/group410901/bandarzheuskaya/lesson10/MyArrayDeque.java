@@ -19,13 +19,15 @@ public class MyArrayDeque<E> implements Deque<E> {
         size = 0;
     }
 
-    // Обязательные к реализации методы
+    /////////////////////////////////////////////////////////////////////////
+    //////               Обязательные к реализации методы             ///////
+    /////////////////////////////////////////////////////////////////////////
 
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder("[");
         for (int i = 0; i < size; i++) {
-            int index = (head + i) % elements.length; //вычисляем индекс учитывая кольцо
+            int index = (head + i) % elements.length;
             sb.append(elements[index]);
             if (i < size - 1) sb.append(", ");
         }
@@ -47,7 +49,7 @@ public class MyArrayDeque<E> implements Deque<E> {
     @Override
     public void addFirst(E element) {
         ensureCapacity();
-        head = (head - 1 + elements.length) % elements.length; //сдвигаем голову назад по кольцу
+        head = (head - 1 + elements.length) % elements.length;
         elements[head] = element;
         size++;
     }
@@ -56,11 +58,10 @@ public class MyArrayDeque<E> implements Deque<E> {
     public void addLast(E element) {
         ensureCapacity();
         elements[tail] = element;
-        tail = (tail + 1) % elements.length; //сдвигаем хвост вперед по кольцу
+        tail = (tail + 1) % elements.length;
         size++;
     }
 
-    //получение первого элемента без удаления
     @Override
     public E element() {
         return getFirst();
@@ -72,14 +73,12 @@ public class MyArrayDeque<E> implements Deque<E> {
         return elements[head];
     }
 
-    //получение последнего элемента без удаления
     @Override
     public E getLast() {
         if (size == 0) throw new NoSuchElementException("Deque is empty");
         return elements[(tail - 1 + elements.length) % elements.length];
     }
 
-    //извлечение первого элемента
     @Override
     public E poll() {
         return pollFirst();
@@ -89,8 +88,8 @@ public class MyArrayDeque<E> implements Deque<E> {
     public E pollFirst() {
         if (size == 0) return null;
         E element = elements[head];
-        elements[head] = null; //очищаем ссылку
-        head = (head + 1) % elements.length; //сдвигаем голову вперед по кольцу
+        elements[head] = null;
+        head = (head + 1) % elements.length;
         size--;
         return element;
     }
@@ -98,30 +97,30 @@ public class MyArrayDeque<E> implements Deque<E> {
     @Override
     public E pollLast() {
         if (size == 0) return null;
-        tail = (tail - 1 + elements.length) % elements.length; //сдвигаем хвост назад по кольцу
+        tail = (tail - 1 + elements.length) % elements.length;
         E element = elements[tail];
         elements[tail] = null;
         size--;
         return element;
     }
 
-    //Итераторы
-    // Итератор для обхода элементов от первого к последнему
+    /////////////////////////////////////////////////////////////////////////
+    //////               Реализация итераторов                       ///////
+    /////////////////////////////////////////////////////////////////////////
+
     @Override
     public Iterator<E> iterator() {
         return new ArrayDequeIterator();
     }
 
-    // Итератор для обхода элементов от последнего к первому
     @Override
     public Iterator<E> descendingIterator() {
         return new ArrayDequeDescendingIterator();
     }
 
-    // Внутренний класс для прямого итератора
     private class ArrayDequeIterator implements Iterator<E> {
-        private int currentIndex = 0;     // Текущая позиция относительно head
-        private int returnedCount = 0;    // Количество возвращенных элементов
+        private int currentIndex = 0;
+        private int returnedCount = 0;
 
         @Override
         public boolean hasNext() {
@@ -133,7 +132,6 @@ public class MyArrayDeque<E> implements Deque<E> {
             if (!hasNext()) {
                 throw new NoSuchElementException();
             }
-            // Вычисляем фактический индекс в массиве
             int index = (head + currentIndex) % elements.length;
             E element = elements[index];
             currentIndex++;
@@ -147,10 +145,9 @@ public class MyArrayDeque<E> implements Deque<E> {
         }
     }
 
-    // Внутренний класс для обратного итератора
     private class ArrayDequeDescendingIterator implements Iterator<E> {
-        private int currentIndex = size - 1; // Текущая позиция относительно head (с конца)
-        private int returnedCount = 0;       // Количество возвращенных элементов
+        private int currentIndex = size - 1;
+        private int returnedCount = 0;
 
         @Override
         public boolean hasNext() {
@@ -162,7 +159,6 @@ public class MyArrayDeque<E> implements Deque<E> {
             if (!hasNext()) {
                 throw new NoSuchElementException();
             }
-            // Вычисляем фактический индекс в массиве
             int index = (head + currentIndex) % elements.length;
             E element = elements[index];
             currentIndex--;
@@ -176,22 +172,22 @@ public class MyArrayDeque<E> implements Deque<E> {
         }
     }
 
-    // Доп. методы для Deque
-    // Предложение добавить элемент в начало (аналог addFirst, но возвращает boolean)
+    /////////////////////////////////////////////////////////////////////////
+    //////          Дополнительные методы для реализации Deque        ///////
+    /////////////////////////////////////////////////////////////////////////
+
     @Override
     public boolean offerFirst(E e) {
         addFirst(e);
         return true;
     }
 
-    // Предложение добавить элемент в конец (аналог addLast, но возвращает boolean)
     @Override
     public boolean offerLast(E e) {
         addLast(e);
         return true;
     }
 
-    // Удаление первого элемента (аналог pollFirst, но бросает исключение если дек пуст)
     @Override
     public E removeFirst() {
         if (size == 0) throw new NoSuchElementException("Deque is empty");
@@ -272,6 +268,10 @@ public class MyArrayDeque<E> implements Deque<E> {
         return false;
     }
 
+    /////////////////////////////////////////////////////////////////////////
+    //////               Вспомогательные методы                      ///////
+    /////////////////////////////////////////////////////////////////////////
+
     private void removeAtIndex(int index) {
         if (index == head) {
             pollFirst();
@@ -311,6 +311,9 @@ public class MyArrayDeque<E> implements Deque<E> {
         }
     }
 
+    /////////////////////////////////////////////////////////////////////////
+    //////     Методы, которые не поддерживаются (Unsupported)       ///////
+    /////////////////////////////////////////////////////////////////////////
 
     @Override
     public boolean remove(Object o) {
