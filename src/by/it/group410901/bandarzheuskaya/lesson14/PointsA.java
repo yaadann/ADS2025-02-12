@@ -15,16 +15,16 @@ public class PointsA {
         }
     }
 
-    static class DSU {  //Disjoint Set Union
+    static class DSU {  //Disjoint Set Union (Система непересекающихся множеств)
         int[] parent, rank, size;
         DSU(int n) {
             parent = new int[n]; rank = new int[n]; size = new int[n];
             for (int i = 0; i < n; i++) {
                 parent[i] = i; //каждый сам себе родитель
-                size[i] = 1;
+                size[i] = 1; // размер группы = 1
             }
         }
-        int find(int x) {
+        int find(int x) {   //делаем все узлы на пути непосредственными детьми корня
             if (parent[x] != x)
                 parent[x] = find(parent[x]);    //сжимаем и находим корень (все узлы на пути сразу указывают на корень)
             return parent[x];
@@ -32,12 +32,16 @@ public class PointsA {
         void union(int a, int b) {  //объединение двух кластеров
             int pa = find(a), pb = find(b);
             if (pa == pb) return;   //уже в одной группе
-            if (rank[pa] < rank[pb]) {  //Приклеить pa к pb
-                parent[pa] = pb; size[pb] += size[pa];
+            if (rank[pa] < rank[pb]) {  //Приклеить pa к pb (Union by Rank - приклеиваем меньшее дерево к большему)
+                parent[pa] = pb;
+                size[pb] += size[pa];
             } else if (rank[pa] > rank[pb]) {   //Приклеить pb к pa
-                parent[pb] = pa; size[pa] += size[pb];
+                parent[pb] = pa;
+                size[pa] += size[pb];
             } else {    //Приклеить pb к pa и увеличить rank[pa]
-                parent[pb] = pa; size[pa] += size[pb]; rank[pa]++;
+                parent[pb] = pa;
+                size[pa] += size[pb];
+                rank[pa]++;
             }
         }
     }
@@ -59,10 +63,10 @@ public class PointsA {
         }
 
         DSU dsu = new DSU(N);
-        for (int i = 0; i < N; i++)
+        for (int i = 0; i < N; i++) //перебираем все пары точек
             for (int j = i + 1; j < N; j++)
                 if (points.get(i).distance(points.get(j)) < D)
-                    dsu.union(i, j);
+                    dsu.union(i, j);    //объединяем в группу (если расстояние меньше заданного)
 
         // собираем размеры
         Map<Integer, Integer> comp = new HashMap<>();

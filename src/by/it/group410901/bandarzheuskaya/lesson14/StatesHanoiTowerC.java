@@ -5,7 +5,7 @@ import java.util.*;
 public class StatesHanoiTowerC {
 
     static class DSU {
-        int[] parent;
+        int[] parent;   //корень группы
         int[] size;
 
         DSU(int n) {
@@ -18,7 +18,7 @@ public class StatesHanoiTowerC {
         }
 
         int find(int x) {
-            while (parent[x] != x) {
+            while (parent[x] != x) {    //пока не корень
                 parent[x] = parent[parent[x]];  // path halving
                 x = parent[x];
             }
@@ -28,7 +28,7 @@ public class StatesHanoiTowerC {
         void union(int x, int y) {
             int px = find(x), py = find(y);
             if (px == py) return;
-            if (size[px] < size[py]) {
+            if (size[px] < size[py]) { //Меньшее дерево приклеиваем к большему
                 parent[px] = py;
                 size[py] += size[px];
             } else {
@@ -47,7 +47,7 @@ public class StatesHanoiTowerC {
     static int totalMoves;
     static int[] maxHeight;  // maxHeight[i] = max высота после i-го хода
 
-    static void hanoi(int n, int from, int to, int aux) {
+    static void hanoi(int n, int from, int to, int aux) {   //сколько дисков переместилось, откуда, куда и вспомогательный
         if (n == 0) return;
 
         hanoi(n - 1, from, aux, to);
@@ -57,8 +57,7 @@ public class StatesHanoiTowerC {
         heights[to]++;
 
         // сохраняем max высоту после хода
-        int idx = (1 << (N - n)) - 1 + (1 << (n - 1)); // правильный индекс хода
-        // Но проще: используем глобальный счётчик
+        // используем глобальный счётчик
         if (moveCount < totalMoves) {
             maxHeight[moveCount] = Math.max(heights[0], Math.max(heights[1], heights[2]));
             moveCount++;
@@ -73,8 +72,8 @@ public class StatesHanoiTowerC {
         Scanner sc = new Scanner(System.in);
         N = sc.nextInt();
 
-        totalMoves = (1 << N) - 1;
-        maxHeight = new int[totalMoves];
+        totalMoves = (1 << N) - 1; //2^N - 1
+        maxHeight = new int[totalMoves];    //хранит максимальную высоту башни после каждого хода
         heights[0] = N;
         heights[1] = 0;
         heights[2] = 0;
@@ -82,7 +81,7 @@ public class StatesHanoiTowerC {
 
         hanoi(N, 0, 1, 2);
 
-        // Теперь группируем шаги с одинаковым maxHeight
+        // группируем шаги с одинаковым maxHeight
         DSU dsu = new DSU(totalMoves);
 
         // Создаём карту: maxH -> список индексов ходов

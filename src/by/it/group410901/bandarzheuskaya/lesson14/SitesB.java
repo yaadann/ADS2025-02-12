@@ -59,8 +59,8 @@ public class SitesB {
         Map<String, Integer> siteToId = new HashMap<>();
         List<String[]> edges = new ArrayList<>();
 
-        int nextId = 0;
-        while (true) {
+        int nextId = 0; //каждому сайту присваеваем уникальный айди
+        while (true) {  //читаем пары сайтов
             String line = sc.nextLine().trim();
             if (line.equals("end")) break;
 
@@ -73,10 +73,10 @@ public class SitesB {
             siteToId.putIfAbsent(a, nextId++);
             siteToId.putIfAbsent(b, nextId++);
 
-            edges.add(new String[]{a, b});
+            edges.add(new String[]{a, b});  //сохраняем как ребро
         }
 
-        int n = nextId;
+        int n = nextId; //колво уникальных сайтов
         if (n == 0) {
             System.out.println();
             return;
