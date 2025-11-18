@@ -29,8 +29,6 @@ public class MyTreeSet<E extends Comparable<E>> implements Set<E> {
         while (i < size && ((E) table[i]).compareTo(e) < 0) {
             i++;
         }
-
-        // сдвигаем элементы вправо
         for (int j = size; j > i; j--) {
             table[j] = table[j - 1];
         }
