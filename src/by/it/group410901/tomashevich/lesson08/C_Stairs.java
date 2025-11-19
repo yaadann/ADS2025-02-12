@@ -30,44 +30,37 @@ Sample Output 3:
 3
 
 */
-
 public class C_Stairs {
 
     int getMaxSum(InputStream stream ) {
         Scanner scanner = new Scanner(stream);
-        int n=scanner.nextInt();
-        int stairs[]=new int[n];
-        int max = 0;
+        int n = scanner.nextInt(); // количество ступенек
+        int stairs[] = new int[n];
         for (int i = 0; i < n; i++) {
-            stairs[i]=scanner.nextInt();
-            if (stairs[i] > max) max = stairs[i];
+            stairs[i] = scanner.nextInt(); // значения на ступеньках
         }
         scanner.close();
-        //!!!!!!!!!!!!!!!!!!!!!!!!!     НАЧАЛО ЗАДАЧИ     !!!!!!!!!!!!!!!!!!!!!!!!!
-        int result = 0;
-        int[] dp = new int[n + 1];
-        dp[0] = stairs[0];
-        dp[1] = max(stairs[0] + stairs[1], stairs[1]);
-        for (int i = 2; i < stairs.length; i++){
+
+        // dp[i] = максимальная сумма, если встать на ступеньку i
+        int[] dp = new int[n];
+        dp[0] = stairs[0]; // первая ступенька
+        if (n > 1) {
+            dp[1] = max(stairs[0] + stairs[1], stairs[1]); // вторая ступенька
+        }
+
+        // считаем для остальных
+        for (int i = 2; i < n; i++) {
             dp[i] = max(dp[i - 1] + stairs[i], dp[i - 2] + stairs[i]);
         }
-        result = dp[0];
-        for(int i = 0; i < dp.length; i++){
-            if(result < dp[i]){
-                result = dp[i];
-            }
-        }
 
-
-        //!!!!!!!!!!!!!!!!!!!!!!!!!     КОНЕЦ ЗАДАЧИ     !!!!!!!!!!!!!!!!!!!!!!!!!
-        return result;
+        // ответ — максимум на последней ступеньке
+        return dp[n - 1];
     }
 
     public static void main(String[] args) throws FileNotFoundException {
         InputStream stream = C_Stairs.class.getResourceAsStream("dataC.txt");
         C_Stairs instance = new C_Stairs();
-        int res=instance.getMaxSum(stream);
+        int res = instance.getMaxSum(stream);
         System.out.println(res);
     }
-
 }

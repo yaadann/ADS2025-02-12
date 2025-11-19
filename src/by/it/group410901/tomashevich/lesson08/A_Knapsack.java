@@ -3,7 +3,6 @@ package by.it.group410901.tomashevich.lesson08;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.util.Scanner;
-
 /*
 Задача на программирование: рюкзак с повторами
 
@@ -32,49 +31,46 @@ Sample Output 2:
 14
 
 */
-
 public class A_Knapsack {
 
     int getMaxWeight(InputStream stream ) {
-        //!!!!!!!!!!!!!!!!!!!!!!!!!     НАЧАЛО ЗАДАЧИ     !!!!!!!!!!!!!!!!!!!!!!!!!
         Scanner scanner = new Scanner(stream);
-        int w=scanner.nextInt();
-        int n=scanner.nextInt();
-        int gold[]=new int[n];
-        int min = w;
-        int result = 0;
+        int w = scanner.nextInt(); // вместимость рюкзака
+        int n = scanner.nextInt(); // количество вариантов слитков
+        int gold[] = new int[n];
         for (int i = 0; i < n; i++) {
-            gold[i]=scanner.nextInt();
+            gold[i] = scanner.nextInt(); // читаем веса слитков
         }
         scanner.close();
-        boolean[] dp = new boolean[w + 1];
-        dp[0] = true;
 
+        // dp[i] = можно ли набрать вес i
+        boolean[] dp = new boolean[w + 1];
+        dp[0] = true; // вес 0 всегда достижим (ничего не берем)
+
+        // Перебираем все веса и пытаемся добавлять к ним каждый слиток
         for (int i = 0; i <= w; i++) {
-            if (dp[i]) {
+            if (dp[i]) { // если вес i достижим
                 for (int weight : gold) {
                     if (i + weight <= w) {
-                        dp[i + weight] = true;
+                        dp[i + weight] = true; // значит достижим и i+weight
                     }
                 }
             }
         }
 
-        // Находим максимальный достижимый вес
+        // Находим максимальный вес, который можно набрать
         for (int i = w; i >= 0; i--) {
-            result = i;
             if (dp[i]) {
-                return result;
+                return i; // сразу возвращаем первый подходящий (максимальный)
             }
         }
-        return result;
+        return 0;
     }
-
 
     public static void main(String[] args) throws FileNotFoundException {
         InputStream stream = A_Knapsack.class.getResourceAsStream("dataA.txt");
         A_Knapsack instance = new A_Knapsack();
-        int res=instance.getMaxWeight(stream);
+        int res = instance.getMaxWeight(stream);
         System.out.println(res);
     }
 }

@@ -3,7 +3,6 @@ package by.it.group410901.tomashevich.lesson08;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.util.Scanner;
-
 /*
 Задача на программирование: рюкзак без повторов
 
@@ -24,44 +23,46 @@ Sample Output:
 9
 
 */
-
 public class B_Knapsack {
 
     int getMaxWeight(InputStream stream ) {
-        //!!!!!!!!!!!!!!!!!!!!!!!!!     НАЧАЛО ЗАДАЧИ     !!!!!!!!!!!!!!!!!!!!!!!!!
         Scanner scanner = new Scanner(stream);
-        int w=scanner.nextInt();
-        int n=scanner.nextInt();
-        int gold[]=new int[n];
+        int w = scanner.nextInt(); // вместимость рюкзака
+        int n = scanner.nextInt(); // количество слитков
+        int gold[] = new int[n];
         for (int i = 0; i < n; i++) {
-            gold[i]=scanner.nextInt();
+            gold[i] = scanner.nextInt(); // читаем веса слитков
         }
         scanner.close();
-        int result = 0;
+
+        // dp[i] = можно ли набрать вес i
         boolean[] dp = new boolean[w + 1];
-        dp[0] = true;
+        dp[0] = true; // вес 0 достижим
+
+        // Перебираем все слитки
         for (int i = 0; i < n; i++) {
+            // Идем назад по массиву, чтобы не использовать один слиток дважды
             for (int j = w; j >= gold[i]; j--) {
                 if (dp[j - gold[i]]) {
                     dp[j] = true;
                 }
             }
         }
-        for(int i = 0; i <= w; i++){
-            if(dp[i]){
+
+        // Ищем максимальный достижимый вес
+        int result = 0;
+        for (int i = 0; i <= w; i++) {
+            if (dp[i]) {
                 result = i;
             }
         }
-        //!!!!!!!!!!!!!!!!!!!!!!!!!     КОНЕЦ ЗАДАЧИ     !!!!!!!!!!!!!!!!!!!!!!!!!
         return result;
     }
-
 
     public static void main(String[] args) throws FileNotFoundException {
         InputStream stream = B_Knapsack.class.getResourceAsStream("dataB.txt");
         B_Knapsack instance = new B_Knapsack();
-        int res=instance.getMaxWeight(stream);
+        int res = instance.getMaxWeight(stream);
         System.out.println(res);
     }
-
 }
