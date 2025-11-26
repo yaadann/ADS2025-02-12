@@ -137,7 +137,6 @@ public class MyRbMap<K, V> implements SortedMap<K, V> {
         return containsValue(node.left, value) || containsValue(node.right, value);
     }
 
-    // Простая реализация удаления (упрощенная)
     private RbNode<K, V> remove(RbNode<K, V> h, K key, V[] removedValue) {
         if (h == null) return null;
 
