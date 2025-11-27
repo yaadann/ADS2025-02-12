@@ -88,7 +88,7 @@ public class PointsA {
                 double distanceSquared = points[i].distanceSquared(points[j]);
 
                 if (distanceSquared < maxDistanceSquared) {
-                    dsu.union(i, j); //создаем кластер
+                    dsu.union(i, j); //добавляем в кластер
                 }
             }
         }
