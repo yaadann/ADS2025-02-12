@@ -9,13 +9,12 @@ import java.util.*;
 
 public class SourceScannerA {
     public static void main(String[] args) {
-        String src = System.getProperty("user.dir")
-                + File.separator + "src" + File.separator;
+        Path srcPath = Paths.get(System.getProperty("user.dir"), "src");
 
         List<FileInfo> results = new ArrayList<>();
 
         try {
-            Files.walk(Paths.get(src))
+            Files.walk(srcPath)
                     .filter(p -> p.toString().endsWith(".java"))
                     .forEach(path -> {
                         try {
@@ -48,12 +47,9 @@ public class SourceScannerA {
 
                             int size = processed.getBytes(Charset.defaultCharset()).length;
 
-                            String absPath = path.toAbsolutePath().toString();
-                            String relativePath = absPath.startsWith(src)
-                                    ? absPath.substring(src.length())
-                                    : absPath;
+                            String relative = srcPath.relativize(path.toAbsolutePath()).toString();
 
-                            results.add(new FileInfo(size, relativePath));
+                            results.add(new FileInfo(size, relative));
                         } catch (IOException e) {
                         }
                     });

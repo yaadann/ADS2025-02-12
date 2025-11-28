@@ -38,7 +38,7 @@ public class SourceScannerC {
             return;
         }
 
-        Map<String, List<String>> copies = findCopies(items, 10);
+        Map<String, List<String>> copies = findCopies(items, 9);
 
         List<String> keys = new ArrayList<>(copies.keySet());
         Collections.sort(keys);
@@ -220,13 +220,11 @@ public class SourceScannerC {
                         continue;
                     }
 
-                    // Если тексты идентичны — дистанция 0
                     if (a.text.equals(b.text)) {
                         copies.add(b.path);
                         continue;
                     }
 
-                    // Бандированный Левенштейн с ранним выходом (Ukkonen)
                     int dist = levenshteinBounded(a.text, b.text, maxEdits);
                     if (dist <= maxEdits) {
                         copies.add(b.path);

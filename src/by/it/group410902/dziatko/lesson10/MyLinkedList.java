@@ -26,6 +26,7 @@ public class MyLinkedList<E> implements Deque<E>{
                 temp = temp.next;
             }
             ret_val+=this.tail.value.toString() + "]";
+            return ret_val;
         }
         return "[]";
     }
@@ -166,33 +167,37 @@ public class MyLinkedList<E> implements Deque<E>{
 
     @Override
     public boolean remove(Object o) {
-        if(this.head != null){
-            if(this.head == this.tail && o.equals(this.head.value)){
-                this.clear();
-                return true;
-            }
-            else if(o.equals(this.head.value)){
-                this.head.next.behind = null;
-                this.head = this.head.next;
-                return true;
-            }else if(o.equals(this.tail.value)){
-                this.tail.behind.next = null;
-                this.tail = this.tail.behind;
-                return true;
-            }
-            Linked_list_Note<E> temp = this.head.next;
-            while(temp != null && !o.equals(temp.value)){
-                temp = temp.next;
-            }
-            if(temp == null || !temp.value.equals(o)){
-                return false;
-            }
-            temp.next.behind = temp.behind;
-            temp.behind.next = temp.next;
+        if (head == null) return false;
+
+        if (this.size() == 1 && o.equals(head.value)) {
+            this.clear();
             return true;
         }
-        return false;
+
+        if (o.equals(head.value)) {
+            head = head.next;
+            if (head != null) head.behind = null;
+            return true;
+        }
+
+        if (o.equals(tail.value)) {
+            tail = tail.behind;
+            if (tail != null) tail.next = null;
+            return true;
+        }
+
+        Linked_list_Note<E> temp = head.next;
+        while (temp != null && !o.equals(temp.value)) {
+            temp = temp.next;
+        }
+        if (temp == null) return false;
+
+        if (temp.next != null) temp.next.behind = temp.behind;
+        if (temp.behind != null) temp.behind.next = temp.next;
+
+        return true;
     }
+
 
 
 
