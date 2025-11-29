@@ -1,4 +1,4 @@
-package by.it.a_khmelev.lesson11;
+package by.it.group451003.mihlin.lesson09;
 
 
 import by.it.HomeWork;
@@ -20,92 +20,99 @@ import static org.junit.Assert.fail;
 
 //поставьте курсор на следующую строку и нажмите Ctrl+Shift+F10
 //для корректной сборки теста добавьте библиотеку init.jar в проект (она находится в корне)
-public class Test_Part2_Lesson11Test extends HomeWork {
+public class Test_Part2_Lesson09Test extends HomeWork {
 
     private static final int RND_SEED = 123;
     public static final int INVOCATION_COUNT_PER_METHOD = 10;
     public static final int MAX_VALUE = 100;
     Random rnd = new Random(RND_SEED);
-    private Collection<Number> eObject;
-    private Collection<Number> aObject;
+    private List<Integer> eObject;
+    private List<Integer> aObject;
 
     private Map<Method, String> cache = new HashMap<>();
 
     @Test(timeout = 5000)
     public void testTaskA() throws Exception {
         String[] methods = """
-                size()
-                clear()
-                isEmpty()
+                toString()
                 add(Object)
-                remove(Object)
-                contains(Object)
-
+                remove(int)
+                size()
                 """.split("\\s+");
-        eObject = new HashSet<>();
-        randomCheck("MyHashSet", methods);
+        randomCheck("ListA", methods);
     }
 
     @Test(timeout = 5000)
     public void testTaskB() throws Exception {
         String[] methods = """
                 toString()
-                size()
-                clear()
-                isEmpty()
                 add(Object)
-                remove(Object)
-                contains(Object)
+                remove(int)
+                size()
                                 
-                containsAll(Collection)
-                addAll(Collection)
-                removeAll(Collection)
-                retainAll(Collection)
+                remove(Object)
+                add(int,Object)
+                remove(Object)
+                set(int,Object)
+                isEmpty()
+                clear()
+                indexOf(Object)
+                get(int)
+                contains(Object)
+                lastIndexOf(Object)
                 """.split("\\s+");
-        eObject = new LinkedHashSet<>();
-        randomCheck("MyLinkedHashSet", methods);
+        randomCheck("ListB", methods);
     }
 
     @Test(timeout = 5000)
     public void testTaskC() throws Exception {
         String[] methods = """
                 toString()
-                size()
-                clear()
-                isEmpty()
                 add(Object)
+                remove(int)
+                size()
+                                
                 remove(Object)
+                add(int,Object)
+                remove(Object)
+                set(int,Object)
+                isEmpty()
+                clear()
+                indexOf(Object)
+                get(int)
                 contains(Object)
+                lastIndexOf(Object)
                                 
                 containsAll(Collection)
                 addAll(Collection)
+                addAll(int,Collection)                
                 removeAll(Collection)
                 retainAll(Collection)
+                retainAll(Collection)
                 """.split("\\s+");
-        eObject = new TreeSet<>();
-        randomCheck("MyTreeSet", methods);
+        randomCheck("ListC", methods);
     }
 
-    private void randomCheck(String aClassName, String... methods) throws InstantiationException, IllegalAccessException, InvocationTargetException, NoSuchMethodException {
-        Set<String> methodNames = new TreeSet<>(Arrays.asList(methods));
-        methodNames.removeIf(key -> key == null || key.isBlank());
-        Class<?> aClass = findClass(aClassName);
+    private void randomCheck(String className, String... methods) throws InstantiationException, IllegalAccessException, InvocationTargetException, NoSuchMethodException {
+        TreeSet<String> methodNames = new TreeSet<>(Arrays.asList(methods));
+        Class<?> aClass = findClass(className);
         checkStructure(aClass);
-        System.out.printf("\nStart test methods in class %s%n", aClass);
-        aObject = (Collection<Number>) aClass.getDeclaredConstructor().newInstance();
+        System.out.printf("\nStart test methods in class %s%n",aClass);
+        eObject = ArrayList.class.getDeclaredConstructor().newInstance();
+        aObject = (List<Integer>) aClass.getDeclaredConstructor().newInstance();
 
-        Map<String, Method> methodsE = fill(eObject.getClass(), methodNames);
         Map<String, Method> methodsA = fill(aClass, methodNames);
+        Map<String, Method> methodsE = fill(eObject.getClass(), methodNames);
 
-        assertEquals("Not found methods for test in:\n" + getSignatures(aClass), methodNames.size(), methodsA.size());
+        assertEquals("Not found methods for test in:\n" + getSignatures(ArrayList.class), methodNames.size(), methodsA.size());
 
         for (int testNumber = 0; testNumber < INVOCATION_COUNT_PER_METHOD * methodNames.size(); testNumber++) {
             int count = rnd.nextInt(INVOCATION_COUNT_PER_METHOD * 10);
             if (eObject.size() < 10) {
                 for (int i = 0; i <= count; i++) {
-                    Integer value = rnd.nextInt(MAX_VALUE) * (i + 1);
-                    eObject.add(value);
-                    aObject.add(value);
+                    Integer value = rnd.nextInt(MAX_VALUE);
+                    aObject.add(value + i * value);
+                    eObject.add(value + i * value);
                 }
                 System.out.printf("%n==Add %d random values. %n", count);
             }
@@ -122,22 +129,16 @@ public class Test_Part2_Lesson11Test extends HomeWork {
             }
             int params = methodE.getParameterCount();
             Object[] parameters = getRandomParams(methodA.getParameterTypes());
-            String nameAndParameters = getSignature(methodA).replace(")", "->" + Arrays.toString(parameters)) + ")";
-            System.out.printf("Start %s%n", nameAndParameters);
+            System.out.printf("Start %s. Parameters=%s%n", getSignature(methodA), Arrays.toString(parameters));
             Object expected = methodE.invoke(eObject, parameters);
             Object actual = methodA.invoke(aObject, parameters);
             String eString = eObject.toString();
             String aString = aObject.toString();
             assertEquals("Error compare methods\n" + methodE + "\n" + methodA, expected, actual);
-            System.out.printf("\tStop. Size actual=%d expected=%d%n", aObject.size(), eObject.size());
-            int eChecksum = checkSum(eString);
-            int aChecksum = checkSum(aString);
-            assertEquals(("Erros state\n" +
-                          "expectred check sum=%d for %s\n" +
-                          "   actual check sum=%d for %s\n")
-                    .formatted(eChecksum, eString, aChecksum, aString), eChecksum, aChecksum);
+            assertEquals("Erros state after\n" + methodE + "\n" + methodA, eString, aString);
+            System.out.printf("Size actual=%d expected=%d%n", aObject.size(), eObject.size());
         }
-        System.out.println("=".repeat(100) + "\nCOMPLETE: " + methodNames);
+        System.out.println("=".repeat(100) + "\n COMPLETE: " + methodNames);
         System.out.println("expected: " + eObject);
         System.out.println("  actual: " + aObject);
     }
@@ -146,17 +147,17 @@ public class Test_Part2_Lesson11Test extends HomeWork {
         Object[] parameters = new Object[parameterTypes.length];
         for (int i = 0; i < parameterTypes.length; i++) {
             if (Collection.class.isAssignableFrom(parameterTypes[i])) {
-                Set<Number> collect = IntStream
+                Set<Integer> collect = IntStream
                         .range(2, 2 + rnd.nextInt(eObject.size()))
-                        .mapToObj(index -> randomInteger())
+                        .mapToObj(index -> randomObject())
                         .collect(Collectors.toUnmodifiableSet());
                 parameters[i] = collect;
             } else if (Integer.class.isAssignableFrom(parameterTypes[i])) {
-                parameters[i] = randomInteger();
+                parameters[i] = randomObject();
             } else if (int.class.isAssignableFrom(parameterTypes[i])) {
                 parameters[i] = getRandomIndex();
             } else if (Object.class.isAssignableFrom(parameterTypes[i])) {
-                parameters[i] = randomInteger();
+                parameters[i] = randomObject();
             } else {
                 fail("unexpected type " + parameterTypes[i]);
             }
@@ -164,16 +165,9 @@ public class Test_Part2_Lesson11Test extends HomeWork {
         return parameters;
     }
 
-    private Number randomInteger() {
+    private Integer randomObject() {
         int i = getRandomIndex();
-        if (rnd.nextBoolean()) {
-            return i * eObject.size();
-        }
-        Iterator<Number> iterator = eObject.iterator();
-        while (i-- > 0) {
-            iterator.next();
-        }
-        return iterator.next();
+        return rnd.nextBoolean() ? eObject.get(i) : i * eObject.size();
     }
 
     private int getRandomIndex() {
@@ -182,25 +176,25 @@ public class Test_Part2_Lesson11Test extends HomeWork {
 
 
     private void checkStructure(Class<?> aClass) {
-        if (aClass.getPackageName().equals(this.getClass().getPackageName())) {
+        if (aClass.getSimpleName().startsWith("List")) {
             assertEquals("Incorrect parent", Object.class, aClass.getSuperclass());
         }
         for (Field field : aClass.getDeclaredFields()) {
-            checkFieldAsCollection(field);
+            checkField(field);
             for (Field subField : field.getType().getDeclaredFields()) {
-                checkFieldAsCollection(subField);
+                checkField(subField);
             }
         }
     }
 
-    private void checkFieldAsCollection(Field field) {
+    private void checkField(Field field) {
         if (Collection.class.isAssignableFrom(field.getType())) {
             fail("Incorrect field: " + field);
         }
     }
 
 
-    private Map<String, Method> fill(Class<?> c, Set<String> methodNames) {
+    private Map<String, Method> fill(Class<?> c, TreeSet<String> methodNames) {
         return Stream.of(c.getMethods(), c.getDeclaredMethods())
                 .flatMap(Arrays::stream)
                 .distinct()
@@ -212,8 +206,9 @@ public class Test_Part2_Lesson11Test extends HomeWork {
 
     private boolean notComparable(Method m) {
         return m.getReturnType() != Comparable.class &&
-               Arrays.stream(m.getParameterTypes())
-                       .noneMatch(p -> p == Comparable.class);
+               0 == Arrays.stream(m.getParameterTypes())
+                       .filter(p -> p == Comparable.class)
+                       .count();
     }
 
     private String getSignature(Method method) {
@@ -233,19 +228,11 @@ public class Test_Part2_Lesson11Test extends HomeWork {
 
 
     public String getSignatures(Class<?> aClass) {
-        return getSignatures(aClass.getMethods(), aClass.getDeclaredMethods());
-    }
-
-    public String getSignatures(Method[]... methods) {
-        return Stream.of(methods)
+        return Stream.of(aClass.getMethods(), aClass.getDeclaredMethods())
                 .flatMap(Arrays::stream)
                 .distinct()
                 .filter(m -> !Modifier.isStatic(m.getModifiers()))
                 .map(this::getSignature)
                 .collect(Collectors.joining("\n"));
-    }
-
-    private int checkSum(String someString) {
-        return someString.chars().sum();
     }
 }
