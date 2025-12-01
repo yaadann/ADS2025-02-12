@@ -1,70 +1,68 @@
 package by.it.group451003.filipenko.lesson15;
 
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.stream.Stream;
+import java.io.*;
+import java.nio.charset.*;
+import java.nio.file.*;
+import java.util.*;
 
-public class SourceScannerB extends SourceScannerA{
+public class SourceScannerB {
+    public static void main(String[] args) throws IOException {
+        String src = System.getProperty("user.dir") + File.separator + "src" + File.separator;
+        Path srcPath = Path.of(src);
 
-    protected static void getInformation() throws IOException {
-        ArrayList<String> size_directory = new ArrayList<>();
+        List<FileEntry> entries = new ArrayList<>();
 
-        Path src = Path.of(System.getProperty("user.dir")
-                + File.separator + "src" + File.separator);
+        try (var walk = Files.walk(srcPath)) {
+            walk.filter(Files::isRegularFile)
+                    .filter(p -> p.toString().endsWith(".java"))
+                    .forEach(p -> {
+                        try {
+                            String content = Files.readString(p);
+                            if (!content.contains("@Test") && !content.contains("org.junit.Test")) {
+                                // Удаляем package и imports
+                                content = content.replaceAll("^\\s*package.*$", "")
+                                        .replaceAll("^\\s*import.*$", "");
 
-        try (Stream<Path> fileTrees = Files.walk(src)) {
-            fileTrees.forEach(
-                    directory -> {
-                        if (directory.toString().endsWith(".java")) {
-                            try {
-                                char[] charArr;
-                                String str = Files.readString(directory);
-                                if (!str.contains("@Test") && !str.contains("org.junit.Test")) {
-                                    str = str.replaceAll("package.*;", "")
-                                            .replaceAll("import.*;", "");
+                                // Удаляем комментарии (упрощенно)
+                                content = content.replaceAll("//.*", "")
+                                        .replaceAll("/\\*.*?\\*/", "");
 
-                                    str = str.replaceAll("/\\*[\\w\\W\r\n\t]*?\\*/", "")
-                                        .replaceAll("//.*?\r\n\\s*", "");
+                                // Удаляем символы с кодом <33 по краям
+                                content = content.replaceAll("^[\\x00-\\x20]+", "")
+                                        .replaceAll("[\\x00-\\x20]+$", "");
 
-                                    while (str.contains("\r\n\r\n"))
-                                        str = str.replaceAll("\r\n\r\n", "\r\n");
+                                // Удаляем пустые строки
+                                content = content.replaceAll("(?m)^\\s*$\\n?", "");
 
-                                    if (!str.isEmpty() && (str.charAt(0) < 33 || str.charAt(str.length() - 1) < 33)) {
-                                        charArr = str.toCharArray();
-                                        int indexF = 0, indexL = charArr.length - 1;
-
-                                        while (indexF < charArr.length && charArr[indexF] < 33 && charArr[indexF] != 0)
-                                            charArr[indexF++] = 0;
-                                        while (indexL >= 0 && charArr[indexL] < 33 && charArr[indexL] != 0)
-                                            charArr[indexL--] = 0;
-
-                                        str = new String(move(charArr));
-                                    }
-
-                                    size_directory.add(str.getBytes().length + " " + src.relativize(directory));
-                                }
-                            } catch (IOException e) {
-                                if (System.currentTimeMillis() < 0) {
-                                    System.err.println(directory);
-                                }
+                                String relativePath = srcPath.relativize(p).toString();
+                                long size = content.getBytes(StandardCharsets.UTF_8).length;
+                                entries.add(new FileEntry(relativePath, size));
                             }
+                        } catch (IOException e) {
+                            // Игнорируем
                         }
-                    }
-            );
-
-            Collections.sort(size_directory, new myStringComparator());
-
-            for (var info : size_directory)
-                System.out.println(info);
+                    });
+        } catch (IOException e) {
+            return;
         }
 
+        entries.sort((a, b) -> {
+            int sizeComp = Long.compare(a.size, b.size);
+            return sizeComp != 0 ? sizeComp : a.relativePath.compareTo(b.relativePath);
+        });
+
+        for (FileEntry entry : entries) {
+            System.out.println(entry.size + " " + entry.relativePath);
+        }
     }
 
-    public static void main(String[] args) throws IOException {
-        getInformation();
+    static class FileEntry {
+        String relativePath;
+        long size;
+
+        FileEntry(String relativePath, long size) {
+            this.relativePath = relativePath;
+            this.size = size;
+        }
     }
 }
