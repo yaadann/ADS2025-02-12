@@ -251,6 +251,7 @@ public class SourceScannerC {
      * - Ранний выход при больших расстояниях
      */
     private static int optimizedLevenshteinDistance(String s1, String s2) {
+
         // Оптимизация: если строки сильно различаются по длине,
         // минимальное расстояние уже равно разнице длин
         int lenDiff = Math.abs(s1.length() - s2.length());
