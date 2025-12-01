@@ -35,7 +35,7 @@ public class SourceScannerA {
 
                         } catch (IOException e) {
 
-                            System.err.println("Ошибка чтения (пропускаем файл): " + p);
+
                         }
                     });
         } catch (IOException e) {
@@ -51,7 +51,7 @@ public class SourceScannerA {
             System.out.println(info.getSize() + " " + info.getPath());
         }
 
-        System.err.println("Обработано файлов: " + fileInfos.size() + " (ТОЛЬКО ЧТЕНИЕ)");
+
     }
 
     private static String processContentA(String content) {
