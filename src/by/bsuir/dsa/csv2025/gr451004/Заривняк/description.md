@@ -38,8 +38,6 @@ The maximum load on any machine is 7, which is minimal.
 
 # Theory
 
-Theoretical Info
-
 ## Greedy Algorithms
 
 ### Definition and Essence
