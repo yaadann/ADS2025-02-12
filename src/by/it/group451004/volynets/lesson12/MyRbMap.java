@@ -8,6 +8,8 @@ public class MyRbMap implements SortedMap<Integer, String> {
     private static final boolean RED = true;
     private static final boolean BLACK = false;
 
+    //Все пути от узла к листьям содержат одинаковое число черных узлов
+    //Дерево примерно сбалансировано - самый длинный путь не более чем в 2 раза длиннее самого короткого.
 
     private static class RbNode {
         Integer key;
