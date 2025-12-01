@@ -42,11 +42,11 @@ public class C_HeapMax {
         System.out.println("MAX=" + instance.findMaxValue(stream));
     }
 
-    //эта процедура читает данные из файла, ее можно не менять.
+    // Эта процедура читает данные из файла, ее можно не менять.
     Long findMaxValue(InputStream stream) {
         long maxValue = 0L;
         MaxHeap heap = new MaxHeap();
-        //прочитаем строку для кодирования из тестового файла
+        // Прочитаем строку для кодирования из тестового файла
         Scanner scanner = new Scanner(stream);
         int count = scanner.nextInt();
         for (int i = 0; i < count; ) {

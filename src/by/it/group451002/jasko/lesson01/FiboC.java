@@ -44,7 +44,7 @@ public class FiboC {
         return curr;
     }
 
-    private int findPisanoPeriod(int m) { // Находит длину периода Пизано для заданного модуля m.
+    private int findPisanoPeriod(int m) { // Находит длину периода Пизано для заданного модуля m
         // Находим период Пизано для заданного модуля m
         long prev = 0; // F(0)
         long curr = 1; // F(1)

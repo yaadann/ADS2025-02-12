@@ -52,7 +52,7 @@ public class B_Huffman {
 
     String decode(InputStream inputStream) {
         StringBuilder result = new StringBuilder();
-        //прочитаем строку для кодирования из тестового файла
+        // Прочитаем строку для кодирования из тестового файла
         Scanner scanner = new Scanner(inputStream);
         int count = scanner.nextInt(); // Количество различных символов (k)
         scanner.nextInt();

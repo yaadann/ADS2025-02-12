@@ -39,7 +39,7 @@ import java.util.*;
 
 public class A_Huffman {
 
-    //индекс данных из листьев
+    // Индекс данных из листьев
     static private final Map<Character, String> codes = new TreeMap<>();
 
     public static void main(String[] args) {
