@@ -34,8 +34,7 @@ public class MyLinkedList<E> implements Deque<E> {
     }
 
     @Override
-    // добавляет элемент в конец списка. Создает новый узел, добавляет его в конец,
-    // обновляет tail, увеличивает Count
+    // добавляет элемент в конец списка. Создает новый узел, добавляет его в конец.
     public boolean add(E e) {
         DoubleNode<E> node = new DoubleNode<>(e);
 
@@ -52,8 +51,7 @@ public class MyLinkedList<E> implements Deque<E> {
     }
 
     @Override
-    // добавляет элемент в начало списка. Если список пуст, новый элемент
-    // становится и head, и tail; иначе добавляет его перед head, обновляет ссылки и увеличивает Count
+    // добавляет элемент в начало списка.
     public void addFirst(E e) {
         DoubleNode<E> node = new DoubleNode<>(e);
         node.next = head;
@@ -74,9 +72,7 @@ public class MyLinkedList<E> implements Deque<E> {
     }
 
     @Override
-    // удаляет и возвращает первый элемент списка (head). Если список пуст,
-    // возвращает null; если в списке только один элемент, устанавливает
-    // head и tail как null. Иначе удаляет первый элемент, обновляет head, уменьшает Count
+    // удаляет и возвращает первый элемент списка.
     public E pollFirst() {
         if (Count == 0)
             return null;
@@ -93,8 +89,7 @@ public class MyLinkedList<E> implements Deque<E> {
     }
 
     @Override
-    // удаляет и возвращает последний элемент (tail). Если список пуст,
-    // возвращает null. Если один элемент, очищает head и tail. Иначе обновляет tail, уменьшает Count
+    // удаляет и возвращает последний элемент (tail)
     public E pollLast() {
         if (Count == 0)
             return null;
@@ -144,8 +139,7 @@ public class MyLinkedList<E> implements Deque<E> {
     }
 
     @Override
-    // находит и удаляет первый элемент, равный o. Если найден,
-    // обновляет ссылки узлов, уменьшает Count, возвращает true; иначе — false
+    // находит и удаляет первый элемент, равный o.
     public boolean remove(Object o) {
         DoubleNode<E> tempHead = head;
         while (tempHead != null) {
@@ -168,7 +162,6 @@ public class MyLinkedList<E> implements Deque<E> {
     }
 
     // удаляет элемент по индексу, если он в пределах списка.
-    // Находит элемент, обновляет ссылки, уменьшает Count, возвращает удаленный элемент
     public E remove(int index) {
         DoubleNode<E> tempHead = head;
         if (index > -1 && index < Count) {
@@ -194,6 +187,7 @@ public class MyLinkedList<E> implements Deque<E> {
     //////////////////////////////////////////
 
     @Override
+
     public boolean offer(E e) {
         return false;
     }

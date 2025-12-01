@@ -21,9 +21,8 @@ public class MyPriorityQueue<E extends Comparable<E>> implements Queue<E> {
         heap[y] = temp;
     }
 
-    // (просеивание вниз): используется после удаления корневого (например, минимального) элемента.
-    // Оставшиеся элементы перемещаются вниз, чтобы на вершине снова оказался минимальный элемент.
-    void siftDown(int i) {  // восстанавливает свойства кучи, начиная с узла i вниз по дереву
+    // просеивание вниз
+    void siftDown(int i) {
         int child1, child2, min;
 
         while (2 * i + 1 < currentSize) {
@@ -44,17 +43,15 @@ public class MyPriorityQueue<E extends Comparable<E>> implements Queue<E> {
         }
     }
 
-    //  (просеивание вверх): используется после добавления нового элемента.
-    //  Новый элемент поднимается вверх, если его значение меньше значения родительского узла.
-    void siftUp(int i) {  // восстанавливает свойства кучи, начиная с узла i вверх к корню
+    //  просеивание вверх
+    void siftUp(int i) {
         while (heap[i].compareTo(heap[(i - 1) / 2]) < 0) {
             swap(i, (i - 1) / 2);
             i = (i - 1) / 2;
         }
     }
 
-    // применяется после изменения кучи для приведения ее
-    // в корректное состояние, начиная с узлов, близких к листьям.
+    // применяется после изменения кучи
     void heapify() {
         for (int i = (currentSize / 2); i >= 0; i--) {
             siftDown(i);
@@ -62,7 +59,7 @@ public class MyPriorityQueue<E extends Comparable<E>> implements Queue<E> {
     }
 
     @Override
-    //  возвращает строковое представление очереди, перечисляя элементы кучи в текущем порядке
+    //  возвращает строковое представление очереди
     public String toString() {
         String tempStr = "[";
 
@@ -83,15 +80,14 @@ public class MyPriorityQueue<E extends Comparable<E>> implements Queue<E> {
     }
 
     @Override
-    // очищает очередь, создавая новый пустой массив для heap и сбрасывая currentSize
+    // очищает очередь
     public void clear() {
         heap = (E[]) new Comparable[defaultSize];
         currentSize = 0;
     }
 
     @Override
-    // добавляет элемент e в очередь. Если массив полон,
-    // увеличивает его размер вдвое, вставляет элемент в конец кучи и вызывает siftUp
+    // добавляет элемент e в очередь. Е
     public boolean add(E e) {
         if (currentSize == heap.length) {
             E[] newHeap = (E[]) new Comparable[currentSize * 2];
@@ -107,9 +103,8 @@ public class MyPriorityQueue<E extends Comparable<E>> implements Queue<E> {
     }
 
     @Override
-    // удаляет и возвращает минимальный элемент (корень кучи).
-    // Меняет местами первый и последний элемент, уменьшает currentSize,
-    // вызывает siftDown для восстановления кучи.
+    // удаляет и возвращает минимальный элемент.
+    // Меняет местами первый и последний элемент
     public E remove() {
         if (currentSize == 0) {
             return null;
@@ -136,14 +131,14 @@ public class MyPriorityQueue<E extends Comparable<E>> implements Queue<E> {
 
 
     @Override
-    // эквивалентен add(e), добавляет элемент и возвращает true
+    //добавляет элемент и возвращает true
     public boolean offer(E e) {
         return add(e);
     }
 
 
     @Override
-    // эквивалентен remove(), удаляет и возвращает минимальный элемент
+    //удаляет и возвращает минимальный элемент
     public E poll() {
         return remove();
     }
@@ -213,13 +208,12 @@ public class MyPriorityQueue<E extends Comparable<E>> implements Queue<E> {
 
     @Override
     // оставляет в куче только элементы, присутствующие в коллекции c,
-    // возвращает true, если произошли изменения
     public boolean retainAll(Collection<?> c) {
-        int cursor1 = 0, cursor2 = 0, counter = 0;
+        int cursor = 0, i = 0, counter = 0;
 
-        for (cursor2 = 0; cursor2 < currentSize; cursor2++) {
-            if (c.contains(heap[cursor2])) {
-                heap[cursor1++] = heap[cursor2];
+        for (i = 0; i < currentSize; i++) {
+            if (c.contains(heap[i])) {
+                heap[cursor++] = heap[i];
             } else {
                 counter++;
             }

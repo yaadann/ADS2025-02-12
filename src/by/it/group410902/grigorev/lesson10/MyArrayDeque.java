@@ -47,8 +47,7 @@ public class MyArrayDeque<E> implements Deque<E> {
     }
 
     @Override
-    // добавляет элемент e в начало очереди. Если массив заполнен, его размер удваивается,
-    // элементы смещаются вправо, и новый элемент помещается на первую позицию.
+    // добавляет элемент e в начало очереди.
     public void addFirst(E e) {
         if (currentSize == elements.length) {
             E[] newElements = (E[]) new Object[elements.length * 2];
@@ -66,8 +65,7 @@ public class MyArrayDeque<E> implements Deque<E> {
     }
 
     @Override
-    // добавляет элемент e в конец очереди. Если массив заполнен, его размер удваивается,
-    // новый элемент добавляется в конец.
+    // добавляет элемент e в конец очереди.
     public void addLast(E e) {
         if (currentSize == elements.length) {
             E[] newElements = (E[]) new Object[elements.length * 2];
@@ -108,7 +106,7 @@ public class MyArrayDeque<E> implements Deque<E> {
     }
 
     @Override
-    // удаляет и возвращает первый элемент. Сдвигает оставшиеся элементы влево
+    // удаляет и возвращает первый элемент.
     public E pollFirst() {
         if (currentSize == 0) {
             return null;
