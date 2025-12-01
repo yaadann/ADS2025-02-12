@@ -6,7 +6,6 @@ Hash function collision detection
 
 Comparison of Hash Functions. Detecting Hash Collisions
 
-## Task
 Write a program in **Java** that takes two strings from the user and compares their hashes calculated by two different functions. The program should determine whether a collision occurs (the same hash for different strings).
 
 ## Requirements
