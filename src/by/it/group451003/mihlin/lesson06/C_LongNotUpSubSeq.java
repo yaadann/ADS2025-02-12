@@ -1,4 +1,4 @@
-package by.it.group410902.kukhto.les6;
+package by.it.group451003.mihlin.lesson06;
 
 import java.io.FileNotFoundException;
 import java.io.InputStream;
@@ -55,21 +55,57 @@ public class C_LongNotUpSubSeq {
         for (int i = 0; i < n; i++) {
             m[i] = scanner.nextInt();
         }
-        //тут реализуйте логику задачи методами динамического программирования (!!!)
-        int[] dp = new int[n];
-        int maxLength = 1; // Минимальная длина - 1
 
+        // Динамическое программирование для нахождения наибольшей невозрастающей подпоследовательности
+        // dp[i] - длина наибольшей невозрастающей подпоследовательности, заканчивающейся в позиции i
+        int[] dp = new int[n];
+        // prev[i] - индекс предыдущего элемента в оптимальной подпоследовательности для позиции i
+        int[] prev = new int[n];
+
+        // Инициализация: минимальная длина подпоследовательности равна 1 (сам элемент)
         for (int i = 0; i < n; i++) {
-            dp[i] = 1; // Каждый элемент сам по себе образует подпоследовательность длины 1
-            for (int j = 0; j < i; j++) {
-                if (m[j] >= m[i] && dp[j] + 1 > dp[i]) {
-                    dp[i] = dp[j] + 1;
-                }
-            }
-            maxLength = Math.max(maxLength, dp[i]);
+            dp[i] = 1;
+            prev[i] = -1; // -1 означает, что нет предыдущего элемента
         }
 
+        // Основной алгоритм: находим оптимальную длину для каждой позиции
+        for (int i = 1; i < n; i++) {
+            for (int j = 0; j < i; j++) {
+                // Если текущий элемент не больше предыдущего и длина увеличивается
+                if (m[i] <= m[j] && dp[j] + 1 > dp[i]) {
+                    dp[i] = dp[j] + 1;
+                    prev[i] = j; // Запоминаем предыдущий элемент
+                }
+            }
+        }
+
+        // Находим максимальную длину и её позицию
+        int maxLength = 0;
+        int endIndex = -1;
+        for (int i = 0; i < n; i++) {
+            if (dp[i] > maxLength) {
+                maxLength = dp[i];
+                endIndex = i;
+            }
+        }
+
+        // Восстанавливаем индексы наибольшей невозрастающей подпоследовательности
+        int[] result = new int[maxLength];
+        int index = endIndex;
+        for (int i = maxLength - 1; i >= 0; i--) {
+            result[i] = index;
+            index = prev[index];
+        }
+
+        // Выводим результат
+        System.out.println(maxLength);
+        for (int i = 0; i < maxLength; i++) {
+            // Индексация в задаче начинается с 1, поэтому +1
+            System.out.print((result[i] + 1) + " ");
+        }
+        System.out.println();
+
+        //!!!!!!!!!!!!!!!!!!!!!!!!!     КОНЕЦ ЗАДАЧИ     !!!!!!!!!!!!!!!!!!!!!!!!!
         return maxLength;
     }
-
 }
