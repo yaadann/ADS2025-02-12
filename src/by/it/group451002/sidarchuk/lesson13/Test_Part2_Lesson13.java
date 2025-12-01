@@ -86,6 +86,7 @@ public class Test_Part2_Lesson13 extends HomeWork {
         //Граф-треугольник (3 вершины все связаны друг с другом)
         run("A->B, B->C, C->A", true)
                 .include("ABC");
+
     }
 
 
