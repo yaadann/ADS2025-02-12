@@ -35,7 +35,7 @@ Find a **route that passes through every edge exactly once and returns to the st
 
 # Theory
 
-## Theory: Eulerian Cycle
+## Eulerian Cycle
 
 Let an undirected graph be given as  
 $$
