@@ -9,7 +9,7 @@ public class MyTreeSet<E> implements Set<E> {
     private static final int DEFAULT_CAPACITY = 10;
     private Object[] elements;
     private int size;
-    private final Comparator<? super E> comparator;
+    private final Comparator<? super E> comparator; // Объявление поля компаратора
 
     // Конструкторы
     public MyTreeSet() {
@@ -35,6 +35,7 @@ public class MyTreeSet<E> implements Set<E> {
     }
 
     // Вспомогательные методы
+
     private void ensureCapacity(int minCapacity) {
         if (minCapacity > elements.length) {
             int newCapacity = Math.max(elements.length * 2, minCapacity);
@@ -49,6 +50,7 @@ public class MyTreeSet<E> implements Set<E> {
         if (comparator != null) {
             return comparator.compare(e1, e2);
         } else {
+            // Приведение типа
             Comparable<? super E> comparable = (Comparable<? super E>) e1;
             return comparable.compareTo(e2);
         }
@@ -90,6 +92,7 @@ public class MyTreeSet<E> implements Set<E> {
 
     // Удаление элемента по индексу
     private void removeAt(int index) {
+        // Количество элементов для сдвига
         int numMoved = size - index - 1;
         if (numMoved > 0) {
             System.arraycopy(elements, index + 1, elements, index, numMoved);
@@ -191,15 +194,15 @@ public class MyTreeSet<E> implements Set<E> {
             return "[]";
         }
 
-        StringBuilder sb = new StringBuilder("[");
+        String result = "[";
         for (int i = 0; i < size; i++) {
-            sb.append(elements[i]);
+            result += elements[i];
             if (i < size - 1) {
-                sb.append(", ");
+                result += ", ";
             }
         }
-        sb.append("]");
-        return sb.toString();
+        result += "]";
+        return result;
     }
 
     // Методы для работы с коллекциями
@@ -279,7 +282,7 @@ public class MyTreeSet<E> implements Set<E> {
         return (E) elements[size - 1];
     }
 
-    // Методы, которые не требуются для базовой функциональности
+    // Методы, которые не требуются
 
     @Override
     public Iterator<E> iterator() {

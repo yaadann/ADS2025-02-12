@@ -59,6 +59,7 @@ public class MyLinkedHashSet<E> implements Set<E> {
     }
 
     private void ensureCapacity() {
+        // capacity * loadFactor - максимальное количество элементов перед расширением
         if (size >= capacity * loadFactor) {
             resize();
         }
@@ -216,17 +217,17 @@ public class MyLinkedHashSet<E> implements Set<E> {
             return "[]";
         }
 
-        StringBuilder sb = new StringBuilder("[");
+        String result = "[";
         Node<E> current = head;
         while (current != null) {
-            sb.append(current.element);
+            result += current.element;
             if (current.nextInOrder != null) {
-                sb.append(", ");
+                result += ", ";
             }
             current = current.nextInOrder;
         }
-        sb.append("]");
-        return sb.toString();
+        result += "]";
+        return result;
     }
 
     @Override
