@@ -1,154 +1,163 @@
 package by.it.group410901.borisdubinin.lesson15;
 
-import java.io.*;
-import java.nio.charset.MalformedInputException;
+import java.io.File;
+import java.io.IOException;
+import java.nio.charset.CodingErrorAction;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.*;
-import java.nio.file.attribute.BasicFileAttributes;
-import java.util.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Stream;
 
 public class SourceScannerA {
-    public static void main(String[] args) {
-        String src = System.getProperty("user.dir") + File.separator + "src" + File.separator;
 
-        try {
-            List<FileData> processedFiles = processJavaFiles(src);
-            printResults(processedFiles);
-        } catch (IOException e) {
-            System.err.println("Ошибка при обработке файлов: " + e.getMessage());
+    // Вспомогательный класс для хранения информации о файле
+    static class FileInfo {
+        String relativePath; // относительный путь файла
+        int size;            // размер файла после обработки (в байтах)
+
+        FileInfo(String relativePath, int size) {
+            this.relativePath = relativePath;
+            this.size = size;
         }
     }
 
-    private static List<FileData> processJavaFiles(String srcDir) throws IOException {
-        List<FileData> result = new ArrayList<>();
-        Path srcPath = Paths.get(srcDir);
+    public static void main(String[] args) {
+        // Получаем путь к директории src текущего проекта
+        String src = System.getProperty("user.dir")
+                + File.separator + "src" + File.separator;
 
-        if (!Files.exists(srcPath)) {
-            System.err.println("Каталог src не найден: " + srcDir);
-            return result;
+        Path srcPath = Paths.get(src);
+        List<FileInfo> results = new ArrayList<>();
+
+        // Используем Files.walk для рекурсивного обхода всех файлов в директории src
+        try (Stream<Path> paths = Files.walk(srcPath)) {
+            paths.filter(Files::isRegularFile)           // только обычные файлы (не директории)
+                    .filter(p -> p.toString().endsWith(".java")) // только Java файлы
+                    .forEach(path -> processFile(path, srcPath, results)); // обработка каждого файла
+        } catch (IOException e) {
+            e.printStackTrace();
         }
 
-        Files.walkFileTree(srcPath, new SimpleFileVisitor<Path>() {
-            @Override
-            public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
-                if (file.toString().endsWith(".java")) {
-                    processFile(file, srcPath, result);
-                }
-                return FileVisitResult.CONTINUE;
+        // Сортировка результатов: сначала по размеру (по возрастанию),
+        // затем лексикографически по пути
+        results.sort((a, b) -> {
+            int sizeCompare = Integer.compare(a.size, b.size);
+            if (sizeCompare != 0) {
+                return sizeCompare; // если размеры разные, сортируем по размеру
             }
-
-            @Override
-            public FileVisitResult visitFileFailed(Path file, IOException exc) throws IOException {
-                if (exc instanceof MalformedInputException) {
-                    System.err.println("Пропущен файл с ошибкой кодировки: " + file);
-                    return FileVisitResult.CONTINUE;
-                }
-                return super.visitFileFailed(file, exc);
-            }
+            return a.relativePath.compareTo(b.relativePath); // иначе по пути
         });
 
-        return result;
+        // Вывод результатов в формате: размер относительный_путь
+        for (FileInfo info : results) {
+            System.out.println(info.size + " " + info.relativePath);
+        }
     }
 
-    private static void processFile(Path file, Path srcPath, List<FileData> result) {
+    /**
+     * Обрабатывает один Java файл: читает, фильтрует, вычисляет размер
+     */
+    private static void processFile(Path filePath, Path srcPath, List<FileInfo> results) {
         try {
-            String content = readFileIgnoringEncodingErrors(file);
+            // Чтение файла с обработкой ошибок кодировки
+            // IGNORE означает, что некорректные символы будут пропущены
+            String content = Files.readString(filePath,
+                    StandardCharsets.UTF_8.newDecoder()
+                            .onMalformedInput(CodingErrorAction.IGNORE)
+                            .onUnmappableCharacter(CodingErrorAction.IGNORE)
+                            .charset());
 
-            // Пропускаем тестовые файлы
+            // Пропускаем файлы, содержащие тесты
             if (content.contains("@Test") || content.contains("org.junit.Test")) {
                 return;
             }
 
-            String processedContent = processContent(content);
-            byte[] bytes = processedContent.getBytes(StandardCharsets.UTF_8);
-            String relativePath = srcPath.relativize(file).toString();
+            // Удаляем package и import statements для чистоты измерения
+            content = removePackageAndImports(content);
 
-            result.add(new FileData(relativePath, bytes.length, bytes));
+            // Удаляем служебные символы (с кодом < 33) в начале и конце
+            content = trimLowChars(content);
 
-        } catch (MalformedInputException e) {
-            System.err.println("Ошибка кодировки в файле: " + file);
+            // Вычисляем размер в байтах в UTF-8 кодировке
+            int size = content.getBytes(StandardCharsets.UTF_8).length;
+
+            // Получаем относительный путь (относительно src директории)
+            String relativePath = srcPath.relativize(filePath).toString();
+
+            // Добавляем информацию о файле в результаты
+            results.add(new FileInfo(relativePath, size));
+
         } catch (IOException e) {
-            System.err.println("Ошибка чтения файла: " + file + " - " + e.getMessage());
+            // Игнорируем ошибки чтения файлов
         }
     }
 
-    private static String readFileIgnoringEncodingErrors(Path file) throws IOException {
-        try {
-            return Files.readString(file, StandardCharsets.UTF_8);
-        } catch (MalformedInputException e) {
-            // Пробуем прочитать файл с другой кодировкой или игнорируем ошибки
-            byte[] bytes = Files.readAllBytes(file);
-            return new String(bytes, StandardCharsets.ISO_8859_1);
-        }
-    }
+    /**
+     * Удаляет package и import statements из содержимого файла за O(n)
+     * Алгоритм делает один проход по строке
+     */
+    private static String removePackageAndImports(String content) {
+        StringBuilder result = new StringBuilder(content.length());
+        int i = 0;
+        int len = content.length();
 
-    private static String processContent(String content) {
-        String[] lines = content.split("\n", -1);
-        StringBuilder result = new StringBuilder();
+        while (i < len) {
+            // Пропускаем все пробельные символы в начале
+            while (i < len && Character.isWhitespace(content.charAt(i))) {
+                i++;
+            }
 
-        for (String line : lines) {
-            String trimmedLine = line.trim();
+            if (i >= len) break;
 
-            // Пропускаем package и import строки
-            if (trimmedLine.startsWith("package ") || trimmedLine.startsWith("import ")) {
+            // Проверяем, не начинается ли строка с "package"
+            if (i + 7 <= len && content.substring(i, i + 7).equals("package")) {
+                // Пропускаем всю строку package до точки с запятой
+                while (i < len && content.charAt(i) != ';') {
+                    i++;
+                }
+                if (i < len) i++; // Пропускаем саму точку с запятой
                 continue;
             }
 
-            result.append(line).append("\n");
+            // Проверяем, не начинается ли строка с "import"
+            if (i + 6 <= len && content.substring(i, i + 6).equals("import")) {
+                // Пропускаем всю строку import до точки с запятой
+                while (i < len && content.charAt(i) != ';') {
+                    i++;
+                }
+                if (i < len) i++; // Пропускаем саму точку с запятой
+                continue;
+            }
+
+            // Если это не package и не import, копируем оставшуюся часть файла
+            result.append(content.substring(i));
+            break;
         }
 
-        // Удаляем символы с кодом <33 в начале и конце
-        String finalContent = result.toString();
-        finalContent = trimLowChars(finalContent);
-
-        return finalContent;
+        return result.toString();
     }
 
-    private static String trimLowChars(String str) {
-        if (str == null || str.isEmpty()) {
-            return str;
-        }
-
-        // Обрезаем в начале
+    /**
+     * Удаляет управляющие символы (с ASCII кодом < 33) из начала и конца строки
+     * Символы с кодом < 33 включают: пробелы, табуляции, переносы строк и т.д.
+     */
+    private static String trimLowChars(String s) {
         int start = 0;
-        while (start < str.length() && str.charAt(start) < 33) {
+        int end = s.length();
+
+        // Убираем управляющие символы в начале строки
+        while (start < end && s.charAt(start) < 33) {
             start++;
         }
 
-        // Обрезаем в конце
-        int end = str.length();
-        while (end > start && str.charAt(end - 1) < 33) {
+        // Убираем управляющие символы в конце строки
+        while (start < end && s.charAt(end - 1) < 33) {
             end--;
         }
 
-        return str.substring(start, end);
-    }
-
-    private static void printResults(List<FileData> files) {
-        // Сортируем по размеру (по возрастанию), затем по пути
-        files.sort((f1, f2) -> {
-            int sizeCompare = Integer.compare(f1.size, f2.size);
-            if (sizeCompare != 0) {
-                return sizeCompare;
-            }
-            return f1.path.compareTo(f2.path);
-        });
-
-        // Выводим результаты
-        for (FileData file : files) {
-            System.out.println(file.size + " " + file.path);
-        }
-    }
-
-    private static class FileData {
-        String path;
-        int size;
-        byte[] content;
-
-        FileData(String path, int size, byte[] content) {
-            this.path = path;
-            this.size = size;
-            this.content = content;
-        }
+        return s.substring(start, end);
     }
 }

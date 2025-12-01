@@ -1,269 +1,398 @@
 package by.it.group410901.borisdubinin.lesson15;
 
 import java.io.*;
-import java.nio.charset.MalformedInputException;
-import java.nio.charset.StandardCharsets;
+import java.nio.charset.*;
 import java.nio.file.*;
-import java.nio.file.attribute.BasicFileAttributes;
 import java.util.*;
+import java.util.stream.*;
 
 public class SourceScannerC {
-
+    // Порог для определения "похожих" файлов (максимальное количество различий)
     private static final int COPY_THRESHOLD = 10;
 
     public static void main(String[] args) {
+        // Получаем путь к директории src проекта
         String src = System.getProperty("user.dir") + File.separator + "src" + File.separator;
 
         try {
-            List<FileData> processed = new ArrayList<>(256);
+            // Находим все Java-файлы в директории src и поддиректориях
+            List<Path> javaFiles = findJavaFiles(Paths.get(src));
 
-            Files.walkFileTree(Paths.get(src), new SimpleFileVisitor<Path>() {
-                @Override
-                public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) {
-                    if (!file.toString().endsWith(".java"))
-                        return FileVisitResult.CONTINUE;
-
-                    try {
-                        String text = readFileSafe(file);
-                        if (text.contains("@Test") || text.contains("org.junit.Test"))
-                            return FileVisitResult.CONTINUE;
-
-                        String cleaned = preprocess(text);
-                        processed.add(new FileData(file.toString(), cleaned));
-
-                    } catch (IOException e) {
-                        System.err.println("Ошибка чтения: " + file + " — " + e.getMessage());
+            // Обрабатываем файлы: читаем, фильтруем тесты, нормализуем содержимое
+            Map<Path, String> processedFiles = new LinkedHashMap<>();
+            for (Path path : javaFiles) {
+                String content = readFileSafely(path);
+                if (content != null && !isTestFile(content)) {
+                    String processed = processText(content);
+                    if (!processed.isEmpty()) {
+                        processedFiles.put(path, processed);
                     }
-
-                    return FileVisitResult.CONTINUE;
                 }
-            });
+            }
 
-            processed.sort(Comparator.comparing(fd -> fd.path));
+            // Находим дубликаты и похожие файлы
+            Map<Path, Set<Path>> duplicates = findDuplicates(processedFiles);
 
-            detectCopies(processed);
+            // Выводим результаты
+            printDuplicates(duplicates);
 
         } catch (IOException e) {
-            e.printStackTrace();
+            System.err.println("Ошибка при обработке файлов: " + e.getMessage());
         }
     }
 
-    // Безопасное чтение файла
-    private static String readFileSafe(Path path) throws IOException {
-        byte[] bytes;
+    /**
+     * Рекурсивно находит все Java-файлы в директории и её поддиректориях
+     */
+    private static List<Path> findJavaFiles(Path startDir) throws IOException {
+        if (!Files.exists(startDir)) {
+            return Collections.emptyList();
+        }
+
+        // Используем Files.walk для рекурсивного обхода
+        try (Stream<Path> paths = Files.walk(startDir)) {
+            return paths
+                    .filter(Files::isRegularFile)           // только файлы (не директории)
+                    .filter(p -> p.toString().endsWith(".java")) // только .java файлы
+                    .collect(Collectors.toList());
+        }
+    }
+
+    /**
+     * Безопасно читает файл, пробуя разные кодировки для обработки проблем с кодировкой
+     */
+    private static String readFileSafely(Path path) {
+        // Список кодировок для попытки чтения (в порядке приоритета)
+        Charset[] charsets = {
+                StandardCharsets.UTF_8,      // современная стандартная кодировка
+                StandardCharsets.ISO_8859_1, // Latin-1
+                Charset.defaultCharset()     // системная кодировка по умолчанию
+        };
+
+        // Пробуем прочитать файл в каждой кодировке
+        for (Charset charset : charsets) {
+            try {
+                return Files.readString(path, charset);
+            } catch (MalformedInputException e) {
+                // Пробуем следующую кодировку при ошибке в текущей
+                continue;
+            } catch (IOException e) {
+                return null;
+            }
+        }
+
+        // Последняя попытка: читаем как байты и декодируем с заменой ошибок
         try {
-            bytes = Files.readAllBytes(path);
-            return new String(bytes, StandardCharsets.UTF_8);
-        } catch (MalformedInputException ex) {
-            // fallback, чтобы не ломать работу
-            bytes = Files.readAllBytes(path);
-            return new String(bytes, StandardCharsets.ISO_8859_1);
+            CharsetDecoder decoder = StandardCharsets.UTF_8.newDecoder()
+                    .onMalformedInput(CodingErrorAction.REPLACE)  // заменяем некорректные последовательности
+                    .onUnmappableCharacter(CodingErrorAction.REPLACE); // заменяем непереводимые символы
+
+            byte[] bytes = Files.readAllBytes(path);
+            return decoder.decode(java.nio.ByteBuffer.wrap(bytes)).toString();
+        } catch (IOException e) {
+            return null;
         }
     }
 
-    // Препроцессинг
-    private static String preprocess(String text) {
-        StringBuilder sb = new StringBuilder(text.length());
-
-        // 1. Удаление package + import
-        for (String line : text.split("\n")) {
-            String t = line.trim();
-            if (t.startsWith("package ") || t.startsWith("import "))
-                continue;
-            sb.append(line).append('\n');
-        }
-
-        // 2. Удаление комментариев за O(n)
-        String noComments = stripComments(sb);
-
-        // 3. Замена символов < 33 на ' ' + trim
-        return normalizeSpaces(noComments).trim();
+    /**
+     * Проверяет, является ли файл тестовым (содержит аннотации JUnit)
+     */
+    private static boolean isTestFile(String content) {
+        return content.contains("@Test") || content.contains("org.junit.Test");
     }
 
-    // Удаление комментариев
-    private static String stripComments(CharSequence text) {
-        StringBuilder out = new StringBuilder(text.length());
-        int n = text.length();
+    /**
+     * Обрабатывает текст: удаляет package/imports, комментарии, нормализует пробелы
+     */
+    private static String processText(String text) {
+        // 1. Удаляем package и импорты
+        text = removePackageAndImports(text);
 
-        boolean inSL = false;  // single-line
-        boolean inML = false;  // multi-line
-        boolean inStr = false; // "string"
-        boolean inChr = false; // 'c'
-        boolean esc = false;
+        // 2. Удаляем комментарии за O(n)
+        text = removeComments(text);
 
-        for (int i = 0; i < n; i++) {
-            char c = text.charAt(i);
-            char next = (i + 1 < n) ? text.charAt(i + 1) : '\0';
-
-            if (inSL) {
-                if (c == '\n') {
-                    inSL = false;
-                    out.append(c);
-                }
-                continue;
-            }
-
-            if (inML) {
-                if (c == '*' && next == '/') {
-                    inML = false;
-                    i++;
-                }
-                continue;
-            }
-
-            if (inStr) {
-                out.append(c);
-                if (c == '"' && !esc)
-                    inStr = false;
-                esc = c == '\\' && !esc;
-                continue;
-            }
-
-            if (inChr) {
-                out.append(c);
-                if (c == '\'' && !esc)
-                    inChr = false;
-                esc = c == '\\' && !esc;
-                continue;
-            }
-
-            // Начало комментария
-            if (c == '/' && next == '/') {
-                inSL = true;
-                i++;
-                continue;
-            }
-            if (c == '/' && next == '*') {
-                inML = true;
-                i++;
-                continue;
-            }
-
-            // Строка
-            if (c == '"') {
-                inStr = true;
-                out.append(c);
-                continue;
-            }
-
-            // Символьный литерал
-            if (c == '\'') {
-                inChr = true;
-                out.append(c);
-                continue;
-            }
-
-            out.append(c);
-        }
-        return out.toString();
-    }
-
-    // Нормализация пробельных символов
-    private static String normalizeSpaces(String text) {
+        // 3. Заменяем управляющие символы (с кодом < 33) на пробелы
         StringBuilder sb = new StringBuilder(text.length());
         for (int i = 0; i < text.length(); i++) {
             char c = text.charAt(i);
             sb.append(c < 33 ? ' ' : c);
         }
-        return sb.toString();
+
+        // 4. Обрезаем пробелы в начале и конце
+        return sb.toString().trim();
     }
 
-    // Поиск копий
-    private static void detectCopies(List<FileData> list) {
-        int n = list.size();
+    /**
+     * Удаляет package и import statements из кода
+     */
+    private static String removePackageAndImports(String text) {
+        StringBuilder result = new StringBuilder();
+        String[] lines = text.split("\n");
 
-        for (int i = 0; i < n; i++) {
-            FileData a = list.get(i);
-            List<String> copies = new ArrayList<>();
-
-            for (int j = i + 1; j < n; j++) {
-                FileData b = list.get(j);
-
-                // 1) Быстрый предфильтр по длине
-                if (Math.abs(a.text.length() - b.text.length()) >= COPY_THRESHOLD)
-                    continue;
-
-                // 2) Быстрый предфильтр по хешу
-                if (a.hash != b.hash)
-                    continue;
-
-                // 3) Левенштейн с обрывом при > 10
-                int dist = levenshteinLimited(a.text, b.text, COPY_THRESHOLD);
-                if (dist < COPY_THRESHOLD)
-                    copies.add(b.path);
+        for (String line : lines) {
+            String trimmed = line.trim();
+            // Сохраняем только строки, которые не начинаются с package или import
+            if (!trimmed.startsWith("package ") && !trimmed.startsWith("import ")) {
+                result.append(line).append('\n');
             }
+        }
 
-            if (!copies.isEmpty()) {
-                System.out.println(a.path);
-                for (String p : copies) {
-                    System.out.print("  copy: ");
-                    System.out.println(p);
+        return result.toString();
+    }
+
+    /**
+     * Удаляет комментарии из Java кода, учитывая строковые литералы
+     * Работает за O(n) - один проход по тексту
+     */
+    private static String removeComments(String text) {
+        StringBuilder result = new StringBuilder(text.length());
+        int len = text.length();
+        int i = 0;
+
+        while (i < len) {
+            // Обработка строковых литералов (в двойных кавычках)
+            if (text.charAt(i) == '"') {
+                result.append(text.charAt(i));
+                i++;
+                // Копируем всё содержимое строки, включая escape-последовательности
+                while (i < len) {
+                    char c = text.charAt(i);
+                    result.append(c);
+                    if (c == '\\' && i + 1 < len) {
+                        // Обрабатываем escape-последовательности (\n, \t, \" и т.д.)
+                        result.append(text.charAt(i + 1));
+                        i += 2;
+                    } else if (c == '"') {
+                        // Конец строкового литерала
+                        i++;
+                        break;
+                    } else {
+                        i++;
+                    }
+                }
+            }
+            // Обработка символьных литералов (в одинарных кавычках)
+            else if (text.charAt(i) == '\'') {
+                result.append(text.charAt(i));
+                i++;
+                while (i < len) {
+                    char c = text.charAt(i);
+                    result.append(c);
+                    if (c == '\\' && i + 1 < len) {
+                        // Обрабатываем escape-последовательности
+                        result.append(text.charAt(i + 1));
+                        i += 2;
+                    } else if (c == '\'') {
+                        // Конец символьного литерала
+                        i++;
+                        break;
+                    } else {
+                        i++;
+                    }
+                }
+            }
+            // Обработка многострочных комментариев (/* ... */)
+            else if (i + 1 < len && text.charAt(i) == '/' && text.charAt(i + 1) == '*') {
+                i += 2; // Пропускаем /*
+                // Ищем конец комментария */
+                while (i + 1 < len) {
+                    if (text.charAt(i) == '*' && text.charAt(i + 1) == '/') {
+                        i += 2;
+                        break;
+                    }
+                    i++;
+                }
+            }
+            // Обработка однострочных комментариев (// ...)
+            else if (i + 1 < len && text.charAt(i) == '/' && text.charAt(i + 1) == '/') {
+                // Пропускаем всё до конца строки
+                while (i < len && text.charAt(i) != '\n') {
+                    i++;
+                }
+                // Сохраняем символ новой строки
+                if (i < len) {
+                    result.append('\n');
+                    i++;
+                }
+            }
+            // Обычный символ - копируем
+            else {
+                result.append(text.charAt(i));
+                i++;
+            }
+        }
+
+        return result.toString();
+    }
+
+    /**
+     * Находит дубликаты и похожие файлы среди обработанных
+     * Возвращает Map: файл -> множество его дубликатов/похожих файлов
+     */
+    private static Map<Path, Set<Path>> findDuplicates(Map<Path, String> files) {
+        Map<Path, Set<Path>> duplicates = new TreeMap<>();
+        List<Map.Entry<Path, String>> entries = new ArrayList<>(files.entrySet());
+
+        // Этап 1: Группируем по хешу для быстрой фильтрации точных дубликатов
+        Map<Integer, List<Map.Entry<Path, String>>> byHash = new HashMap<>();
+        for (Map.Entry<Path, String> entry : entries) {
+            int hash = entry.getValue().hashCode();
+            byHash.computeIfAbsent(hash, k -> new ArrayList<>()).add(entry);
+        }
+
+        // Обрабатываем группы с одинаковым хешем (потенциальные точные дубликаты)
+        for (List<Map.Entry<Path, String>> group : byHash.values()) {
+            if (group.size() > 1) {
+                // Проверяем точные совпадения внутри группы
+                for (int i = 0; i < group.size(); i++) {
+                    for (int j = i + 1; j < group.size(); j++) {
+                        if (group.get(i).getValue().equals(group.get(j).getValue())) {
+                            // Добавляем взаимные ссылки между дубликатами
+                            duplicates.computeIfAbsent(group.get(i).getKey(), k -> new TreeSet<>())
+                                    .add(group.get(j).getKey());
+                            duplicates.computeIfAbsent(group.get(j).getKey(), k -> new TreeSet<>())
+                                    .add(group.get(i).getKey());
+                        }
+                    }
                 }
             }
         }
+
+        // Этап 2: Поиск похожих файлов (не точных дубликатов)
+        // Сортируем файлы по длине для оптимизации сравнения
+        entries.sort(Comparator.comparingInt(e -> e.getValue().length()));
+
+        for (int i = 0; i < entries.size(); i++) {
+            Map.Entry<Path, String> e1 = entries.get(i);
+            int len1 = e1.getValue().length();
+
+            for (int j = i + 1; j < entries.size(); j++) {
+                Map.Entry<Path, String> e2 = entries.get(j);
+                int len2 = e2.getValue().length();
+
+                // Если разница в длине >= порога, дальше проверять бессмысленно
+                if (len2 - len1 >= COPY_THRESHOLD) {
+                    break; // переходим к следующему i, т.к. файлы отсортированы по длине
+                }
+
+                // Пропускаем уже найденные точные дубликаты
+                if (e1.getValue().equals(e2.getValue())) {
+                    continue;
+                }
+
+                // Быстрая проверка: подсчёт различающихся символов
+                if (quickDifferenceCheck(e1.getValue(), e2.getValue())) {
+                    // Точный расчет расстояния Левенштейна
+                    int distance = levenshtein(e1.getValue(), e2.getValue());
+
+                    // Если расстояние меньше порога, считаем файлы похожими
+                    if (distance < COPY_THRESHOLD) {
+                        duplicates.computeIfAbsent(e1.getKey(), k -> new TreeSet<>())
+                                .add(e2.getKey());
+                        duplicates.computeIfAbsent(e2.getKey(), k -> new TreeSet<>())
+                                .add(e1.getKey());
+                    }
+                }
+            }
+        }
+
+        return duplicates;
     }
 
-    // Ограниченный Левенштейн
-    private static int levenshteinLimited(String a, String b, int limit) {
-        int n = a.length();
-        int m = b.length();
+    /**
+     * Быстрая проверка различий между строками
+     * Возвращает true, если количество различий меньше порога
+     */
+    private static boolean quickDifferenceCheck(String s1, String s2) {
+        int len = Math.min(s1.length(), s2.length());
+        int differences = Math.abs(s1.length() - s2.length()); // начальная разница из-за разной длины
 
-        if (Math.abs(n - m) >= limit) return limit;
+        // Если разница в длине уже >= порога, не тратим время на дальнейшую проверку
+        if (differences >= COPY_THRESHOLD) {
+            return false;
+        }
 
-        int[] dpPrev = new int[m + 1];
-        int[] dpCurr = new int[m + 1];
+        // Подсчитываем различия в символах только до достижения порога
+        for (int i = 0; i < len && differences < COPY_THRESHOLD; i++) {
+            if (s1.charAt(i) != s2.charAt(i)) {
+                differences++;
+            }
+        }
 
-        for (int j = 0; j <= m; j++)
-            dpPrev[j] = j;
+        return differences < COPY_THRESHOLD;
+    }
 
-        for (int i = 1; i <= n; i++) {
-            dpCurr[0] = i;
-            char ca = a.charAt(i - 1);
-            int minRow = dpCurr[0];
+    /**
+     * Вычисляет расстояние Левенштейна между двумя строками
+     * (минимальное количество операций вставки, удаления, замены для превращения одной строки в другую)
+     * Использует оптимизацию с двумя строками для экономии памяти
+     */
+    private static int levenshtein(String s1, String s2) {
+        int len1 = s1.length();
+        int len2 = s2.length();
 
-            for (int j = 1; j <= m; j++) {
-                int cost = (ca == b.charAt(j - 1)) ? 0 : 1;
+        if (len1 == 0) return len2;
+        if (len2 == 0) return len1;
 
-                dpCurr[j] = Math.min(
-                        Math.min(dpPrev[j] + 1, dpCurr[j - 1] + 1),
-                        dpPrev[j - 1] + cost
+        // Оптимизация: используем только два массива вместо матрицы
+        int[] prev = new int[len2 + 1];
+        int[] curr = new int[len2 + 1];
+
+        // Инициализация первой строки
+        for (int j = 0; j <= len2; j++) {
+            prev[j] = j;
+        }
+
+        for (int i = 1; i <= len1; i++) {
+            curr[0] = i;
+            int minInRow = i; // отслеживаем минимум в текущей строке для раннего выхода
+
+            for (int j = 1; j <= len2; j++) {
+                int cost = (s1.charAt(i - 1) == s2.charAt(j - 1)) ? 0 : 1;
+                curr[j] = Math.min(
+                        Math.min(curr[j - 1] + 1,     // вставка
+                                prev[j] + 1),         // удаление
+                        prev[j - 1] + cost           // замена
                 );
-
-                if (dpCurr[j] < minRow) minRow = dpCurr[j];
+                minInRow = Math.min(minInRow, curr[j]);
             }
 
-            if (minRow >= limit)
-                return limit;
+            // Ранний выход: если минимум в строке уже >= порога
+            if (minInRow >= COPY_THRESHOLD) {
+                return COPY_THRESHOLD;
+            }
 
-            int[] tmp = dpPrev;
-            dpPrev = dpCurr;
-            dpCurr = tmp;
+            // Меняем массивы местами для следующей итерации
+            int[] temp = prev;
+            prev = curr;
+            curr = temp;
         }
 
-        return dpPrev[m];
+        return prev[len2];
     }
 
-    //======================================================================
-
-    private static class FileData {
-        final String path;
-        final String text;
-        final int hash;
-
-        FileData(String path, String text) {
-            this.path = path;
-            this.text = text;
-            this.hash = murmurHash(text);
+    /**
+     * Выводит группы дубликатов в удобочитаемом формате
+     */
+    private static void printDuplicates(Map<Path, Set<Path>> duplicates) {
+        if (duplicates.isEmpty()) {
+            return;
         }
-    }
 
-    // Быстрый хеш для предфильтра
-    private static int murmurHash(String s) {
-        int h = 0;
-        for (int i = 0; i < s.length(); i++) {
-            h = h * 0x5bd1e995 ^ s.charAt(i);
+        Set<Path> printed = new HashSet<>(); // для избежания повторного вывода
+
+        for (Map.Entry<Path, Set<Path>> entry : duplicates.entrySet()) {
+            Path file = entry.getKey();
+            // Если файл еще не выводился, выводим всю группу
+            if (!printed.contains(file)) {
+                System.out.println(file);
+                for (Path duplicate : entry.getValue()) {
+                    System.out.print("copy: ");
+                    System.out.println(duplicate);
+                    printed.add(duplicate);
+                }
+                printed.add(file);
+            }
         }
-        return h;
     }
 }
-
