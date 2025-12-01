@@ -17,9 +17,7 @@ The hash table uses open addressing with double hashing:
 [
 h_1(x) = (a \cdot x + b) \bmod m
 ]
-[
-h_2(x) = 1 + (c \cdot x + d) \bmod (m - 1)
-]
+[h_2(x) = 1 + (c \cdot x + d) \bmod (m - 1)]
 [
 h(x, k) = (h_1(x) + k \cdot h_2(x)) \bmod m
 ]

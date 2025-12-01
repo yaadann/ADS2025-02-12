@@ -3,12 +3,9 @@ package by.bsuir.dsa.csv2025.gr451003.Климинтионак;
 
 import org.junit.Test;
 
-import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
 
-import java.io.BufferedWriter;
-import java.io.ByteArrayOutputStream;
-import java.io.InputStream;
-import java.io.OutputStreamWriter;
+import java.io.*;
 
 
 import java.util.*;
@@ -20,10 +17,18 @@ public class Solution {
     static final String EMPTY = "EMPTY";
     static final String DELETED = "DELETED";
 
+
     static int a, b, c, d;
     static int m;
     static String[] table;
     static int used;
+
+    static void reset() {
+        table = null;
+        used = 0;
+        m = 0;
+        a = b = c = d = 0;
+    }
 
     public static void main(String[] args) {
         Scanner sc = new Scanner(System.in);
@@ -149,38 +154,31 @@ public class Solution {
     }
 
     private String runProgram(String input) throws Exception {
-        ProcessBuilder pb = new ProcessBuilder(
-                "java",
-                "-cp",
-                "out/production/Hash",   // Путь к Solution.class
-                "Solution"
-        );
+        InputStream oldIn = System.in;
+        PrintStream oldOut = System.out;
 
-        pb.redirectErrorStream(true);
-        Process p = pb.start();
+        ByteArrayInputStream in = new ByteArrayInputStream(input.getBytes());
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
 
-        try (BufferedWriter writer = new BufferedWriter(
-                new OutputStreamWriter(p.getOutputStream(), StandardCharsets.UTF_8))) {
-            writer.write(input);
-        }
+        System.setIn(in);
+        System.setOut(new PrintStream(out));
 
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        try (InputStream is = p.getInputStream()) {
-            is.transferTo(baos);
-        }
+        Solution.main(new String[]{});
 
-        p.waitFor();
-        return baos.toString().replace("\r", "").trim();
+        System.setIn(oldIn);
+        System.setOut(oldOut);
+
+        return out.toString().replace("\r", "").trim();
     }
 
-
     private void assertRun(String input, String expected) throws Exception {
-        String out = runProgram(input).trim();
-        assertEquals(expected.trim(), out);
+        String actual = runProgram(input);
+        assertEquals(expected.trim(), actual.trim());
     }
 
     @Test
     public void test1() throws Exception {
+        reset();
         assertRun(
                 "1 0 1 0 5\n" +
                         "7\n" +
@@ -205,6 +203,7 @@ public class Solution {
 
     @Test
     public void test2() throws Exception {
+        reset();
         assertRun(
                 "1 0 1 0 5\n" +
                         "5\n" +
@@ -226,6 +225,7 @@ public class Solution {
 
     @Test
     public void test3() throws Exception {
+        reset();
         assertRun(
                 "2 1 1 0 7\n" +
                         "6\n" +
@@ -250,6 +250,7 @@ public class Solution {
 
     @Test
     public void test4() throws Exception {
+        reset();
         assertRun(
                 "1 0 1 0 11\n" +
                         "6\n" +
@@ -278,6 +279,7 @@ public class Solution {
 
     @Test
     public void test5() throws Exception {
+        reset();
         assertRun(
                 "3 1 2 1 5\n" +
                         "6\n" +
@@ -300,6 +302,7 @@ public class Solution {
 
     @Test
     public void test6() throws Exception {
+        reset();
         assertRun(
                 "1 1 1 1 5\n" +
                         "8\n" +
@@ -325,6 +328,7 @@ public class Solution {
 
     @Test
     public void test7() throws Exception {
+        reset();
         assertRun(
                 "3 0 1 0 9\n" +
                         "10\n" +
@@ -356,6 +360,7 @@ public class Solution {
 
     @Test
     public void test8() throws Exception {
+        reset();
         assertRun(
                 "5 0 3 0 7\n" +
                         "6\n" +
@@ -381,6 +386,7 @@ public class Solution {
 
     @Test
     public void test9() throws Exception {
+        reset();
         assertRun(
                 "2 0 0 0 7\n" +
                         "7\n" +
@@ -407,6 +413,7 @@ public class Solution {
 
     @Test
     public void test10() throws Exception {
+        reset();
         assertRun(
                 "1 0 1 0 7\n" +
                         "10\n" +
