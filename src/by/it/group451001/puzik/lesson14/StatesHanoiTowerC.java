@@ -152,8 +152,8 @@ public class StatesHanoiTowerC {
                 processed[root] = true;
             }
         }
-        
-        // Sort sizes in ascending order (bubble sort since we can't use Collections)
+
+        // Sort sizes in ascending order (bubble sort)
         for (int i = 0; i < uniqueCount; i++) {
             for (int j = 0; j < uniqueCount - i - 1; j++) {
                 if (clusterSizes[j] > clusterSizes[j + 1]) {
