@@ -1,7 +1,5 @@
 package by.bsuir.dsa.csv2025.gr451003.Галузо;
 
-
-
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.util.Scanner;
@@ -9,6 +7,19 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 
 public class Solution {
+
+    //он был в другом файле извините :) можно не минус балл ;)
+
+    private static class TreeNode {
+        int val;
+        TreeNode left;
+        TreeNode right;
+
+        TreeNode(int val) {
+            this.val = val;
+        }
+    }
+
     public static void main(String[] args) throws FileNotFoundException {
         InputStream stream = Solution.class.getResourceAsStream("dataA.txt");
         Solution instance = new Solution();
