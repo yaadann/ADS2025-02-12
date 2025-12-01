@@ -39,7 +39,7 @@ import java.util.Scanner;
 public class A_EditDist {
 
 
-    int getDistanceEdinting(String one, String two) {
+    public int getDistanceEdinting(String one, String two) {
         //!!!!!!!!!!!!!!!!!!!!!!!!!     НАЧАЛО ЗАДАЧИ     !!!!!!!!!!!!!!!!!!!!!!!!!
 
 
@@ -52,6 +52,7 @@ public class A_EditDist {
     public static void main(String[] args) throws FileNotFoundException {
         InputStream stream = A_EditDist.class.getResourceAsStream("dataABC.txt");
         A_EditDist instance = new A_EditDist();
+        assert stream != null;
         Scanner scanner = new Scanner(stream);
         System.out.println(instance.getDistanceEdinting(scanner.nextLine(), scanner.nextLine()));
         System.out.println(instance.getDistanceEdinting(scanner.nextLine(), scanner.nextLine()));
