@@ -8,7 +8,7 @@ import java.nio.file.Path;
 import java.util.*;
 import java.util.stream.Stream;
 
-public class SourceScannerC extends SourceScannerA{
+public class SourceScannerC{
     static final int NORMAL_DISTANCE = 9;
 
     private static int areReplacementNumbers(char c1, char c2) {
@@ -41,6 +41,7 @@ public class SourceScannerC extends SourceScannerA{
             String s1 = array_s1[index];
             String s2 = array_s2[index];
 
+            // Исправлено: правильный размер массива для алгоритма Левенштейна
             int[][] dp = new int[s1.length() + 1][s2.length() + 1];
 
             for (int i = 0; i <= s1.length(); i++) {
