@@ -128,7 +128,7 @@ public class MyArrayDeque<E> implements Deque<E> {
         }
 
         E element = elements[head];
-        elements[head] = null; // Помогаем сборщику мусора
+        elements[head] = null;
         head = (head + 1) % elements.length;
         size--;
 
@@ -155,7 +155,6 @@ public class MyArrayDeque<E> implements Deque<E> {
             int newCapacity = elements.length * 2;
             E[] newElements = (E[]) new Object[newCapacity];
 
-            // Копируем элементы в новый массив
             for (int i = 0; i < size; i++) {
                 int index = (head + i) % elements.length;
                 newElements[i] = elements[index];
