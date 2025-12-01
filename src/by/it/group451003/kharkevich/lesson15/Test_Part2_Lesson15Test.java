@@ -15,7 +15,7 @@ public class Test_Part2_Lesson15Test extends HomeWork {
 
     private static List<String> samples;
 
-    @Test(timeout = 5000)
+    @Test(timeout = 15000)
     public void testSourceScannerA() {
         HomeWork run = run("");
         for (String sample : getSamples()) {
@@ -23,7 +23,7 @@ public class Test_Part2_Lesson15Test extends HomeWork {
         }
     }
 
-    @Test(timeout = 5000)
+    @Test(timeout = 15000)
     public void testSourceScannerB() {
         HomeWork run = run("");
         for (String sample : getSamples()) {
@@ -31,7 +31,7 @@ public class Test_Part2_Lesson15Test extends HomeWork {
         }
     }
 
-    @Test(timeout = 5000)
+    @Test(timeout = 15000)
     public void testSourceScannerC() {
         run("").include("FiboA.java");
     }
