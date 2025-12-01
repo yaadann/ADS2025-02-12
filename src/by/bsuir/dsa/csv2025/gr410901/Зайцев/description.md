@@ -23,7 +23,7 @@ Find a **route that passes through every edge exactly once and returns to the st
 3 3
 0 1
 1 2
-2 0
+2 0 
 
 **Output format:**  
 - If a route exists, print the sequence of vertices forming the route.  
