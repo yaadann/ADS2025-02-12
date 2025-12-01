@@ -4,8 +4,6 @@ Finding Ancestor-Descendant Pairs in Tree
 
 # Task
 
-Task
-
 A non-empty sequence of character groups separated by spaces is given. Each group defines some binary code. Also given integers K and D.
 
 For a given sequence:
@@ -39,8 +37,6 @@ For a given sequence:
   - Sum of bits A and B is prime (1+1=2, 1+1=2)
 
 # Theory
-
-Theoretical Info
 
 ## Binary Search Tree
 
