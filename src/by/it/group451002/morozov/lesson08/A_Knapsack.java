@@ -1,4 +1,4 @@
-package by.it.group451002..lesson08;
+package by.it.group451002.morozov.lesson08;
 
 
 import java.io.FileInputStream;
