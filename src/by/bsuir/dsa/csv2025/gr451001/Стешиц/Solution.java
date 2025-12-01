@@ -124,7 +124,6 @@ public class Solution {
         }
     }
 
-
     @Test
     public void test1() throws Exception {
         runTest("6 6\n" + "1 2\n" + "1 3\n" + "2 4\n" + "3 5\n" + "5 4\n" + "4 6\n" + "1 6",
