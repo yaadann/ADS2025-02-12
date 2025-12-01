@@ -1,7 +1,7 @@
 # Name
 
 Finding Ancestor-Descendant Pairs in Tree
-
+ 
 # Task
 
 A non-empty sequence of character groups separated by spaces is given. Each group defines some binary code. Also given integers K and D.
