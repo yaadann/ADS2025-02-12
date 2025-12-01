@@ -119,6 +119,8 @@ public class Solution {
         }
     }
 
+
+
     static void updateColor(int v, int tl, int tr, int pos, char newColor) {
         if (tl == tr) {
             tree[v].r = (newColor == 'r') ? 1 : 0;
