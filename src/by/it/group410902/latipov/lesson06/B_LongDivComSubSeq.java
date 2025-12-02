@@ -14,8 +14,8 @@ import java.util.Scanner;
 Необходимо:
     Выведите максимальное 1<=k<=n, для которого гарантированно найдётся
     подпоследовательность индексов i[1]<i[2]<…<i[k] <= длины k,
-    для которой каждый элемент A[i[k]] делится на предыдущий
-    т.е. для всех 1<=j<k, A[i[j+1]] делится на A[i[j]].
+    где каждый элемент A[i[k]] делится на предыдущий
+    т.е. для всех 1<=j<k, A[i[j]] < A[i[j+1]] и A[i[j+1]] делится на A[i[j]].
 
 Решить задачу МЕТОДАМИ ДИНАМИЧЕСКОГО ПРОГРАММИРОВАНИЯ
 
@@ -29,7 +29,6 @@ import java.util.Scanner;
 
 public class B_LongDivComSubSeq {
 
-
     public static void main(String[] args) throws FileNotFoundException {
         InputStream stream = B_LongDivComSubSeq.class.getResourceAsStream("dataB.txt");
         B_LongDivComSubSeq instance = new B_LongDivComSubSeq();
@@ -38,22 +37,42 @@ public class B_LongDivComSubSeq {
     }
 
     int getDivSeqSize(InputStream stream) throws FileNotFoundException {
-        //подготовка к чтению данных
         Scanner scanner = new Scanner(stream);
-        //!!!!!!!!!!!!!!!!!!!!!!!!!     НАЧАЛО ЗАДАЧИ     !!!!!!!!!!!!!!!!!!!!!!!!!
-        //общая длина последовательности
         int n = scanner.nextInt();
-        int[] m = new int[n];
-        //читаем всю последовательность
+        int[] sequence = new int[n];
         for (int i = 0; i < n; i++) {
-            m[i] = scanner.nextInt();
+            sequence[i] = scanner.nextInt();
         }
-        //тут реализуйте логику задачи методами динамического программирования (!!!)
-        int result = 0;
 
+        // dp[i] - длина наибольшей кратной подпоследовательности, оканчивающейся на элементе i
+        int[] dp = new int[n];
 
-        //!!!!!!!!!!!!!!!!!!!!!!!!!     КОНЕЦ ЗАДАЧИ     !!!!!!!!!!!!!!!!!!!!!!!!!
-        return result;
+        // Инициализация: каждый элемент сам по себе является подпоследовательностью длины 1
+        for (int i = 0; i < n; i++) {
+            dp[i] = 1;
+        }
+
+        // Заполняем массив dp
+        for (int i = 1; i < n; i++) {
+            for (int j = 0; j < i; j++) {
+                // Проверяем условие: sequence[i] должен делиться на sequence[j] без остатка
+                // И sequence[i] должен быть больше sequence[j] (по условию возрастания)
+                if (sequence[i] % sequence[j] == 0 && sequence[i] > sequence[j]) {
+                    if (dp[i] < dp[j] + 1) {
+                        dp[i] = dp[j] + 1;
+                    }
+                }
+            }
+        }
+
+        // Находим максимальную длину
+        int maxLength = 0;
+        for (int length : dp) {
+            if (length > maxLength) {
+                maxLength = length;
+            }
+        }
+
+        return maxLength;
     }
-
 }
