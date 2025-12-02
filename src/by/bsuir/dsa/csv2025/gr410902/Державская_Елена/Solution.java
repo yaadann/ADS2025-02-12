@@ -1,4 +1,4 @@
-package by.bsuir.dsa.csv2025.gr410902.Державская;
+package by.bsuir.dsa.csv2025.gr410902.Державская_Елена;
 
 
 import java.util.Scanner;
