@@ -24,7 +24,6 @@ import java.util.Scanner;
     Sample Input:
     5
     1 3 3 2 6
-
     Sample Output:
     3
 */

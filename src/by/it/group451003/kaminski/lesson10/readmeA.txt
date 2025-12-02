@@ -1,3 +1,4 @@
+
     Задание на уровень А
 
     Создайте class MyArrayDeque<E>, который реализует интерфейс Deque<E>
@@ -22,4 +23,3 @@
                 poll()
                 pollFirst()
                 pollLast()
-

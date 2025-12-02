@@ -39,7 +39,7 @@ import java.util.Scanner;
 //        01001100100111
 
 //        Sample Output 2:
-//        abacabad
+//        abacaba
 
 public class B_Huffman {
 

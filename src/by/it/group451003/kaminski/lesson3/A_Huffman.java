@@ -36,7 +36,7 @@ import java.util.*;
 //        b: 10
 //        c: 110
 //        d: 111
-//        01001100100111
+//        0100110010011
 
 public class A_Huffman {
 

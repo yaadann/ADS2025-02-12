@@ -1,4 +1,4 @@
-package by.it.group451004.struts.lesson08;
+package by.it.group451003.kaminski.lesson08;
 
 import java.io.FileNotFoundException;
 import java.io.InputStream;
@@ -36,31 +36,22 @@ public class B_Knapsack {
         for (int i = 0; i < n; i++) {
             gold[i]=scanner.nextInt();
         }
+        boolean[] dp = new boolean[w + 1];
+        dp[0] = true;
+        for (int i = 0; i < n; i++) {
+            int weight = gold[i];
+            for (int j = w; j >= weight; j--) {
+                if (dp[j - weight]) {
+                    dp[j] = true;
+                }
+            }
+        }
 
         int result = 0;
-        for (int i = 0; i < n; i++) {
-            int temp = gold[i];
-            for (int j = i+1; j < n - 1; j++) {
-                if (temp + gold[j] >= temp + gold[j + 1]) {
-                    if (temp + gold[j] <= w)
-                        temp += gold[j];
-                } else {
-                    if (temp + gold[j + 1] <= w) {
-                        temp += gold[j + 1];
-                        j++;
-                    }
-                }
-
-                if (temp == w) {
-                    break;
-                }
-            }
-            if (temp + gold[gold.length-1] <= w) {
-                result += gold[gold.length-1];
-            }
-
-            if (temp > result) {
-                result = temp;
+        for (int i = w; i >= 0; i--) {
+            if (dp[i]) {
+                result = i;
+                break;
             }
         }
         //!!!!!!!!!!!!!!!!!!!!!!!!!     КОНЕЦ ЗАДАЧИ     !!!!!!!!!!!!!!!!!!!!!!!!!

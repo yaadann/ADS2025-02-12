@@ -1,4 +1,4 @@
-package by.it.group451004.struts.lesson15;
+package by.it.group451003.kaminski.lesson15;
 
 import by.it.HomeWork;
 import org.junit.Test;
@@ -15,7 +15,7 @@ public class Test_Part2_Lesson15Test extends HomeWork {
 
     private static List<String> samples;
 
-    @Test(timeout = 5000) //можно изменить под свою производительность
+    @Test(timeout = 10000) //можно изменить под свою производительность
     public void testSourceScannerA() {
         HomeWork run = run("");
         for (String sample : lazyWalk()) {
@@ -23,7 +23,7 @@ public class Test_Part2_Lesson15Test extends HomeWork {
         }
     }
 
-    @Test(timeout = 5000) //можно изменить под свою производительность
+    @Test(timeout = 10000) //можно изменить под свою производительность
     public void testSourceScannerB() {
         HomeWork run = run("");
         for (String sample : lazyWalk()) {

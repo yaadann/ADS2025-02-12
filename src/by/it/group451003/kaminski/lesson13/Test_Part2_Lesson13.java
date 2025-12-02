@@ -1,4 +1,4 @@
-package by.it.group451004.struts.lesson13;
+package by.it.group451003.kaminski.lesson13;
 
 import by.it.HomeWork;
 import org.junit.Test;
@@ -33,10 +33,10 @@ public class Test_Part2_Lesson13 extends HomeWork {
 
     @Test
     public void testGraphC() {
-        run("C->B, C->I, I->A, A->D, D->I, D->B, B->H, H->D, D->E, H->E, E->G, A->F, G->F, F->K, K->G", true)
-                .include("C\nABDHI\nE\nFGK");
         run("1->2, 2->3, 3->1, 3->4, 4->5, 5->6, 6->4", true)
                 .include("123\n456");
+        run("C->B, C->I, I->A, A->D, D->I, D->B, B->H, H->D, D->E, H->E, E->G, A->F, G->F, F->K, K->G", true)
+                .include("C\nABDHI\nE\nFGK");
         //Дополните эти тесты СВОИМИ более сложными примерами и проверьте их работоспособность.
         //Параметр метода run - это ввод. Параметр метода include - это вывод.
         //Общее число примеров должно быть не менее 8 (сейчас их 2).

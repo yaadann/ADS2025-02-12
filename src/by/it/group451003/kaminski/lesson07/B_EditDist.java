@@ -33,7 +33,6 @@ import java.util.Scanner;
     editing
     Sample Output 3:
     5
-
 */
 
 public class B_EditDist {

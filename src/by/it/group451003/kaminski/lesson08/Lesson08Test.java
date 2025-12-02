@@ -1,4 +1,4 @@
-package by.it.group451004.struts.lesson08;
+package by.it.group451003.kaminski.lesson08;
 
 import org.junit.Test;
 

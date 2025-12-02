@@ -1,4 +1,4 @@
-package by.it.group451003.kaminski.lesson2.lesson02;
+package by.it.group451003.kaminski.lesson2;
 /*
 Даны
 1) объем рюкзака 4

@@ -31,7 +31,7 @@ import java.util.Scanner;
 //
 //      Sample Output:
 //      200
-//      500
+//      500 dfg
 
 
 public class C_HeapMax {

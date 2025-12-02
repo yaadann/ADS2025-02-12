@@ -1,4 +1,4 @@
-package by.it.group451002.shutko.lesson10;
+package by.it.group451003.kaminski.lesson10;
 
 
 import by.it.HomeWork;
@@ -19,7 +19,6 @@ import static org.junit.Assert.fail;
 @SuppressWarnings("all")
 
 //поставьте курсор на следующую строку и нажмите Ctrl+Shift+F10
-
 //для корректной сборки теста добавьте библиотеку init.jar в проект (она находится в корне)
 public class Test_Part2_Lesson10Test extends HomeWork {
 

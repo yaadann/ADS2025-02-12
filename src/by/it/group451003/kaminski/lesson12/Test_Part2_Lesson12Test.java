@@ -1,4 +1,4 @@
-package by.it.group451004.struts.lesson12;
+package by.it.group451003.kaminski.lesson12;
 
 
 import by.it.HomeWork;
